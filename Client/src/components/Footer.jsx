@@ -1,5 +1,5 @@
 import React from 'react'
-// import Logo from "../assets/Aurjobs_Logo1.png"
+import Logo from "../assets/Aurjobs_LogoRemBack.png"
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
@@ -29,8 +29,8 @@ const Footer = () => {
           {/* Logo Section */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center space-x-2">
-              {/* <img src={Logo} alt="Aurjobs" className="w-24 h-16" /> */}
-              <div className="text-white text-xl font-bold">Aurjobs</div>
+              <img src={Logo} alt="Aurjobs" className="w-24 h-16" />
+              {/* <div className="text-white text-xl font-bold">Aurjobs</div> */}
             </div>
 
             <p className="mt-2 text-sm">Transforming recruitment with AI-powered sourcing solutions</p>
