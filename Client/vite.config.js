@@ -7,17 +7,7 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
   ],
-  theme: {
-    scrollbar: {
-      hide: {
-        '-ms-overflow-style': 'none',
-        'scrollbar-width': 'none',
-        '&::-webkit-scrollbar': {
-          display: 'none',
-        },
-      },
-    },
-  }
+  
 })
 
 
