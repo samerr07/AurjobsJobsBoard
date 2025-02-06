@@ -1,14 +1,236 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link href="/dist/styles.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/src/assets/Aurjobs_Logo.jpg" />
+  <link href="/dist/styles.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="application-name" content="Aurjobs Job Portal">
+
+  <meta property="og:site_name" content="Aurjobs Job Portal">
+
+  <!-- Meta Title -->
+  <title>Aurjobs Job Portal - Discover Top Talent & Career Opportunities</title>
+
+  <!-- Meta Description -->
+  <meta name="description"
+    content="Aurjobs Job Portal offers seamless job postings for employers and an AI-driven experience for job seekers. Post jobs, apply to opportunities, and enhance your recruitment with AI-powered tools for screening, assessments, and interviews.">
+
+  <!-- Meta Keywords -->
+  <meta name="keywords"
+    content="job portal, job search, job posting, AI hiring, recruitment platform, candidate sourcing, AI screening, job application, careers, Aurjobs job portal, talent acquisition, talent sourcing">
+
+  <!-- Author -->
+  <meta name="author" content="Auredge Aurjobs Pvt. Ltd.">
+
+  <!-- Open Graph Title -->
+  <meta property="og:title" content="Aurjobs Job Portal - Discover Top Talent & Career Opportunities">
+
+  <!-- Open Graph Description -->
+  <meta property="og:description"
+    content="Welcome to Aurjobs Job Portal, your go-to platform for posting jobs, finding talent, and enhancing your hiring process with AI-driven features. Start hiring smarter today.">
+
+  <!-- Open Graph Image -->
+  <meta property="og:image" content="https://job.aurjobs.com/src/assets/Aurjobs_Logo.jpg">
+
+  <!-- Open Graph URL -->
+  <meta property="og:url" content="https://job.aurjobs.com">
+
+  <!-- Open Graph Type -->
+  <meta property="og:type" content="website">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://job.aurjobs.com">
+
+  <!-- Robots Meta Tag -->
+  <meta name="robots" content="index, follow">
+
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Adsense Account -->
+  <meta name="google-adsense-account" content="ca-pub-1581117158690045">
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Aurjobs Job Portal",
+      "url": "https://job.aurjobs.com",
+      "logo": "https://job.aurjobs.com/assets/Aurjobs_Logo.jpg",
+      "sameAs": [
+        "https://www.facebook.com/Aurjobs.Official",
+        "https://twitter.com/aurjobs",
+        "https://www.linkedin.com/company/aurjobs",
+        "https://www.instagram.com/aurjobs"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91 8630793609",
+        "contactType": "Customer Support",
+        "areaServed": "IN",
+        "availableLanguage": "English"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Delhi, India",
+        "addressLocality": "Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110001",
+        "addressCountry": "IN"
+      },
+      "description": "Aurjobs Job Portal allows employers to post jobs and candidates to apply seamlessly. Candidates must complete their profiles to access job applications, while AI-driven tools such as resume reviews enhance the recruitment experience.",
+      "founder": {
+        "@type": "Person",
+        "name": "Keshav Agarwal",
+        "jobTitle": "Founder & CEO",
+        "sameAs": "https://www.linkedin.com/in/keshav-agarwal-805757220/"
+      },
+      "foundingDate": "2023-08-04",
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Delhi, India"
+      },
+      "industry": "Job Portal, Recruitment, Hiring, AI Automation",
+      "employee": {
+        "@type": "Organization",
+        "name": "Aurjobs"
+      },
+      "hasPart": [
+        {
+          "@type": "WebSite",
+          "url": "https://sourcing.aurjobs.com",
+          "name": "Aurjobs Sourcing Portal",
+          "description": "An AI-powered sourcing portal where employers can find top talent with 44+ filters."
+        },
+        {
+          "@type": "WebSite",
+          "url": "https://interview.aurjobs.com",
+          "name": "Aurjobs Interview Portal",
+          "description": "AI-based interview scheduling and assessments for employers."
+        },
+        {
+          "@type": "WebSite",
+          "url": "https://screening.aurjobs.com",
+          "name": "Aurjobs Screening Portal",
+          "description": "Automated AI-based profile screening for better hiring decisions."
+        },
+        {
+          "@type": "WebSite",
+          "url": "https://test.aurjobs.com",
+          "name": "Aurjobs Test Portal",
+          "description": "Advanced proctored test solutions for technical and non-technical assessments."
+        }
+      ],
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://aurjobs.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Job Portal",
+            "item": "https://job.aurjobs.com"
+          }
+        ]
+      },
+      "faqPage": {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I post a job on Aurjobs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Employers can create an account, subscribe to a plan, and post job openings through their dashboard."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How can candidates apply for jobs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Candidates must complete their profiles, upload resumes, and apply to job listings directly via the portal."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Aurjobs provide AI-powered resume screening?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Aurjobs uses AI to review and rank resumes based on job requirements."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What services does Aurjobs Job Portal offer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Employers can post jobs, search for candidates, shortlist using 44+ filters, and schedule AI-based interviews. Candidates can apply for jobs and access AI resume reviews."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Aurjobs free for job seekers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, job seekers can create an account and apply for jobs for free, but additional services like premium AI resume reviews may be paid."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does Aurjobs ensure bias-free hiring?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Aurjobs uses AI-driven matching algorithms that focus on skills and experience rather than personal attributes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do employers search for candidates?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Employers can use 44+ AI-powered filters to search for the most suitable candidates based on qualifications, skills, and experience."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I integrate Aurjobs with my company's existing HR system?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Aurjobs provides API access and integrations for HR systems to streamline hiring."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I contact Aurjobs for support?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can reach out to Aurjobs customer support at +91 8630793609 or via email at support@aurjobs.com."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Aurjobs offer a trial for employers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Aurjobs offers a limited free trial for employers to experience the platform before subscribing."
+            }
+          }
+        ]
+      }
+    }
+    </script>
+</body>
+
 </html>
