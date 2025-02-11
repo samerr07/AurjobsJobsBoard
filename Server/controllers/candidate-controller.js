@@ -44,13 +44,13 @@ export const loginCandidate = async(req, res) => {
         // Checking if the candidate exists
         const candidate = await findByCandidateEmail(email);
         if (!candidate) {
-            return res.status(401).json({ error: "Invalid email or password" });
+            return res.status(401).json({ error: "Invalid email or password", success: false });
         }
 
         // Comparing the password
         const isMatch = await bcrypt.compare(password, candidate.candidate_password);
         if (!isMatch) {
-            return res.status(401).json({ error: "Invalid email or password" });
+            return res.status(401).json({ error: "Invalid email or password", success: false });
         }
 
         // Creating a JWT token
@@ -63,7 +63,7 @@ export const loginCandidate = async(req, res) => {
         res.cookie("authToken", token, { httpOnly: true });
 
         // Sending a success response
-        return res.status(200).json({ message: "Login successful", token });
+        return res.status(200).json({ message: "Login successful", token, candidate, success: true });
     } catch (error) {
         console.error("Error during login:", error);
         return res.status(500).json({ error: "Internal Server Error" });

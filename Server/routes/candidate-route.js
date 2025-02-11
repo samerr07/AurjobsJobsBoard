@@ -4,8 +4,8 @@ import { SignUpCandidate, loginCandidate } from "../controllers/candidate-contro
 const router = Router();
 
 // Candidate Signup Route
-router.post("/signup", SignUpCandidate); // Handle candidate signup
-router.post("/login", loginCandidate);
+router.post("/CandidateSignup", SignUpCandidate); // Handle candidate signup
+router.post("/CandidateLogin", loginCandidate);
 
 console.log("hey im in candidate- route.js file")
 export default router;
