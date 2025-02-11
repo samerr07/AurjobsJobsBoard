@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage'
 import CandidateRegisterPage from './pages/CandidateRegisterPage'
 import CandidateLoginPage from './pages/CandidateLoginPage'
 import ContactPage from './pages/ContactPage'
+import Dashboard from './components/Dashboard/Dashboard'
 
 function App() {
   
@@ -20,7 +21,7 @@ function App() {
           <Route path='/candidate_register' element={<CandidateRegisterPage/>}/>
           <Route path='/candidate_login' element={<CandidateLoginPage/>}/>
           <Route path='/contact' element={<ContactPage/>}/>
-
+           <Route path='candidate_dashboard' element={<Dashboard/>}/> 
         </Routes>
       </BrowserRouter>
     </>
