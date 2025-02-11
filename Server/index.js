@@ -11,7 +11,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000; // Default to 3000 if not set
 
-app.use(cors());
+const corsOptions = {
+    origin:true,
+    credentials:true
+}
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 // Middleware
@@ -19,6 +24,10 @@ app.use(bodyParser.json()); // Allow JSON requests
 
 // Candidate Routes
 app.use("/candidates", candidateRoutes);
+
+
+
+
 
 // Start server
 app.listen(port, () => {
