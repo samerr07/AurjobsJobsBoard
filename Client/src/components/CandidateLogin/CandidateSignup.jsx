@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react'
-// import {  } from 'lucide-react';
-import { User, Info, ArrowRight, ArrowLeft, Mail, Eye, EyeOff, Phone, MapPin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { User, Info, ArrowRight, ArrowLeft, Mail, Eye, EyeOff, Phone, MapPin, Axe, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'
 
 const CandidateSignup = ({ navigateToLogin }) => {
 
 
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         email: '',
-        phoneNumber: "",
+        phone: "",
 
         //II
         location: "",
         password: '',
         confirmPassword: '',
-        resumeUrl: ""
+        resume_url: ""
     });
     const [currentSection, setCurrentSection] = useState(1);
-
     const [passwordVisible, setPasswordVisible] = useState({
         password: false,
         confirmPassword: false
@@ -28,6 +29,8 @@ const CandidateSignup = ({ navigateToLogin }) => {
         password: '',
         confirmPassword: ''
     });
+    const navigate = useNavigate()
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,17 +55,61 @@ const CandidateSignup = ({ navigateToLogin }) => {
         setCurrentSection(1);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Handle form submission here
-        console.log('Form submitted:', formData);
+        try {
+            setLoading(true)
+            const res = await axios.post("http://localhost:3000/candidates/signup", formData, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true
+            })
+
+            if (res?.data?.success) {
+                toast.success(res?.data?.message || 'Account created successfully!', {
+                    duration: 4000,
+                    position: 'top-right',
+                    style: {
+                        background: '#4CAF50',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        padding: '16px',
+                        borderRadius: '8px'
+                    },
+                    iconTheme: {
+                        primary: 'white',
+                        secondary: '#4CAF50'
+                    }
+                });
+                navigate("/candidate_login")
+                
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error(err.response?.data?.message || 'Something went wrong', {
+                duration: 4000,
+                position: 'top-right',
+                style: {
+                    background: '#FF6B6B',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    padding: '16px',
+                    borderRadius: '8px'
+                }
+            });
+        } finally {
+            setLoading(false)
+        }
+
+
 
         setFormData({
-            firstName: '',
-            lastName: '',
+            firstname: '',
+            lastname: '',
             email: '',
-            phoneNumber: "",
-
+            phone: "",
             //II
             location: "",
             password: '',
@@ -143,8 +190,8 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                             </label>
                                             <input
                                                 type="text"
-                                                name="firstName"
-                                                value={formData.firstName}
+                                                name="firstname"
+                                                value={formData.firstname}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
                       focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent 
@@ -160,8 +207,8 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                             </label>
                                             <input
                                                 type="text"
-                                                name="lastName"
-                                                value={formData.lastName}
+                                                name="lastname"
+                                                value={formData.lastname}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
@@ -197,8 +244,8 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                             </label>
                                             <input
                                                 type="tel"
-                                                name="phoneNumber"
-                                                value={formData.phoneNumber}
+                                                name="phone"
+                                                value={formData.phone}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
@@ -318,26 +365,33 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                     Previous
                                 </button>
                             )}
+                          
                             {currentSection === 1 ? (
                                 <button
                                     type="button"
                                     onClick={nextSection}
-                                    className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg
-                hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300
-                transition-colors duration-300"
+                                    className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg 
+        hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
+        transition-colors duration-300"
                                 >
                                     Next
                                     <ArrowRight className="ml-2" size={20} />
                                 </button>
                             ) : (
-                                <button
-                                    type="submit"
-                                    className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg
-                hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300
-                transition-colors duration-300"
-                                >
-                                    Create Account
-                                </button>
+                                loading ? (
+                                    <button className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg 
+        hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
+        transition-colors duration-300"><Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </button>
+                                ) : (
+                                    <button
+                                        type="submit"
+                                        className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg 
+            hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
+            transition-colors duration-300"
+                                    >
+                                        Create Account
+                                    </button>
+                                )
                             )}
                         </div>
                         <div className="text-center mt-4">

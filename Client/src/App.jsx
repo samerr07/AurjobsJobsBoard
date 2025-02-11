@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage'
 import CandidateRegisterPage from './pages/CandidateRegisterPage'
 import CandidateLoginPage from './pages/CandidateLoginPage'
 import ContactPage from './pages/ContactPage'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   
@@ -14,6 +15,7 @@ function App() {
     <>
     
       <BrowserRouter>
+      <Toaster/>
       <Navbar/>
         <Routes>
           <Route path="/" element={<MainPage/>} />
