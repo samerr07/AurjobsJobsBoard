@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const verifyToken = (req, res, next) => {
     // Extract token from cookies
-    const token = req.cookies ? .authToken;
+    const token = req.cookies?.authToken;
 
     if (!token) {
         console.error("No token found in cookies.");
