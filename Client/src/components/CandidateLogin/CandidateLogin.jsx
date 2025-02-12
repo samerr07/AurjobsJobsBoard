@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import {  getCandidateProfile, setAuthentication } from '../../redux/candidateSlice';
 
 
 const CandidateLogin = ({ navigateToRegister }) => {
 
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
+  const navigate = useNavigate();
 
 
   const handleChange = (e) => {
@@ -29,7 +33,7 @@ const CandidateLogin = ({ navigateToRegister }) => {
     // Handle form submission here
     try {
       setLoading(true)
-      const res = await axios.post("http://localhost:3000/candidates/login", formData, {
+      const res = await axios.post("http://localhost:3000/candidates/CandidateLogin", formData, {
         headers: {
           "Content-Type": "application/json"
         },
@@ -52,7 +56,10 @@ const CandidateLogin = ({ navigateToRegister }) => {
             secondary: '#4CAF50'
           }
         });
-        // navigate("/candidate_login")
+        navigate("/")
+       
+        dispatch(getCandidateProfile(res?.data?.candidate))
+        dispatch(setAuthentication(true))
 
       }
     } catch (err) {
@@ -68,6 +75,7 @@ const CandidateLogin = ({ navigateToRegister }) => {
           borderRadius: '8px'
         }
       });
+      dispatch(setAuthentication(false))
     } finally {
       setLoading(false)
     }
