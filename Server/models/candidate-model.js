@@ -51,50 +51,53 @@ export const createCandidate = async(
         return null; // Return null in case of error
     }
 };
-export const findsomething = async() => {
+export const findByCandidateID = async(candidateID) => {
     try {
         const { data, error } = await supabase
             .from("candidates")
             .select("*")
-            .eq("candidate_id", "dbfa0e46-9881-4714-aa40-82d43366f3eb")
-            .single();
+            .eq("candidate_id", candidateID)
+            .single(); // Ensures only one row is returned
 
-        if (error) throw error;
+        if (error) {
+            console.error("Supabase Error:", error.message);
+            return null;
+        }
 
-        console.log("Candidate details:", data);
-        return data; // Return candidate details for further processing
+        console.log("Candidate details fetched:", data);
+        return data;
     } catch (error) {
         console.error("Error fetching candidate:", error.message);
         return null;
     }
 };
 
-export const addsomething = async() => {
-    try {
-        const candidate = await findsomething(); // Get candidate details
+// export const addsomething = async() => {
+//     try {
+//         const candidate = await findsomething(); // Get candidate details
 
-        if (!candidate) {
-            console.error("Candidate not found. Update aborted.");
-            return;
-        }
+//         if (!candidate) {
+//             console.error("Candidate not found. Update aborted.");
+//             return;
+//         }
 
-        const { candidate_id } = candidate; // Extract candidate ID
-        const candidateGender = "Male"; // Replace with actual gender value
+//         const { candidate_id } = candidate; // Extract candidate ID
+//         const candidateGender = "Male"; // Replace with actual gender value
 
-        const { data, error } = await supabase
-            .from("candidates")
-            .update({ candidate_gender: candidateGender })
-            .eq("candidate_id", candidate_id);
+//         const { data, error } = await supabase
+//             .from("candidates")
+//             .update({ candidate_gender: candidateGender })
+//             .eq("candidate_id", candidate_id);
 
-        if (error) throw error;
+//         if (error) throw error;
 
-        console.log("Update successful:", data);
-    } catch (error) {
-        console.error("Error updating candidate gender:", error.message);
-    }
-};
+//         console.log("Update successful:", data);
+//     } catch (error) {
+//         console.error("Error updating candidate gender:", error.message);
+//     }
+// };
 
-// Run the function
-// addsomething();s
+// // Run the function
+// // addsomething();s
 
 console.log("hey im in candidate- model.js file")

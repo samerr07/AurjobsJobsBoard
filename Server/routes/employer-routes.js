@@ -3,9 +3,8 @@ import { SignUpEmployer, loginEmployer } from "../controllers/employer-controlle
 
 const router = Router();
 
-// Employer Signup Route
 router.post("/EmployerSignup", SignUpEmployer); // Handle Employer signup
-router.post("/EmployerLogin", loginEmployer);
+router.post("/EmployerLogin", loginEmployer); // Handle Employer login
 
 console.log("hey im in employer- route.js file")
 export default router;
