@@ -7,7 +7,7 @@ export const verifyToken = (req, res, next) => {
 
     if (!token) {
         console.error("No token found in cookies.");
-        return res.status(401).json({ error: "Unauthorized: No token provided" });
+        return res.status(401).json({ error: "Unauthorized: No token provided", success: false });
     }
 
     try {
@@ -15,11 +15,11 @@ export const verifyToken = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Attach the candidate ID to the request object
-        req.candidateId = decoded.id;
+        req.employerId = decoded.id;
 
         next(); // Pass control to the next middleware or route handler
     } catch (error) {
         console.error("JWT verification failed:", error);
-        return res.status(403).json({ error: "Unauthorized: Invalid or expired token" });
+        return res.status(403).json({ error: "Unauthorized: Invalid or expired token", success: false });
     }
 };
