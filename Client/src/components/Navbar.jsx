@@ -1,17 +1,92 @@
-import React, { useState } from 'react';
-import { Link} from 'react-router-dom';
-import Logo from '../assets/Aurjobs_Logo.jpg'
-
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Logo from '../assets/Aurjobs_Logo.jpg';
+import { User, LogOut, LayoutDashboard } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCandidateProfile, setAuthentication } from '../redux/candidateSlice';
 
 const Navbar = () => {
 
+  const {candidateProfile,isAuthenticated} = useSelector((state) => state.candidate)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const dispatch = useDispatch()
+
+
+
+  
+
+  const handleLogout = () => {
+   
+    dispatch(setAuthentication(false))
+    setIsProfileMenuOpen(false);
+    dispatch(getCandidateProfile(null))
+  };
+
+  const AuthButtons = () => {
+    if (!isAuthenticated) {
+      return (
+        <div className="md:flex space-x-4 gap-4">
+          <Link to="/candidate_register">
+            <button className="bg-transparent border-2 border-indigo-600 rounded-lg px-6 py-2 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+              Sign Up
+            </button>
+          </Link>
+          <Link to={"/company_register"}>
+          <button className="px-6 py-2 cursor-pointer hidden lg:block text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+            Post Job for Free
+          </button>
+          </Link>
+        </div>
+      );
+    }
+
+    return (
+      <div className="relative">
+        <button
+          onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+          className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100"
+        >
+          <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+            <User className="w-5 h-5 text-white" />
+          </div>
+          <span className="hidden md:inline text-gray-700">{candidateProfile?.candidate_first_name}</span>
+        </button>
+
+        {/* Profile Dropdown Menu */}
+        {isProfileMenuOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+            <Link
+              to="/candidate_dashboard"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              <LayoutDashboard className="w-4 h-4 mr-2" />
+              Dashboard
+            </Link>
+            <Link
+              to="/profile"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              <User className="w-4 h-4 mr-2" />
+              Profile
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
 
 
   return (
-
     <>
-
       <nav className="w-full flex items-center justify-between px-4 md:px-8 py-3 fixed top-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100 shadow-sm">
         {/* Mobile Menu + Logo */}
         <div className="flex items-center space-x-4 md:space-x-0">
@@ -52,7 +127,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              to="/"
+              to="/jobs"
               className="px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors"
             >
               Jobs
@@ -60,13 +135,12 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              to="/"
+              to="/company_register"
               className="px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors"
             >
               For Employers
             </Link>
           </li>
-
           <li>
             <Link
               to="/pricing"
@@ -85,18 +159,7 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {/* Sign Up Button */}
-        <div className="md:flex space-x-4 gap-4">
-          <Link to={"/candidate_register"}>
-            <button className="bg-transparent border-2 border-indigo-600 rounded-lg px-6 py-2 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-300">
-              Sign Up
-            </button>
-           
-          </Link>
-          <button className="px-6 py-2 hidden lg:block text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-              Post Job for Free
-            </button>
-        </div>
+        <AuthButtons />
       </nav>
 
       {/* Mobile Navigation */}
@@ -148,7 +211,7 @@ const Navbar = () => {
                 Jobs
               </Link>
               <Link
-                to="/"
+                to="/company_register"
                 className="block px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -168,25 +231,47 @@ const Navbar = () => {
               >
                 Contact
               </Link>
+
+              {/* Additional mobile menu items for logged-in users */}
+              {isAuthenticated && (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="block px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/profile"
+                    className="block px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
           <div className="p-4 border-t border-gray-100">
             <div className="space-y-3">
-              {/* <Link
-              to="/login"
-              className="block w-full px-3 py-2 text-center rounded-lg border border-gray-200 text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Log in
-            </Link> */}
-              <Link
-                to="/signup"
-                className="block w-full px-3 py-2 text-center rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign up
-              </Link>
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="block w-full px-3 py-2 text-center rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-medium"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/signup"
+                  className="block w-full px-3 py-2 text-center rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign up
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -199,8 +284,15 @@ const Navbar = () => {
           onClick={() => setIsMenuOpen(false)}
         />
       )}
-    </>
 
+      {/* Profile Menu Overlay */}
+      {isProfileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setIsProfileMenuOpen(false)}
+        />
+      )}
+    </>
   );
 };
 

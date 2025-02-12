@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
 import CandidateDashboard from './CandidateDashboard';
 import { IoMenu, IoClose } from 'react-icons/io5';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false); // Toggle state for sidebar
-
+ 
   const sectionRefs = {
     profile: useRef(null),
     education: useRef(null),

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast';
-import { User, Info, ArrowRight, ArrowLeft, Mail, Eye, EyeOff, Phone, MapPin, Axe, Loader2 } from 'lucide-react';
+import { User, Info, ArrowRight, ArrowLeft, Mail, Eye, EyeOff, Phone, MapPin, Axe, Loader2, UserPlus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
@@ -60,7 +60,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
         // Handle form submission here
         try {
             setLoading(true)
-            const res = await axios.post("http://localhost:3000/candidates/signup", formData, {
+            const res = await axios.post("http://localhost:3000/candidates/CandidateSignup", formData, {
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -84,7 +84,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                     }
                 });
                 navigate("/candidate_login")
-                
+
             }
         } catch (err) {
             console.log(err);
@@ -144,7 +144,15 @@ const CandidateSignup = ({ navigateToLogin }) => {
 
 
         <div className="min-h-screen font-sans bg-white flex items-center justify-center py-12 px-4 [&::-webkit-scrollbar]:hidden">
+
             <div className="w-[95%] max-w-lg bg-white rounded-lg shadow-lg p-8 overflow-x-hidden max-h-[90vh] scrollbar-hide [&::-webkit-scrollbar]:hidden">
+                <Link
+                    to="/company_register"
+                    className="absolute top-24 right-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 text-sm font-medium"
+                >
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                    For Employers
+                </Link>
                 <div className="space-y-2">
                     <h2 className="text-3xl font-sans font-bold text-black mb-6 text-center">Create a new Account</h2>
                     <p className='text-center'>Join us today!</p>
@@ -365,7 +373,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                     Previous
                                 </button>
                             )}
-                          
+
                             {currentSection === 1 ? (
                                 <button
                                     type="button"
