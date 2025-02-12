@@ -11,7 +11,7 @@ export const SignUpCandidate = async(req, res) => {
         // Check if the candidate already exists
         const candidate = await findByCandidateEmail(email);
         if (candidate) {
-            return res.status(400).json({ error: "Candidate already exists" });
+            return res.status(400).json({ error: "Candidate already exists", success: false });
         }
 
         // Hash the password before storing
@@ -69,6 +69,7 @@ export const loginCandidate = async(req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 
 console.log("hey im in candidate- controller.js file")
