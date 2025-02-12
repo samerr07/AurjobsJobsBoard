@@ -42,8 +42,6 @@ export const SignUpEmployer = async(req, res) => {
     }
 };
 
-
-
 export const loginEmployer = async(req, res) => {
     const { company_email, company_password } = req.body;
 
