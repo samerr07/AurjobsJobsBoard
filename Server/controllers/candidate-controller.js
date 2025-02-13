@@ -50,7 +50,7 @@ class CandidateController {
             }
 
             // Creating a JWT token
-            console.log("-------", candidate.candidate_id);
+            console.log("Candidate ID:", candidate.candidate_id);
             const token = jwt.sign({ candidate_id: candidate.candidate_id },
                 process.env.JWT_SECRET, { expiresIn: "72h" }
             );
@@ -58,7 +58,16 @@ class CandidateController {
             // Setting the token in the cookie
             res.cookie("authToken", token, { httpOnly: true });
 
-            return res.status(200).json({ message: "Login successful", token, candidate, success: true });
+            // Fetch all related candidate data using findByCandidateID
+            const fullCandidateData = await findByCandidateID(candidate.candidate_id);
+
+            return res.status(200).json({
+                message: "Login successful",
+                token,
+                candidate: fullCandidateData, // Returning full candidate details with related data
+                success: true
+            });
+
         } catch (error) {
             console.error("Error during login:", error);
             return res.status(500).json({ error: "Internal Server Error" });
