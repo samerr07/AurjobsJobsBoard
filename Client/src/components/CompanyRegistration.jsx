@@ -5,12 +5,12 @@ import { ArrowRight } from "lucide-react";
 
 const CompanyRegistration = ({ navigateToLogin }) => {
   const [formData, setFormData] = useState({
-    companyName: "",
-    companyEmail: "",
-    password: "",
+    company_name: "",
+    company_email: "",
+    company_password: "",
     confirmPassword: "",
   });
-
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -21,15 +21,15 @@ const CompanyRegistration = ({ navigateToLogin }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.companyName.trim()) {
-      newErrors.companyName = "Company Name is required.";
+    if (!formData.company_name.trim()) {
+      newErrors.company_name = "Company Name is required.";
     }
-    if (!formData.companyEmail.trim()) {
-      newErrors.companyEmail = "Company Email is required.";
+    if (!formData.company_email.trim()) {
+      newErrors.company_email = "Company Email is required.";
     } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.companyEmail)
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.company_email)
     ) {
-      newErrors.companyEmail = "Invalid email address.";
+      newErrors.company_email = "Invalid email address.";
     }
     if (!formData.password.trim()) {
       newErrors.password = "Password is required.";
@@ -43,11 +43,56 @@ const CompanyRegistration = ({ navigateToLogin }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted: ", formData);
-    }
+    // if (validateForm()) {
+    //   console.log("Form submitted: ", formData);
+    // }
+console.log(formData)
+  //   try {
+  //     setLoading(true)
+  //     const res = await axios.post(`${BASEURL}/employers/EmployerSignup`, formData, {
+  //         headers: {
+  //             "Content-Type": "application/json"
+  //         },
+  //         withCredentials: true
+  //     })
+
+  //     if (res?.data?.success) {
+  //         toast.success(res?.data?.message || 'Company Registered successfully!', {
+  //             duration: 4000,
+  //             position: 'top-right',
+  //             style: {
+  //                 background: '#4CAF50',
+  //                 color: 'white',
+  //                 fontWeight: 'bold',
+  //                 padding: '16px',
+  //                 borderRadius: '8px'
+  //             },
+  //             iconTheme: {
+  //                 primary: 'white',
+  //                 secondary: '#4CAF50'
+  //             }
+  //         });
+  //         navigate("/company_login")
+
+  //     }
+  // } catch (err) {
+  //     console.log(err);
+  //     toast.error(err.response?.data?.message || 'Something went wrong', {
+  //         duration: 4000,
+  //         position: 'top-right',
+  //         style: {
+  //             background: '#FF6B6B',
+  //             color: 'white',
+  //             fontWeight: 'bold',
+  //             padding: '16px',
+  //             borderRadius: '8px'
+  //         }
+  //     });
+  // } finally {
+  //     setLoading(false)
+  // }
   };
 
   return (
@@ -82,26 +127,26 @@ const CompanyRegistration = ({ navigateToLogin }) => {
                 <div className="relative mt-4">
                   <input
                     type="text"
-                    id="companyName"
-                    name="companyName"
-                    value={formData.companyName}
+                    id="company_name"
+                    name="company_name"
+                    value={formData.company_name}
                     onChange={handleChange}
-                    className={`block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer ${errors.companyName ? 'border-b-red-500' : 'border-b-black'
-                      } ${formData.companyName ? 'pt-4 pb-0' : ''}`}
+                    className={`block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer ${errors.company_name ? 'border-b-red-500' : 'border-b-black'
+                      } ${formData.company_name ? 'pt-4 pb-0' : ''}`}
                     placeholder=" "
                   />
                   <label
-                    htmlFor="companyName"
-                    className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.companyName
+                    htmlFor="company_name"
+                    className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.company_name
                         ? 'top-0 -translate-y-4 scale-75'
                         : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
                       }`}
                   >
                     Company Name
                   </label>
-                  {errors.companyName && (
+                  {errors.company_name && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.companyName}
+                      {errors.company_name}
                     </p>
                   )}
                 </div>
@@ -110,26 +155,26 @@ const CompanyRegistration = ({ navigateToLogin }) => {
                 <div className="relative mt-4">
                   <input
                     type="email"
-                    id="companyEmail"
-                    name="companyEmail"
-                    value={formData.companyEmail}
+                    id="company_email"
+                    name="company_email"
+                    value={formData.company_email}
                     onChange={handleChange}
-                    className={`block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer ${errors.companyEmail ? 'border-b-red-500' : 'border-b-black'
-                      } ${formData.companyEmail ? 'pt-4 pb-0' : ''}`}
+                    className={`block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer ${errors.company_email ? 'border-b-red-500' : 'border-b-black'
+                      } ${formData.company_email ? 'pt-4 pb-0' : ''}`}
                     placeholder=" "
                   />
                   <label
-                    htmlFor="companyEmail"
-                    className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.companyEmail
+                    htmlFor="company_email"
+                    className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.company_email
                         ? 'top-0 -translate-y-4 scale-75'
                         : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
                       }`}
                   >
                     Company Email
                   </label>
-                  {errors.companyEmail && (
+                  {errors.company_email && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.companyEmail}
+                      {errors.company_email}
                     </p>
                   )}
                 </div>
@@ -139,24 +184,24 @@ const CompanyRegistration = ({ navigateToLogin }) => {
                   <input
                     type="password"
                     id="password"
-                    name="password"
-                    value={formData.password}
+                    name="company_password"
+                    value={formData.company_password}
                     onChange={handleChange}
-                    className={`block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer ${errors.password ? 'border-b-red-500' : 'border-b-black'
-                      } ${formData.password ? 'pt-4 pb-0' : ''}`}
+                    className={`block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer ${errors.company_password ? 'border-b-red-500' : 'border-b-black'
+                      } ${formData.company_password ? 'pt-4 pb-0' : ''}`}
                     placeholder=" "
                   />
                   <label
                     htmlFor="password"
-                    className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.password
+                    className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.company_password
                         ? 'top-0 -translate-y-4 scale-75'
                         : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
                       }`}
                   >
                     Password
                   </label>
-                  {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  {errors.company_password && (
+                    <p className="text-red-500 text-sm mt-1">{errors.company_password}</p>
                   )}
                 </div>
 

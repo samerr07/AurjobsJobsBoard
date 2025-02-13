@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import {  getCandidateProfile, setAuthentication } from '../../redux/candidateSlice';
+import { BASEURL } from '../../utility/config';
 
 
 const CandidateLogin = ({ navigateToRegister }) => {
@@ -33,7 +34,7 @@ const CandidateLogin = ({ navigateToRegister }) => {
     // Handle form submission here
     try {
       setLoading(true)
-      const res = await axios.post("http://localhost:3000/candidates/CandidateLogin", formData, {
+      const res = await axios.post(`${BASEURL}/candidates/CandidateLogin`, formData, {
         headers: {
           "Content-Type": "application/json"
         },
