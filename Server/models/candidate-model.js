@@ -53,24 +53,45 @@ export const createCandidate = async(
 };
 export const findByCandidateID = async(candidateID) => {
     try {
-        const { data, error } = await supabase
-            .from("candidates")
-            .select("*")
-            .eq("candidate_id", candidateID)
-            .single(); // Ensures only one row is returned
+        // Fetch candidate details and related tables in parallel
+        const [
+            candidate,
+            experiences,
+            skills,
+            languages,
+            education,
+            certifications
+        ] = await Promise.all([
+            supabase.from("candidates").select("*").eq("candidate_id", candidateID).single(),
+            supabase.from("candidate_experiences").select("*").eq("candidate_id", candidateID),
+            supabase.from("candidate_skills").select("*").eq("candidate_id", candidateID),
+            supabase.from("candidate_languages").select("*").eq("candidate_id", candidateID),
+            supabase.from("candidate_education").select("*").eq("candidate_id", candidateID),
+            supabase.from("candidate_certifications").select("*").eq("candidate_id", candidateID)
+        ]);
 
-        if (error) {
-            console.error("Supabase Error:", error.message);
+        // Check for errors
+        if (candidate.error) {
+            console.error("Supabase Error (Candidate):", candidate.error.message);
             return null;
         }
 
-        console.log("Candidate details fetched:", data);
-        return data;
+        // Returning structured JSON response
+        return {
+            ...candidate.data,
+            experiences: experiences.data || [],
+            skills: skills.data || [],
+            languages: languages.data || [],
+            education: education.data || [],
+            certifications: certifications.data || []
+        };
+
     } catch (error) {
-        console.error("Error fetching candidate:", error.message);
+        console.error("Error fetching candidate details:", error.message);
         return null;
     }
 };
+
 
 // export const addsomething = async() => {
 //     try {
