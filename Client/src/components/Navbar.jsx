@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import Logo from '../assets/Aurjobs_Logo.jpg';
 import { User, LogOut, LayoutDashboard } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +22,21 @@ const Navbar = () => {
     dispatch(setAuthentication(false))
     setIsProfileMenuOpen(false);
     dispatch(getCandidateProfile(null))
+    toast.success( 'User Logout successfully!', {
+      duration: 4000,
+      position: 'top-right',
+      style: {
+        background: '#4CAF50',
+        color: 'white',
+        fontWeight: 'bold',
+        padding: '16px',
+        borderRadius: '8px'
+      },
+      iconTheme: {
+        primary: 'white',
+        secondary: '#4CAF50'
+      }
+    });
   };
 
   const AuthButtons = () => {

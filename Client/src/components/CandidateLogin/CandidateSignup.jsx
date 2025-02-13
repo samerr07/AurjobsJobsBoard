@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { User, Info, ArrowRight, ArrowLeft, Mail, Eye, EyeOff, Phone, MapPin, Axe, Loader2, UserPlus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import { BASEURL } from '../../utility/config';
 
 const CandidateSignup = ({ navigateToLogin }) => {
 
@@ -60,7 +61,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
         // Handle form submission here
         try {
             setLoading(true)
-            const res = await axios.post("http://localhost:3000/candidates/CandidateSignup", formData, {
+            const res = await axios.post(`${BASEURL}/candidates/CandidateSignup`, formData, {
                 headers: {
                     "Content-Type": "application/json"
                 },
