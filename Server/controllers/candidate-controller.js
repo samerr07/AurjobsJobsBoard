@@ -1,5 +1,5 @@
 import supabase from "../config/supabase-client.js";
-import { createCandidate, findByCandidateEmail, findByCandidateID } from "../models/candidate-model.js";
+import { createCandidate, findByCandidateEmail, findByCandidateID, updateCandidate } from "../models/candidate-model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -93,6 +93,27 @@ class CandidateController {
         } catch (error) {
             console.error("Error fetching candidate profile:", error);
             return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+    static async updateCandidateProfile(req, res) {
+        try {
+            const { id } = req.params;
+            const candidateData = req.body;
+
+            console.log(candidateData, "----------------------------------");
+
+            // Call the updateCandidate function from the model
+            const updatedCandidate = await updateCandidate(id, candidateData);
+
+            if (!updatedCandidate.success) {
+                return res.status(500).json({ success: false, error: updatedCandidate.error });
+            }
+
+            return res.status(200).json({ updatedCandidate, success: true });
+        } catch (error) {
+            console.error("Error updating candidate profile:", error.message);
+            return res.status(500).json({ success: false, error: "Internal Server Error" });
         }
     }
 }

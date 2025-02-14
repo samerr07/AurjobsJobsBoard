@@ -27,10 +27,6 @@ app.use(bodyParser.json()); // Allow JSON requests
 app.use("/candidates", candidateRoutes);
 app.use("/employers", employerRoutes)
 
-
-
-
-
 // Start server
 app.listen(port, () => {
     console.log(`🚀 Server running on port ${port}`);
