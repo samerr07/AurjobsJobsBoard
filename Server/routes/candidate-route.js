@@ -6,8 +6,9 @@ const router = Router();
 
 // Candidate Signup Route
 router.post("/CandidateSignup", CandidateController.signupCandidate); // Handle candidate signup
-router.post("/CandidateLogin", CandidateController.loginCandidate); //handles candidate login
-router.get("/CandidateProfile", verifyToken, CandidateController.getCandidateProfile); // handles candidate profile
+router.post("/CandidateLogin", CandidateController.loginCandidate); // Handles candidate login
+router.get("/CandidateProfile", verifyToken, CandidateController.getCandidateProfile); // Handles candidate profile
+router.put("/CandidateProfile/:id", verifyToken, CandidateController.updateCandidateProfile); // Updates candidate profile and related tables
 
-console.log("hey im in candidate- route.js file")
+console.log("hey im in candidate-route.js file");
 export default router;
