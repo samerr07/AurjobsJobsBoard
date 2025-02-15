@@ -1,28 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Logo from '../assets/Aurjobs_Logo.jpg';
 import { User, LogOut, LayoutDashboard } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCandidateProfile, setAuthentication } from '../redux/candidateSlice';
+import { getEmployerProfile, setEmployerAuthentication } from '../redux/employerSlice';
 
 const Navbar = () => {
 
-  const {candidateProfile,isAuthenticated} = useSelector((state) => state.candidate)
+  const navigate = useNavigate();
+  const { candidateProfile, isAuthenticated } = useSelector((state) => state.candidate)
+  const {isAuthenticated : isEmployerAuthenticated, employerProfile} = useSelector((state)=> state.employer)
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const dispatch = useDispatch()
 
+  //  console.log(candidateProfile)
 
 
-  
 
   const handleLogout = () => {
-   
+
     dispatch(setAuthentication(false))
     setIsProfileMenuOpen(false);
     dispatch(getCandidateProfile(null))
-    toast.success( 'User Logout successfully!', {
+    dispatch(getEmployerProfile(null))
+    dispatch(setEmployerAuthentication(false))
+    toast.success('Logout successfully!', {
       duration: 4000,
       position: 'top-right',
       style: {
@@ -37,10 +43,11 @@ const Navbar = () => {
         secondary: '#4CAF50'
       }
     });
+    navigate("/")
   };
 
   const AuthButtons = () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !isEmployerAuthenticated) {
       return (
         <div className="md:flex space-x-4 gap-4">
           <Link to="/candidate_register">
@@ -49,9 +56,9 @@ const Navbar = () => {
             </button>
           </Link>
           <Link to={"/company_register"}>
-          <button className="px-6 py-2 cursor-pointer hidden lg:block text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-            Post Job for Free
-          </button>
+            <button className="px-6 py-2 cursor-pointer hidden lg:block text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+              Post Job for Free
+            </button>
           </Link>
         </div>
       );
@@ -66,21 +73,28 @@ const Navbar = () => {
           <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
             <User className="w-5 h-5 text-white" />
           </div>
-          <span className="hidden md:inline text-gray-700">{candidateProfile?.candidate_first_name}</span>
+          {
+            isEmployerAuthenticated ? (<span className="hidden md:inline text-gray-700">{employerProfile?.company_display_name}</span>)
+            :(<span className="hidden md:inline text-gray-700">{candidateProfile?.candidate_first_name}</span>)
+          }
+              
+          
+
         </button>
 
         {/* Profile Dropdown Menu */}
         {isProfileMenuOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-            <Link
+            {/* <Link
               to="/candidate_dashboard"
               className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <LayoutDashboard className="w-4 h-4 mr-2" />
               Dashboard
-            </Link>
+            </Link> */}
             <Link
-              to="/profile"
+              // to="/candidate_dashboard"
+              to={isAuthenticated ? "/candidate_dashboard" : "/employer_dashboard"}
               className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <User className="w-4 h-4 mr-2" />

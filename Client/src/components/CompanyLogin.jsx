@@ -1,20 +1,92 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginImage from '../assets/Login.png';
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { BASEURL } from "../utility/config";
+import toast from "react-hot-toast";
+import { getEmployerProfile, setEmployerAuthentication } from "../redux/employerSlice";
 
 function CompanyLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+      company_email: '',
+      company_password: '',
+    });
 
-  async function handleLogin(e) {
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      console.log(e.target.value)
+      console.log(name)
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }))
+    };
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // Handle form submission here
+    console.log(formData)
     try {
-      const requestBody = { email, password };
-      console.log("Login Request: ", requestBody);
-    } catch (error) {
-      console.log("Error during login: ", error);
+      setLoading(true)
+      const res = await axios.post(`${BASEURL}/employers/EmployerLogin`, formData, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true
+      })
+
+      if (res?.data?.success) {
+        toast.success(res?.data?.message || 'User Logged In successfully!', {
+          duration: 4000,
+          position: 'top-right',
+          style: {
+            background: '#4CAF50',
+            color: 'white',
+            fontWeight: 'bold',
+            padding: '16px',
+            borderRadius: '8px'
+          },
+          iconTheme: {
+            primary: 'white',
+            secondary: '#4CAF50'
+          }
+        });
+        navigate("/")
+       
+        dispatch(getEmployerProfile(res?.data?.employer))
+        dispatch(setEmployerAuthentication(true))
+
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response?.data?.message || 'Something went wrong', {
+        duration: 4000,
+        position: 'top-right',
+        style: {
+          background: '#FF6B6B',
+          color: 'white',
+          fontWeight: 'bold',
+          padding: '16px',
+          borderRadius: '8px'
+        }
+      });
+      dispatch(setEmployerAuthentication(false))
+    } finally {
+      setLoading(false)
     }
-  }
+
+
+    // setFormData({
+    //   email: "",
+    //   password: ""
+    // })
+
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-white animate-slide-out">
@@ -22,7 +94,7 @@ function CompanyLogin() {
         
         {/* Left: Form */}
         <div className="w-full md:w-1/2 p-6">
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="text-center">
               <h2 className="text-3xl font-bold text-black mb-2">Login to your account</h2>
               <p className="text-gray-600">Welcome back!</p>
@@ -32,11 +104,12 @@ function CompanyLogin() {
               <div className="relative">
                 <input
                   type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="company_email"
+                  value={formData.company_email}
+                  onChange={handleChange}
                   className="block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer"
                   placeholder=" "
+                  name="company_email"
                 />
                 <label
                   htmlFor="email"
@@ -49,11 +122,12 @@ function CompanyLogin() {
               <div className="relative">
                 <input
                   type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  id="company_password"
+                  value={formData.company_password}
+                  onChange={handleChange}
                   className="block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer"
                   placeholder=" "
+                  name="company_password"
                 />
                 <label
                   htmlFor="password"
