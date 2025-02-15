@@ -34,6 +34,7 @@ const CandidateLogin = ({ navigateToRegister }) => {
     // Handle form submission here
     try {
       setLoading(true)
+      axios.defaults.withCredentials = true;
       const res = await axios.post(`${BASEURL}/candidates/CandidateLogin`, formData, {
         headers: {
           "Content-Type": "application/json"
@@ -58,7 +59,7 @@ const CandidateLogin = ({ navigateToRegister }) => {
           }
         });
         navigate("/")
-       
+        // document.cookie = `authToken=${res.data.token}; path=/; secure; samesite=strict`;
         dispatch(getCandidateProfile(res?.data?.candidate))
         dispatch(setAuthentication(true))
 

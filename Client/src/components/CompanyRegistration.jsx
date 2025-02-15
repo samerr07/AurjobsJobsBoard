@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import RegisterImage from '../assets/CompanyRegisterImage.png'
 import { ArrowRight } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { BASEURL } from "../utility/config";
 
 const CompanyRegistration = ({ navigateToLogin }) => {
+
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     company_name: "",
     company_email: "",
@@ -43,56 +48,56 @@ const CompanyRegistration = ({ navigateToLogin }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // if (validateForm()) {
     //   console.log("Form submitted: ", formData);
     // }
-console.log(formData)
-  //   try {
-  //     setLoading(true)
-  //     const res = await axios.post(`${BASEURL}/employers/EmployerSignup`, formData, {
-  //         headers: {
-  //             "Content-Type": "application/json"
-  //         },
-  //         withCredentials: true
-  //     })
 
-  //     if (res?.data?.success) {
-  //         toast.success(res?.data?.message || 'Company Registered successfully!', {
-  //             duration: 4000,
-  //             position: 'top-right',
-  //             style: {
-  //                 background: '#4CAF50',
-  //                 color: 'white',
-  //                 fontWeight: 'bold',
-  //                 padding: '16px',
-  //                 borderRadius: '8px'
-  //             },
-  //             iconTheme: {
-  //                 primary: 'white',
-  //                 secondary: '#4CAF50'
-  //             }
-  //         });
-  //         navigate("/company_login")
+    try {
+      setLoading(true)
+      const res = await axios.post(`${BASEURL}/employers/EmployerSignup`, formData, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true
+      })
 
-  //     }
-  // } catch (err) {
-  //     console.log(err);
-  //     toast.error(err.response?.data?.message || 'Something went wrong', {
-  //         duration: 4000,
-  //         position: 'top-right',
-  //         style: {
-  //             background: '#FF6B6B',
-  //             color: 'white',
-  //             fontWeight: 'bold',
-  //             padding: '16px',
-  //             borderRadius: '8px'
-  //         }
-  //     });
-  // } finally {
-  //     setLoading(false)
-  // }
+      if (res?.data?.success) {
+        toast.success(res?.data?.message || 'Company Registered successfully!', {
+          duration: 4000,
+          position: 'top-right',
+          style: {
+            background: '#4CAF50',
+            color: 'white',
+            fontWeight: 'bold',
+            padding: '16px',
+            borderRadius: '8px'
+          },
+          iconTheme: {
+            primary: 'white',
+            secondary: '#4CAF50'
+          }
+        });
+        navigate("/company_login")
+
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response?.data?.message || 'Something went wrong', {
+        duration: 4000,
+        position: 'top-right',
+        style: {
+          background: '#FF6B6B',
+          color: 'white',
+          fontWeight: 'bold',
+          padding: '16px',
+          borderRadius: '8px'
+        }
+      });
+    } finally {
+      setLoading(false)
+    }
   };
 
   return (
@@ -110,13 +115,13 @@ console.log(formData)
         {/* Form Section */}
         <div className="w-full lg:w-1/2 flex justify-center items-center">
           <div className="w-full">
-          <Link
-                    to="/company_register"
-                    className="absolute top-24 right-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 text-sm font-medium"
-                >
-                    <ArrowRight className="mr-2 h-4 w-4" />
-                    For Candidate
-                </Link>
+            <Link
+              to="/company_register"
+              className="absolute top-24 right-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 text-sm font-medium"
+            >
+              <ArrowRight className="mr-2 h-4 w-4" />
+              For Candidate
+            </Link>
             <div className="max-w-md mx-auto">
               <h2 className="text-2xl font-bold text-black mb-6 text-center">
                 Registration
@@ -138,8 +143,8 @@ console.log(formData)
                   <label
                     htmlFor="company_name"
                     className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.company_name
-                        ? 'top-0 -translate-y-4 scale-75'
-                        : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
+                      ? 'top-0 -translate-y-4 scale-75'
+                      : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
                       }`}
                   >
                     Company Name
@@ -166,8 +171,8 @@ console.log(formData)
                   <label
                     htmlFor="company_email"
                     className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.company_email
-                        ? 'top-0 -translate-y-4 scale-75'
-                        : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
+                      ? 'top-0 -translate-y-4 scale-75'
+                      : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
                       }`}
                   >
                     Company Email
@@ -194,8 +199,8 @@ console.log(formData)
                   <label
                     htmlFor="password"
                     className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.company_password
-                        ? 'top-0 -translate-y-4 scale-75'
-                        : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
+                      ? 'top-0 -translate-y-4 scale-75'
+                      : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
                       }`}
                   >
                     Password
@@ -220,8 +225,8 @@ console.log(formData)
                   <label
                     htmlFor="confirmPassword"
                     className={`absolute text-md text-black duration-300 transform origin-[0] ${formData.confirmPassword
-                        ? 'top-0 -translate-y-4 scale-75'
-                        : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
+                      ? 'top-0 -translate-y-4 scale-75'
+                      : 'peer-focus:top-0 peer-focus:-translate-y-4 peer-focus:scale-75 top-2 scale-100 translate-y-0'
                       }`}
                   >
                     Confirm Password

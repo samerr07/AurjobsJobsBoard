@@ -10,6 +10,10 @@ import { Toaster } from 'react-hot-toast'  // Keep the import for Toaster
 import CompanyLogin from './components/CompanyLogin'
 import CompanyRegistration from './components/CompanyRegistration'
 import JobsPage from './pages/JobsPage'
+import EmployerDashBoard from './components/Dashboard/EmployerDashBoard'
+import CandidateDashboard from './components/CandidateDashboard/Dashboard'
+// import CandidateDashboard from './components/Dashboard/CandidateDashboard'
+
 
 function App() {
   return (
@@ -22,7 +26,8 @@ function App() {
           <Route path='/candidate_register' element={<CandidateRegisterPage />} />
           <Route path='/candidate_login' element={<CandidateLoginPage />} />
           <Route path='/contact' element={<ContactPage />} />
-          <Route path='/candidate_dashboard' element={<Dashboard />} /> 
+          <Route path='/candidate_dashboard' element={<CandidateDashboard/>} /> 
+          <Route path='/employer_dashboard' element={<EmployerDashBoard />} />  {/* Add this route */}
           <Route path='/company_login' element={<CompanyLogin/>}/>
           <Route path='/company_register' element={<CompanyRegistration/>}/>
           <Route path='/jobs' element={<JobsPage/>}/>
