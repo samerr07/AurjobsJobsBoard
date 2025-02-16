@@ -55,17 +55,19 @@ class CandidateController {
                 process.env.JWT_SECRET, { expiresIn: "72h" }
             );
 
-            // Setting the token in the cookie
-            res.cookie("authToken", token, { httpOnly: true });
+            // Setting the token in the cookiei
+            res.cookie("authToken", token, { httpOnly: true, sameSite: "none", secure: true, path: "/" });
 
             // Fetch all related candidate data using findByCandidateID
             const fullCandidateData = await findByCandidateID(candidate.candidate_id);
+            console.log(fullCandidateData, "----------------------------------------------------------")
 
             return res.status(200).json({
                 message: "Login successful",
                 token,
                 candidate: fullCandidateData, // Returning full candidate details with related data
-                success: true
+                success: true,
+                // samesite:
             });
 
         } catch (error) {
