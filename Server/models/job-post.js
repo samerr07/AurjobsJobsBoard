@@ -1,24 +1,11 @@
 import supabase from "../config/supabase-client.js";
 console.log("in models job post"); // Ensure supabase is properly imported
 
-const getEmployerDetails = async(employerIds) => {
-    if (employerIds.length === 0) return [];
-
-    const { data: employers, error } = await supabase
-        .from("employers")
-        .select("employer_id, company_display_name, company_logo")
-        .in("employer_id", employerIds);
-
-    if (error) throw error;
-    return employers;
-};
-
 export const alljobs = async() => {
     try {
         const { data, error } = await supabase
             .from("jobs")
-            .select("job_title, job_experience_required, salary_range, job_location, employer_id");
-
+            .select("job_title, job_experience_required, salary_range, job_location, employer_id"); // Choose the desired select statement
         if (error) throw error;
 
         const employerIds = data.map(job => job.employer_id).filter(id => id);
@@ -41,35 +28,19 @@ export const alljobs = async() => {
     }
 };
 
+
 export const getjobsdetailsbyid = async(job_id) => {
     try {
-        const { data, error } = await supabase
-            .from("jobs")
-            .select("*, employer_id")
-            .eq("job_id", job_id)
-            .single();
-
+        const { data, error } = await supabase.from("jobs").select("*").eq("job_id", job_id);
         if (error) throw error;
-        if (!data) return null;
 
-        const employers = await getEmployerDetails([data.employer_id]);
-        // console.log(employerIds, "employer id");
-        const employerData = employers.length > 0 ? employers[0] : null;
-
-        const jobWithCompany = {
-            ...data,
-            company_display_name: employerData ? employerData.company_display_name : null,
-            company_logo: employerData ? employerData.company_logo : null
-        };
-
-        console.log("Job details with company info for job_id", job_id, jobWithCompany);
-        return jobWithCompany;
+        console.log("Job details for job_id", job_id, data);
+        return data;
     } catch (error) {
         console.error("Error fetching job details with job_id", job_id, error);
         return null;
     }
 };
-
 export const createJobPost = async(
     job_title,
     job_description,
