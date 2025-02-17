@@ -3,10 +3,7 @@ import supabase from "../config/supabase-client.js";
 
 import crypto from "crypto";
 
-import {
-    getISTTimestamp,
-    isValidUUID
-} from "../config/helper.js";
+
 
 //find a candidate by candidateemail
 export const findByCandidateEmail = async(email) => {
