@@ -25,7 +25,6 @@ export const getJobsbyId = async(req, res) => {
         res.status(500).json({ error: "Internal Server Error", success: false });
     }
 };
-
 export const CreateJobPost = async(req, res) => {
     try {
         const {
@@ -38,8 +37,14 @@ export const CreateJobPost = async(req, res) => {
             job_skills_required,
             industry,
             work_mode,
-
         } = req.body;
+
+        // Get employer_id from the token (set by verifyToken middleware)
+        const employer_id = req.employerId;
+
+        if (!employer_id) {
+            return res.status(403).json({ error: "Unauthorized: Employer ID missing", success: false });
+        }
 
         if (!Array.isArray(job_skills_required)) {
             return res.status(400).json({ error: "job_skills_required must be an array", success: false });
@@ -53,7 +58,9 @@ export const CreateJobPost = async(req, res) => {
             salary_range,
             job_experience_required,
             job_skills_required,
-            industry, work_mode,
+            industry,
+            work_mode,
+            employer_id // Now passing employer_id
         );
 
         res.status(201).json({

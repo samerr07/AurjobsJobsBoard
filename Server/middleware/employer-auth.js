@@ -15,7 +15,9 @@ export const verifyToken = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Attach the candidate ID to the request object
+        console.log(req.employerId);
         req.employerId = decoded.id;
+        console.log(req.employerId);
 
         next(); // Pass control to the next middleware or route handler
     } catch (error) {
