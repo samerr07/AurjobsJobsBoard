@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Briefcase, MapPin, DollarSign, Calendar, Layers, CheckCircle, ChevronRight, ChevronLeft } from "lucide-react";
+import axios from 'axios';
+import { useSelector } from "react-redux";
+import { BASEURL } from "../../../utility/config";  // Import BASEURL
 
-const CreateJobPost = ({ addJob }) => {
+const CreateJobPost = () => {
+    const { employerProfile } = useSelector((state) => state.employer);
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         job_title: "",
@@ -11,40 +15,83 @@ const CreateJobPost = ({ addJob }) => {
         remote: false,
         salary_range: "",
         job_experience_required: "",
-        job_skills_required: "",
+        job_skills_required: [],
         industry: "",
         status: "Open",
         posted_at: new Date().toISOString().split("T")[0],
+        employer_id: employerProfile.employer_id
     });
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === "checkbox" ? checked : value,
-        });
+        if (name === "job_skills_required") {
+            const skillsArray = value.split(',').map(skill => skill.trim()).filter(skill => skill !== '');
+            setFormData(prev => ({
+                ...prev,
+                [name]: skillsArray
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: type === "checkbox" ? checked : value,
+            }));
+            // If 'remote' checkbox is checked, set job_location to 'Remote'
+            if (name === "remote" && checked) {
+                setFormData(prev => ({
+                    ...prev,
+                    job_location: "Remote"
+                }));
+            }
+        }
     };
 
-    const nextStep = () => setStep((prev) => prev + 1);
-    const prevStep = () => setStep((prev) => prev - 1);
+    const nextStep = () => setStep(prev => prev + 1);
+    const prevStep = () => setStep(prev => prev - 1);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        addJob(formData);
-        setFormData({
-            job_title: "",
-            job_description: "",
-            employment_type: "",
-            job_location: "",
-            remote: false,
-            salary_range: "",
-            job_experience_required: "",
-            job_skills_required: "",
-            industry: "",
-            status: "Open",
-            posted_at: new Date().toISOString().split("T")[0],
-        });
-        setStep(1);
+
+        // Prepare the data for submission
+        const submissionData = {
+            ...formData,
+            job_skills_required: Array.isArray(formData.job_skills_required)
+                ? formData.job_skills_required
+                : formData.job_skills_required.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
+        };
+
+        try {
+            const response = await axios.post(
+                `${BASEURL}/jobs_post/create_Job_Post`,  // Use BASEURL here
+                submissionData,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    withCredentials: true
+                }
+            );
+
+            if (response.status === 201) {
+                alert('Job post created successfully!');
+                setFormData({
+                    job_title: "",
+                    job_description: "",
+                    employment_type: "",
+                    job_location: "",
+                    remote: false,
+                    salary_range: "",
+                    job_experience_required: "",
+                    job_skills_required: [],
+                    industry: "",
+                    status: "Open",
+                    posted_at: new Date().toISOString().split("T")[0],
+                });
+                setStep(1);
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert(`Error creating job post: ${error.message}`);
+        }
     };
 
     return (
@@ -79,7 +126,7 @@ const CreateJobPost = ({ addJob }) => {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Employment Type</label>
-                            <select name="employment_type" value={formData.employment_type} onChange={handleChange} className="w-full p-2 border rounded-md">
+                            <select name="employment_type" value={formData.employment_type} onChange={handleChange} className="w-full p-2 border rounded-md" required>
                                 <option value="">Select Type</option>
                                 <option value="Full-time">Full-time</option>
                                 <option value="Part-time">Part-time</option>
@@ -94,15 +141,36 @@ const CreateJobPost = ({ addJob }) => {
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Location</label>
-                            <input type="text" name="job_location" value={formData.job_location} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+                            <input
+                                type="text"
+                                name="job_location"
+                                value={formData.job_location}
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded-md"
+                                required
+                                disabled={formData.remote} // Disable input when remote is checked
+                            />
                         </div>
                         <div className="flex items-center">
-                            <input type="checkbox" name="remote" checked={formData.remote} onChange={handleChange} className="mr-2" />
+                            <input
+                                type="checkbox"
+                                name="remote"
+                                checked={formData.remote}
+                                onChange={handleChange}
+                                className="mr-2"
+                            />
                             <label className="text-sm font-medium text-gray-700">Remote Job</label>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Industry</label>
-                            <input type="text" name="industry" value={formData.industry} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+                            <input
+                                type="text"
+                                name="industry"
+                                value={formData.industry}
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded-md"
+                                required
+                            />
                         </div>
                     </div>
                 )}
@@ -119,8 +187,16 @@ const CreateJobPost = ({ addJob }) => {
                             <input type="text" name="job_experience_required" value={formData.job_experience_required} onChange={handleChange} className="w-full p-2 border rounded-md" required />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Skills Required (comma separated)</label>
-                            <input type="text" name="job_skills_required" value={formData.job_skills_required} onChange={handleChange} className="w-full p-2 border rounded-md" required />
+                            <label className="block text-sm font-medium text-gray-700">Skills Required</label>
+                            <input
+                                type="text"
+                                name="job_skills_required"
+                                value={Array.isArray(formData.job_skills_required) ? formData.job_skills_required.join(', ') : ''}
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded-md"
+                                placeholder="Enter skills separated by commas"
+                                required
+                            />
                         </div>
                     </div>
                 )}

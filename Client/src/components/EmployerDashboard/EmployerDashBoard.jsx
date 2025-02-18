@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Profile from './section/Profile';
-import JobPost from './section/Job_Post';
+import JobPost from './section/JobPost';
 import { UserCircle, BriefcaseIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const EmployerDashBoard = () => {
