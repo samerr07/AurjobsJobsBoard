@@ -4,6 +4,7 @@ import Profile from './Profile';
 import { BarChart, ChevronLeft, ChevronRight, Home, Mail, Search, Settings, UserRoundPen, Users } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid'
 import { BASEURL } from '../../utility/config';
 
 const Dashboard = () => {
@@ -68,6 +69,11 @@ const Dashboard = () => {
     const [errors, setErrors] = useState({});
     const [activeSection, setActiveSection] = useState('personal');
     const [activeSection1, setActiveSection1] = useState('home');
+
+
+    const candidateData1 = {
+        candidate: candidateData
+    }
 
     const sections = [
         { id: 'personal', name: 'Personal Info', icon: '👤' },
@@ -141,13 +147,13 @@ const Dashboard = () => {
             setIsSaving(true);
             try {
                 axios.defaults.withCredentials = true;
-                const res = await axios.put(`${BASEURL}/candidates/CandidateProfile/${candidateProfile?.candidate_id}`,candidateData, {
+                const res = await axios.put(`${BASEURL}/candidates/CandidateProfile/${candidateProfile?.candidate_id}`,candidateData1, {
                     headers: {
                         "Content-Type": "application/json"
                     },
                     withCredentials: true
                 })
-                console.log(candidateData)
+                console.log(candidateData1)
                 console.log("API Called")
                 if (res?.data?.success) {
                     console.log(res?.data?.updatedCandidate)
@@ -221,42 +227,42 @@ const Dashboard = () => {
     const addArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, id: uuidv4() }]
         }));
     };
 
     const addEducationArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, education_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, education_id: uuidv4() }]
         }));
     };
 
     const addLangugeArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, language_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, language_id: uuidv4() }]
         }));
     };
 
     const addSkillArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, skill_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, skill_id: uuidv4() }]
         }));
     };
 
     const addCertificationArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, certification_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, certification_id: uuidv4() }]
         }));
     };
 
     const addExperienceArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, experience_id_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, experience_id_id: uuidv4() }]
         }));
     };
     const scrollToSection = (sectionId) => {
