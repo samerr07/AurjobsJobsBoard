@@ -14,7 +14,7 @@ const app = express();
 const port = process.env.PORT || 3000; // Default to 3000 if not set
 
 const corsOptions = {
-    origin: "https://aurjobsjobsboardbackend.onrender.com",
+    origin: true,
     credentials: true
 }
 
