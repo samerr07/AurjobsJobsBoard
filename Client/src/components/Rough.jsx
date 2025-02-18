@@ -9,25 +9,22 @@ import {
     ChevronDown,
      X
 } from 'lucide-react';
-import JobCard from '../components/JobCard';
+import JobCard from './JobCard';
 import axios from 'axios';
 import { BASEURL } from '../utility/config';
 
-const JobsPage = () => {
 
-   
+const Rough = () => {
     const filterCategories = [
         {
-            title: "Salary Range",
+            title: "Industry",
             options: [
                 { label: "Technology", checked: false },
                 { label: "Design", checked: false },
                 { label: "Science", checked: false },
                 { label: "Business", checked: false },
                 { label: "Finance", checked: false },
-                { label: "Marketing", checked: false },
-                { label: "Customer Service", checked: false },
-                { label: "Human Resource", checked: false }
+                { label: "Marketing", checked: false }
             ]
         },
         {
@@ -38,30 +35,28 @@ const JobsPage = () => {
                 { label: "6-8 years", checked: false },
                 { label: "9+ years", checked: false }
             ]
-        },
+        }
     ];
 
     const sortOptions = [
-        { value: 'lastUpdated', label: 'Most Recent' },
-        { value: 'companyAZ', label: 'Company (A-Z)' },
-        { value: 'companyZA', label: 'Company (Z-A)' },
-        { value: 'salaryHighToLow', label: 'Salary (High to Low)' }
+        { value: 'posted_at', label: 'Most Recent' },
+        { value: 'company_az', label: 'Company (A-Z)' },
+        { value: 'company_za', label: 'Company (Z-A)' },
+        { value: 'salary_high_low', label: 'Salary (High to Low)' }
     ];
 
     // State management
-    const [jobs, setJobs] = useState();
+    const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filters, setFilters] = useState({
         searchTerm: '',
-        jobTitle: 'all',
         workMode: 'all',
-        industryType: 'all',
-        workType: 'all',
+        employmentType: 'all',
         salaryRange: 0,
         categories: [...filterCategories]
     });
-    const [sortBy, setSortBy] = useState('lastUpdated');
+    const [sortBy, setSortBy] = useState('posted_at');
     const [isFilterOpen, setIsFilterOpen] = useState(true);
     const [salaryRange, setSalaryRange] = useState(0);
 
@@ -71,62 +66,48 @@ const JobsPage = () => {
             [filterType]: value
         }));
     };
-    // const parseSalaryString = (salaryString) => {
-    //     // Extract numbers from strings like "$120,000 - $150,000/year"
-    //     const numbers = salaryString.replace(/[^0-9-]/g, '')
-    //         .split('-')
-    //         .map(num => parseInt(num.trim()));
 
-    //     // Return [minSalary, maxSalary]
-    //     return numbers.length >= 2 ? [numbers[0], numbers[1]] : [0, 0];
-    // };
+    const parseSalaryString = (salaryString) => {
+        if (!salaryString) return [0, 0]; // Return default values if salary is undefined or null
+        
+        try {
+            const numbers = salaryString.replace(/[^0-9-]/g, '')
+                .split('-')
+                .map(num => parseInt(num.trim()));
+            return numbers.length >= 2 ? [numbers[0], numbers[1]] : [0, 0];
+        } catch (error) {
+            console.warn('Error parsing salary:', error);
+            return [0, 0];
+        }
+    };
 
-    const fetchAllJobs = async()=>{
-        try{
-            console.log("APi calling initated")
-            const res = await axios.get(`${BASEURL}/jobs_post/jobs`, {
+    const fetchJobs = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/jobs_post/jobs', {
                 headers: {
-                  "Content-Type": "application/json"
+                    "Content-Type": "application/json"
                 },
                 withCredentials: true
-        })
-            console.log("Api called")
-           
-                console.log(res?.data)
-                setJobs(res?.data);
-                
-            
-        }catch(err){
-            console.log(err)
+            });
+            setJobs(response.data);
+            setLoading(false);
+        } catch (err) {
+            // setError(err.message);
+            setLoading(false);
         }
-    }
+    };
 
-    // Load initial jobs
     useEffect(() => {
-        fetchAllJobs()
-        
-        setLoading(false);
+        fetchJobs();
     }, []);
 
-    // Event handlers
     const handleWorkModeChange = (e) => {
         handleFilterChange('workMode', e.target.value);
     };
 
-    const handleWorkTypeChange = (e) => {
-        handleFilterChange('workType', e.target.value);
+    const handleEmploymentTypeChange = (e) => {
+        handleFilterChange('employmentType', e.target.value);
     };
-
-    const handleIndustryTypeChange = (e)=>{
-        handleFilterChange('industryType', e.target.value);
-    }
-
-    const handleSortChange = (e) => {
-        setSortBy(e.target.value);
-    };
-
-
-    
 
     const toggleOption = (categoryIndex, optionIndex) => {
         const newFilters = { ...filters };
@@ -135,7 +116,89 @@ const JobsPage = () => {
         setFilters(newFilters);
     };
 
-    // Helper function to check if a job matches the experience filter
+    const clearAll = () => {
+        setFilters({
+            searchTerm: "",
+            workMode: 'all',
+            employmentType: 'all',
+            salaryRange: 0,
+            categories: filterCategories.map(category => ({
+                ...category,
+                options: category.options.map(option => ({ ...option, checked: false }))
+            }))
+        });
+        setSalaryRange(0);
+    };
+
+    const sortedJobs = useMemo(() => {
+        if (!jobs.length) return [];
+
+        const jobsCopy = [...jobs];
+
+        switch (sortBy) {
+            case 'posted_at':
+                return jobsCopy.sort((a, b) => new Date(b.posted_at) - new Date(a.posted_at));
+            case 'company_az':
+                return jobsCopy.sort((a, b) => a.company_display_name.localeCompare(b.company_display_name));
+            case 'company_za':
+                return jobsCopy.sort((a, b) => b.company_display_name.localeCompare(a.company_display_name));
+            case 'salary_high_low':
+                return jobsCopy.sort((a, b) => {
+                    const [aMin] = parseSalaryString(a.salary_range);
+                    const [bMin] = parseSalaryString(b.salary_range);
+                    return bMin - aMin;
+                });
+            default:
+                return jobsCopy;
+        }
+    }, [jobs, sortBy]);
+
+    // const filteredJobs = useMemo(() => {
+    //     return sortedJobs.filter(job => {
+    //         // Search term filter
+    //         if (filters.searchTerm) {
+    //             const searchTerm = filters.searchTerm.toLowerCase();
+    //             const searchableFields = [
+    //                 job.job_title,
+    //                 job.job_location,
+    //                 job.company_display_name,
+    //                 job.job_description
+    //             ].map(field => field?.toLowerCase());
+
+    //             if (!searchableFields.some(field => field?.includes(searchTerm))) {
+    //                 return false;
+    //             }
+    //         }
+
+    //         // Work mode filter
+    //         if (filters.workMode !== 'all' && 
+    //             job?.work_mode.toLowerCase() !== filters.workMode.toLowerCase()) {
+    //             return false;
+    //         }
+
+    //         // Employment type filter
+    //         if (filters.employmentType !== 'all' && 
+    //             job.employment_type.toLowerCase() !== filters.employmentType.toLowerCase()) {
+    //             return false;
+    //         }
+
+    //         // Salary range filter
+    //         const [minSalary] = parseSalaryString(job.salary_range);
+    //         if (salaryRange > 0 && minSalary < salaryRange) {
+    //             return false;
+    //         }
+
+    //         // Industry filter
+    //         const selectedIndustries = filters.categories[0].options.filter(opt => opt.checked);
+    //         if (selectedIndustries.length > 0 && 
+    //             !selectedIndustries.some(industry => 
+    //                 industry.label.toLowerCase() === job.industry.toLowerCase())) {
+    //             return false;
+    //         }
+
+    //         return true;
+    //     });
+    // }, [sortedJobs, filters, salaryRange]);
     const matchesExperienceFilter = (jobExperience, selectedExperiences) => {
         if (selectedExperiences.length === 0) return true;
 
@@ -149,115 +212,63 @@ const JobsPage = () => {
         });
     };
 
-    // const matchesIndustryFilter = (jobIndustry, selectedIndustries) => {
-    //     if (selectedIndustries.length === 0) return true;
-    //     return selectedIndustries.some(industry =>
-    //         industry.label.toLowerCase() === jobIndustry.toLowerCase() && industry.checked
-    //     );
-    // };
-
-    const clearAll = () => {
-        setFilters({
-            searchTerm:"",
-            workMode: 'all',
-            workType: 'all',
-            industryType: 'all',
-            salaryRange: 0,
-            categories: filterCategories.map(category => ({
-                ...category,
-                options: category.options.map(option => ({ ...option, checked: false }))
-            }))
-        });
-        setSalaryRange(0);
-    };
-
-
-    // Memoized sorting function
-    const sortedJobs = useMemo(() => {
-        if (!jobs?.length) return [];
-
-        const jobsCopy = [...jobs];
-
-        switch (sortBy) {
-            case 'lastUpdated':
-                return jobsCopy.sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate));
-            case 'companyAZ':
-                return jobsCopy.sort((a, b) => a.company_display_name
-                .localeCompare(b.company_display_name
-                ));
-            case 'companyZA':
-                return jobsCopy.sort((a, b) => b.company_display_name
-                .localeCompare(a.company_display_name
-                ));
-            // case 'salaryHighToLow':
-            //     return jobsCopy.sort((a, b) => {
-            //         const [aMin] = parseSalaryString(a.salary_range);
-            //         const [bMin] = parseSalaryString(b.salary_range);
-            //         return bMin - aMin;
-            //     });
-            default:
-                return jobsCopy;
-        }
-    }, [jobs, sortBy]);
-
-
-
-    // Memoized filtering function
     const filteredJobs = useMemo(() => {
         return sortedJobs.filter(job => {
+            // Search term filter
             if (filters.searchTerm) {
                 const searchTerm = filters.searchTerm.toLowerCase();
                 const searchableFields = [
                     job.job_title,
                     job.job_location,
-                    // Add more searchable fields as needed
-                ].map(field => field.toLowerCase());
+                    job.company_display_name,
+                    job.job_description
+                ].filter(Boolean); // Remove null/undefined values
     
-                // Check if any field contains the search term
-                const matchesSearch = searchableFields.some(field => 
-                    field.includes(searchTerm)
-                );
+                const searchableText = searchableFields
+                    .map(field => field.toLowerCase())
+                    .join(' ');
     
-                if (!matchesSearch) {
+                if (!searchableText.includes(searchTerm)) {
                     return false;
                 }
             }
-            // if (filters.jobTitle !== 'all' && !job.jobTitle.toLowerCase().includes(filters.jobTitle.toLowerCase())) {
-            //     return false;
-            // }
-
-            if (filters.workMode !== 'all' && filters.workMode !== 'Work Mode' &&
-                job?.work_mode?.toLowerCase() !== filters.workMode.toLowerCase()) {
-                return false;
+    
+            // Work mode filter
+            if (filters.workMode !== 'all' && job.work_mode) {
+                if (job.work_mode.toLowerCase() !== filters.workMode.toLowerCase()) {
+                    return false;
+                }
             }
-            if (filters.workType !== 'all' && filters.workType !== 'Work Type' &&
-                job?.employment_type.toLowerCase() !== filters.workType.toLowerCase()) {
-                return false;
+    
+            // Employment type filter
+            if (filters.employmentType !== 'all' && job.employment_type) {
+                if (job.employment_type.toLowerCase() !== filters.employmentType.toLowerCase()) {
+                    return false;
+                }
+            }
+    
+            // Salary range filter
+            if (salaryRange > 0 && job.salary_range) {
+                const [minSalary] = parseSalaryString(job.salary_range);
+                if (minSalary < salaryRange) {
+                    return false;
+                }
             }
 
-            if (filters.industryType !== 'all' && filters.industryType !== 'Industry Type' &&
-                job?.industry.toLowerCase() !== filters.industryType.toLowerCase()) {
-                return false;
-            }
-
-            // const [minSalary] = parseSalaryString(job.salary_range);
-            // if (salaryRange > 0 && minSalary < salaryRange) {
-            //     return false;
-            // }
-
-           
-            // Experience filter
             const selectedExperiences = filters.categories[1].options.filter(opt => opt.checked);
-            if (!matchesExperienceFilter(job.job_experience_required, selectedExperiences)) {
+            if (!matchesExperienceFilter(job.experience, selectedExperiences)) {
                 return false;
             }
-
-            // const selectedIndustries = filters.categories[0].options.filter(opt => opt.checked);
-            // if (!matchesIndustryFilter(job.industry, selectedIndustries)) {
-            //     return false;
-            // }
-
-
+    
+            // Industry filter
+            const selectedIndustries = filters.categories[0].options.filter(opt => opt.checked);
+            if (selectedIndustries.length > 0 && job.industry) {
+                if (!selectedIndustries.some(industry => 
+                    industry.label.toLowerCase() === job.industry.toLowerCase())) {
+                    return false;
+                }
+            }
+    
             return true;
         });
     }, [sortedJobs, filters, salaryRange]);
@@ -266,25 +277,22 @@ const JobsPage = () => {
     if (error) return <div>Error: {error}</div>;
 
     return (
-
         <div className="min-h-screen bg-gray-50 py-16">
             {/* Header filters */}
             <div className="bg-gradient-to-br from-indigo-50 to-white shadow-md mb-1 p-4 lg:p-7 border border-indigo-100">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5">
-                        {/* Job Title Filter */}
-                        
-
+                        {/* Search Input */}
                         <div className="group">
                             <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-indigo-100 
-        transition-all duration-300 hover:shadow-md hover:border-indigo-300
-        group-focus-within:ring-2 group-focus-within:ring-indigo-500">
+                                transition-all duration-300 hover:shadow-md hover:border-indigo-300
+                                group-focus-within:ring-2 group-focus-within:ring-indigo-500">
                                 <Search className="w-5 h-5 text-indigo-500 group-hover:text-indigo-600 transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search jobs, skills, or locations..."
                                     className="bg-transparent outline-none w-full text-gray-800 font-medium 
-            placeholder-gray-400 hover:text-indigo-700"
+                                    placeholder-gray-400 hover:text-indigo-700"
                                     value={filters.searchTerm || ''}
                                     onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
                                 />
@@ -319,7 +327,7 @@ const JobsPage = () => {
                             </div>
                         </div>
 
-                        {/* Work Type Filter */}
+                        {/* Employment Type Filter */}
                         <div className="group">
                             <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-indigo-100 
                                 transition-all duration-300 hover:shadow-md hover:border-indigo-300
@@ -328,45 +336,21 @@ const JobsPage = () => {
                                 <select
                                     className="bg-transparent outline-none w-full text-gray-800 font-medium 
                                     placeholder-gray-400 hover:text-purple-700"
-                                    value={filters.workType}
-                                    onChange={handleWorkTypeChange}
+                                    value={filters.employmentType}
+                                    onChange={handleEmploymentTypeChange}
                                 >
-                                    <option value="all">All Work Types</option>
-                                    <option value="full-time">Full time</option>
-                                    <option value="internship">Internship</option>
+                                    <option value="all">All Employment Types</option>
+                                    <option value="full-time">Full-time</option>
+                                    <option value="part-time">Part-time</option>
                                     <option value="contract">Contract</option>
+                                    <option value="internship">Internship</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <div className="group">
-                            <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-indigo-100 
-                                transition-all duration-300 hover:shadow-md hover:border-indigo-300
-                                group-focus-within:ring-2 group-focus-within:ring-indigo-500">
-                                <MapPin className="w-5 h-5 text-green-500 group-hover:text-green-600 transition-colors" />
-                                <select
-                                    className="bg-transparent outline-none w-full text-gray-800 font-medium 
-                                    placeholder-gray-400 hover:text-green-700"
-                                    value={filters.industryType}
-                                    onChange={handleIndustryTypeChange}
-                                >
-                                    <option value="all">All Industry</option>
-                                    <option value="Technology">Technology</option>
-                                    <option value="Design">Design</option>
-                                    <option value="Science">Science</option>
-                                    <option value="Business">Business</option>
-                                    <option value="Finance">Finance</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Customer Service">Customer Service</option>
-                                    <option value="Human Resource">Human Resource</option>
-                                    
-                                </select>
-                            </div>
-                        </div>
-
                     {/* Salary Range Slider */}
-                    {/* <div className="w-full lg:w-72">
+                    <div className="w-full lg:w-72">
                         <div className="flex flex-col gap-3">
                             <div className="flex justify-between text-sm text-gray-700">
                                 <span className="font-semibold">Salary Range</span>
@@ -381,18 +365,10 @@ const JobsPage = () => {
                                 step="10000"
                                 value={salaryRange}
                                 onChange={(e) => setSalaryRange(Number(e.target.value))}
-                                className="w-full h-2.5 bg-indigo-100 rounded-full appearance-none cursor-pointer 
-                                    [&::-webkit-slider-thumb]:appearance-none 
-                                    [&::-webkit-slider-thumb]:w-5 
-                                    [&::-webkit-slider-thumb]:h-5 
-                                    [&::-webkit-slider-thumb]:bg-indigo-600 
-                                    [&::-webkit-slider-thumb]:rounded-full 
-                                    [&::-webkit-slider-thumb]:shadow-xl 
-                                    hover:[&::-webkit-slider-thumb]:bg-indigo-700 
-                                    transition-all duration-300"
+                                className="w-full h-2.5 bg-indigo-100 rounded-full appearance-none cursor-pointer"
                             />
                         </div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
 
@@ -401,7 +377,6 @@ const JobsPage = () => {
                 {/* Sidebar filters */}
                 <div className="w-full lg:w-72">
                     <div className="bg-gradient-to-br from-indigo-50 to-white p-4 lg:p-6 border border-indigo-100 rounded-lg shadow-sm">
-                        {/* Filter Header */}
                         <div
                             className="flex items-center justify-between mb-6 cursor-pointer"
                             onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -410,8 +385,7 @@ const JobsPage = () => {
                                 <Filter className="w-6 h-6 text-indigo-600" />
                                 <h3 className="font-bold text-xl text-gray-800">Job Filters</h3>
                             </div>
-                            <ChevronDown
-                                className={`w-5 h-5 text-gray-500 hover:text-indigo-600 transform transition-transform duration-300 
+                            <ChevronDown className={`w-5 h-5 text-gray-500 hover:text-indigo-600 transform transition-transform duration-300 
                                 ${isFilterOpen ? '' : '-rotate-180'}`}
                             />
                         </div>
@@ -475,7 +449,7 @@ const JobsPage = () => {
                 <div className="flex-1 max-h-screen overflow-y-auto [&::-webkit-scrollbar]:hidden">
                     <div className="flex items-center justify-between mb-6 sticky top-0 bg-gray-50 z-10 p-4">
                         <div className="flex items-center gap-2">
-                            <h2 className="text-xl font-semibold">Recommended Jobs</h2>
+                            <h2 className="text-xl font-semibold">Available Jobs</h2>
                             <span className="bg-gray-200 px-3 py-0.5 rounded-full text-sm">
                                 {filteredJobs.length}
                             </span>
@@ -487,7 +461,7 @@ const JobsPage = () => {
                                 className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium 
                                     hover:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 value={sortBy}
-                                onChange={handleSortChange}
+                                onChange={(e) => setSortBy(e.target.value)}
                             >
                                 {sortOptions.map(option => (
                                     <option key={option.value} value={option.value}>
@@ -500,13 +474,22 @@ const JobsPage = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredJobs.map(job => (
-                            <JobCard key={job.companyName + job.jobTitle} job={job} />
+                            <JobCard 
+                                key={job.job_id} 
+                                job={job} 
+                            />
                         ))}
                     </div>
+
+                    {filteredJobs.length === 0 && (
+                        <div className="text-center py-12">
+                            <p className="text-gray-500 text-lg">No jobs found matching your criteria</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
     );
 };
 
-export default JobsPage;
+export default Rough;
