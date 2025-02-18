@@ -13,7 +13,7 @@ import JobDetails from './components/EmployerDashboard/section/JobDetails'
 import JobDetailsPage from './components/JobDetailsPage'
 import CandidateDashboard from './components/CandidateDashboard/Dashboard'
 import JobsPage from './pages/JobsPage'
-import Rough from './components/rough'
+// import Rough from './components/rough'
 // import CandidateDashboard from './components/Dashboard/CandidateDashboard'
 
 
