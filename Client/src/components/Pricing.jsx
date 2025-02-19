@@ -1,89 +1,414 @@
-import Card from "../components/Cards/Card"; 
-import CardContent from "../components/Cards/CardContent";
-import { Button } from "../components/Cards/Button";   
-import { CheckCircle } from "lucide-react";
+import React, { useState } from 'react';
 
-const PricingPlan = () => {
-  const plans = [
-    {
-      name: "Basic",
-      price: "$9",
-      duration: "/ month",
-      features: ["10GB Storage", "Basic Analytics", "Email Support"],
-    },
-    {
-      name: "Pro",
-      price: "$29",
-      duration: "/ month",
-      features: ["100GB Storage", "Advanced Analytics", "24/7 Support"],
-      highlight: true,
-    },
-    {
-      name: "Enterprise",
-      price: "$99",
-      duration: "/ month",
-      features: ["1TB Storage", "Custom Analytics", "Dedicated Support"],
-    },
-  ];
+const Pricing = () => {
+    // Prices and features
+    const payAsYouGoPrice = '₹399';
+    const bundlePlanPrice = '₹7,480';
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-12">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">
-          Choose Your Plan
-        </h2>
-        <p className="text-gray-600">
-          Simple and transparent pricing. Upgrade or downgrade at any time.
-        </p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full px-4">
-        {plans.map((plan, index) => (
-          <Card
-            key={index}
-            className={`rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ${
-              plan.highlight ? "bg-indigo-600 text-white" : "bg-white text-gray-800"
-            }`}
-          >
-            <CardContent className="p-8 flex flex-col h-full">
-              <div className="mb-4">
-                <h3 className="text-2xl font-semibold mb-2">{plan.name}</h3>
-                <div className="flex items-center justify-center">
-                  <p className="text-4xl font-extrabold">
-                    {plan.price}
-                  </p>
-                  <span className="text-lg text-gray-500">
-                    {plan.duration}
-                  </span>
+    const [activeTab, setActiveTab] = useState('jobPosting');
+
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
+
+    return (
+        <div className="bg-white  py-36">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center ">
+                    <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        Aurjobs Pricing Plans – Hire Smarter, Faster!
+                    </h2>
+                    <p className="mt-2 text-md text-indigo-600">
+                       Start Hiring Now
+                    </p>
                 </div>
-              </div>
 
-              <ul className="space-y-3 flex-grow">
-                {plan.features.map((feature, i) => (
-                  <li
-                    key={i}
-                    className="flex items-center space-x-3 text-gray-700"
-                  >
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                {/* Tabs */}
+                <div className="mt-8 flex justify-center">
+                    <nav className="space-x-4">
+                        <a
+                            href="#"
+                            className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'jobPosting'
+                                ? 'bg-indigo-100 text-indigo-700'
+                                : 'text-gray-500 hover:text-gray-900'
+                                }`}
+                            onClick={() => handleTabClick('jobPosting')}
+                        >
+                            Job posting
+                        </a>
+                        <a
+                            href="#"
+                            className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'database'
+                                ? 'bg-indigo-100 text-indigo-700'
+                                : 'text-gray-500 hover:text-gray-900'
+                                }`}
+                            onClick={() => handleTabClick('database')}
+                        >
+                            Database
+                        </a>
+                    </nav>
+                </div>
 
-              <Button
-                className={`w-full mt-6 py-3 rounded-md font-semibold ${
-                  plan.highlight
-                    ? "bg-white text-indigo-600 hover:bg-indigo-50"
-                    : "bg-indigo-600 text-white hover:bg-indigo-700"
-                }`}
-              >
-                Choose Plan
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                {/* Pricing Plans */}
+                <div className="mt-12 grid gap-5 max-w-lg mx-auto lg:grid-cols-3 lg:max-w-none">
+                    {/* Plan 1: Job Posting - Pay-as-You-Go */}
+                    {activeTab === 'jobPosting' && (
+                        <div className="flex flex-col rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300" style={{ height: '500px', width: '360px' }}>
+                            <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6 flex-grow">
+                                <div>
+                                    <h3 className=" leading-6 text-2xl font-bold  text-gray-900 text-center">
+                                        Pay-as-You-Go (Single Credit)
+                                    </h3>
+                                    <p className="mt-2 text-sm text-gray-500 text-center">
+                                        Perfect for occasional hiring - No commitment required!
+                                    </p>
+                                </div>
+                                <div className="mt-6">
+                                    <ul className="space-y-4">
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ 1 Job Post = 1 Credit
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Job Live for: 30 Days
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Credit Validity: 6 Months
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ AI-powered candidate matching included (🚀 Free for a limited time!)
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ⚡ Limited-time Offer – Get started now!
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="px-6 py-4 bg-white sm:p-10 flex items-center justify-between" style={{ height: '120px' }}>
+                                <div className="text-3xl font-extrabold text-gray-900">
+                                    ₹399
+                                </div>
+                                <div className="mt-2">
+                                    <a
+                                        href="#"
+                                        className="block w-full text-center rounded-md py-3 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
+                                    >
+                                        Buy Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                     {/* Plan 2: Job Posting - Bundle Plan */}
+                     {activeTab === 'jobPosting' && (
+                        <div className="flex flex-col rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300 relative" style={{ height: '500px', width: '360px' }}>
+                            {/* Most Popular Badge */}
+                            <div className="absolute top-0 right-0 bg-indigo-600 text-white py-1 px-3 rounded-bl-lg text-xs font-medium">
+                                Most Popular
+                            </div>
+                            <div className="px-6 py-8 sm:p-10 sm:pb-6 flex-grow">
+                                <div>
+                                    <h3 className=" leading-6 text-2xl font-bold text-gray-900 text-center">
+                                        Bundle Plan (Best Value)
+                                    </h3>
+                                    <p className="mt-2 text-sm text-indigo-700 text-center">
+                                        🚀 Most Popular Plan – Save ₹1,500!
+                                    </p>
+                                </div>
+                                <div className="mt-6">
+                                    <ul className="space-y-4">
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ 20 Job Posts (20 Credits)
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Job Live for: 30 Days Each
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Credit Validity: 6 Months
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Free Featured Listing for 2 Jobs (📌 Get 5X more visibility!)
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Priority Candidate Matching (🚀 AI-suggested top profiles)
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                            🔥 Limited-time Deal – Boost Your Hiring Now!
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="px-6 py-4 bg-white sm:p-10 flex items-center justify-between" style={{ height: '100px' }}>
+                                <div className="text-3xl font-extrabold text-gray-900">
+                                    ₹7,480
+                                </div>
+                                <div className="mt-2">
+                                    <a
+                                        href="#"
+                                        className="block w-full text-center rounded-md py-3 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
+                                    >
+                                        Buy Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {activeTab === 'jobPosting' && (
+                        <div className="flex flex-col rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300" style={{ height: '700px', width: '360px' }}>
+                            <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6 flex-grow">
+                                <div>
+                                    <h3 className=" leading-6 text-2xl font-bold text-gray-900 text-center">
+                                        Enterprise Plan - Custom Pricing
+                                    </h3>
+                                    <p className="mt-2 text-sm text-gray-500 text-center">
+                                    🚀 Access Top Talent Instantly!
+                                    </p>
+                                </div>
+                                <div className="mt-6">
+                                    <ul className="space-y-4">
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                            Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                            ✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅                                             44+ Advanced Filters – Find the perfect match with precise filtering.
+
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ Direct Contact Details – Connect with candidates instantly.
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                                ✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                            📞 Get Pricing & Unlock Access
+                                            </p>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <div className="flex-shrink-0">
+                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">
+                                            💡 Talk to our team & get started today!
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="px-6 py-5 bg-white sm:p-10 flex items-center justify-between" style={{ height: '100px' }}>
+                                <div className="text-3xl font-extrabold text-gray-900">
+                                    Custom
+                                </div>
+                                <div className="mt-2">
+                                    <a
+                                        href="#"
+                                        className="block w-full text-center rounded-md py-2 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
+                                    >
+                                        Contact Us
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {activeTab === 'database' && (
+    <div className="flex flex-col justify-center items-center rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300" style={{ height: '700px', width: '360px' }}>
+        <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6 flex-grow">
+            {/* Centered Heading */}
+            <div className="flex flex-col items-center justify-center">
+                <h3 className="text-2xl font-bold leading-6 text-gray-900 text-center">
+                    Enterprise Plan - Custom Pricing
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 text-center">
+                    🚀 Access Top Talent Instantly!
+                </p>
+            </div>
+
+            <div className="mt-6">
+                <ul className="space-y-4">
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.
+                        </p>
+                    </li>
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            ✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.
+                        </p>
+                    </li>
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            ✅ 44+ Advanced Filters – Find the perfect match with precise filtering.
+
+                        </p>
+                    </li>
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            ✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.
+                        </p>
+                    </li>
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            ✅ Direct Contact Details – Connect with candidates instantly.
+                        </p>
+                    </li>
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            ✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.
+                        </p>
+                    </li>
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            📞 Get Pricing & Unlock Access
+                        </p>
+                    </li>
+                    <li className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <p className="ml-3 text-sm text-gray-700">
+                            💡 Talk to our team & get started today!
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {/* Centered Contact Us Button */}
+        <div className="px-6 py-4 bg-white sm:p-10 flex items-center justify-center" style={{ height: '120px' }}>
+    <div className="mt-2">
+        <a
+            href="#"
+            className="block w-full rounded-md mt-[-30] py-3 px-16 bg-orange-500 hover:bg-green-700 text-white font-medium"
+        >
+            Contact Us
+        </a>
     </div>
-  );
+</div>
+    </div>
+)}
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default Pricing;
