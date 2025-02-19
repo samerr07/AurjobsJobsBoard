@@ -1,5 +1,5 @@
 import supabase from "../config/supabase-client.js";
-import { createCandidate, findByCandidateEmail, findByCandidateID, updateCandidate } from "../models/candidate-model.js";
+import { createCandidate, findByCandidateEmail, findByCandidateID,  updateCandidate} from "../models/candidate-model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -122,6 +122,8 @@ class CandidateController {
             return res.status(500).json({ success: false, error: "Internal Server Error" });
         }
     }
+
+  
 }
 
 
