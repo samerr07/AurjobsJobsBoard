@@ -11,6 +11,7 @@ import CompanyLogin from './components/CompanyLogin'
 import CompanyRegistration from './components/CompanyRegistration'
 import JobDetails from './components/EmployerDashboard/section/JobDetails'
 import CandidateDashboard from './components/CandidateDashboard/Dashboard'
+// import Pricing from './components/Pricing'
 // import CandidateDashboard from './components/Dashboard/CandidateDashboard'
 
 
@@ -31,6 +32,8 @@ function App() {
           <Route path='/company_register' element={<CompanyRegistration/>}/>
           {/* <Route path='/jobs' element={<JobsPage/>}/> */}
           <Route path="/employer_dashboard/jobs/:jobId" element={<JobDetails />} />
+          {/* <Route path="/Pricing" element={<Pricing />} /> */}
+
         </Routes>
       </BrowserRouter>
     </>

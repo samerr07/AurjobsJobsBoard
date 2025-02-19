@@ -91,29 +91,37 @@ const CandidateLogin = ({ navigateToRegister }) => {
   };
 
   return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-white">
+      <div className="flex flex-col md:flex-row w-[85%] max-w-4xl justify-center">
+        {/* This empty div creates space to shift content right */}
 
-    <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4 [&::-webkit-scrollbar]:hidden">
-      <div className="w-[85%] max-w-lg bg-white rounded-lg shadow-lg p-8 overflow-x-hidden max-h-[90vh] scrollbar-hide">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-black mb-2">Login to your account</h2>
-            <p className="text-gray-600">Welcome back!</p>
-          </div>
-          <hr />
-          <div className="space-y-4">
+
+        {/* for the left side */}
+        {/* <div className="w-3/5 bg-orange-100 flex items-center justify-center p-12">
+        <img src="/src/assets/5038a172634305.5cf7cacf5a32f.jpg" alt="Login illustration" 
+        className="w-full max-w-lg max-h-lg shadow-xl rounded-lg transition-all duration-300 hover:scale-102" 
+      />
+    </div> */}
+
+        {/* right */}
+        <div className="w-full md:w-2/3 p-8">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">Login to your account</h2>
+          <p className="text-gray-600 text-center mb-6">Welcome back!</p>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative">
               <input
                 type="email"
                 id="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer"
+                className="block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 peer"
                 placeholder=" "
-                name='email'
+                name="email"
+                required
               />
               <label
                 htmlFor="email"
-                className="absolute text-md text-black duration-300 transform top-0 -translate-y-4 scale-75 z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className="absolute top-2 left-3  text-md text-gray-600 transition-all duration-300 ${formData.email ? ' text-orange-500' : 'top-1/2 -translate-y-1/2 peer-placeholder-shown:text-gray-400 peer-focus:top-3 peer-focus:text-orange-500'}"
               >
                 Email address
               </label>
@@ -125,56 +133,51 @@ const CandidateLogin = ({ navigateToRegister }) => {
                 id="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="block w-full p-2 border-black border-b-[1.5px] focus:outline-none peer"
+                className="block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 peer"
                 placeholder=" "
-                name='password'
+                name="password"
+                required
               />
               <label
                 htmlFor="password"
-                className="absolute text-md text-black duration-300 transform top-0 -translate-y-4 scale-75 z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className="absolute top-2 left-3  text-md text-gray-600 transition-all duration-300 ${formData.password ? ' text-orange-500' : 'top-1/2 -translate-y-1/2 peer-placeholder-shown:text-gray-400 peer-focus:top-3 peer-focus:text-orange-500'}"
               >
                 Password
               </label>
             </div>
-          </div>
 
-          {
-            loading ? (
+            {loading ? (
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+                className="w-full bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 transition flex items-center justify-center"
+                disabled
               >
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />Please Wait
+                <Loader2 className='mr-2 h-5 w-5 animate-spin' />Please Wait
               </button>
-
             ) : (
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+                className="w-full bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 transition"
               >
-                LOG IN
+                Sign in
               </button>
-            )
-          }
-
-
-          <div className="text-center space-y-3">
+            )}
+          </form>
+          <div className="text-center mt-4">
             <p className="text-gray-600">
-              Don't have an account?{" "}
+              Don't have an account?
               <Link to="/candidate_register">
-                <span
-                  onClick={navigateToRegister}
-                  className="text-blue-500 hover:text-blue-600 font-medium cursor-pointer"
-                >
+                <span className="text-orange-500 hover:text-orange-700 font-medium cursor-pointer">
                   Create an account
                 </span>
               </Link>
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
+
 }
 
 export default CandidateLogin;

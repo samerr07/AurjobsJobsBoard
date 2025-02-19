@@ -89,11 +89,11 @@ function CompanyLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-white animate-slide-out">
-      <div className="flex flex-col md:flex-row items-center justify-center bg-white rounded-lg shadow-lg p-8 md:p-12 w-full max-w-4xl">
-        
+    <div className="min-h-screen w-full flex items-center justify-center bg-white">
+      <div className="flex flex-col md:flex-row w-full justify-center shadow-lg rounded-lg overflow-hidden">
+  
         {/* Left: Form */}
-        <div className="w-full md:w-1/2 p-6">
+        <div className="w-full md:w-1/2 flex justify-center items-center p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="text-center">
               <h2 className="text-3xl font-bold text-black mb-2">Login to your account</h2>
@@ -118,7 +118,7 @@ function CompanyLogin() {
                   Email address
                 </label>
               </div>
-
+  
               <div className="relative">
                 <input
                   type="password"
@@ -137,19 +137,19 @@ function CompanyLogin() {
                 </label>
               </div>
             </div>
-
+  
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+              className="w-full bg-orange-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 transition duration-200"
             >
               LOG IN
             </button>
-
+  
             <div className="text-center space-y-3">
               <p className="text-gray-600">
                 Don't have an account?{" "}
                 <Link to={"/company_register"}>
-                  <span className="text-blue-500 hover:text-blue-600 font-medium cursor-pointer">
+                  <span className="text-orange-500 hover:text-blue-600 font-medium cursor-pointer">
                     Create an account
                   </span>
                 </Link>
@@ -157,14 +157,21 @@ function CompanyLogin() {
             </div>
           </form>
         </div>
-
+  
         {/* Right: Image */}
-        <div className="hidden md:flex w-full md:w-1/2 justify-center">
-          <img src={LoginImage} className="max-w-full h-auto" alt="Login" />
+        <div className=" md:block md:w-1/2 p-6 flex items-center justify-center bg-orange-500">
+          <img
+            src={LoginImage}
+            alt="Login"
+            className="w-full h-full object-cover rounded-lg"
+          />
         </div>
       </div>
     </div>
   );
+  
+  
+
 }
 
 export default CompanyLogin;
