@@ -12,8 +12,10 @@ import CompanyRegistration from './components/CompanyRegistration'
 import JobDetails from './components/EmployerDashboard/section/JobDetails'
 import JobDetailsPage from './components/JobDetailsPage'
 import CandidateDashboard from './components/CandidateDashboard/Dashboard'
+
+import Pricing from './components/Pricing'
+
 import JobsPage from './pages/JobsPage'
-// import Rough from './components/rough'
 // import CandidateDashboard from './components/Dashboard/CandidateDashboard'
 
 
@@ -37,6 +39,8 @@ function App() {
           <Route path='/jobs' element={<JobsPage/>}/>
           <Route path='/jobs/:jobId' element={<JobDetailsPage/>}/>
           <Route path="/employer_dashboard/jobs/:jobId" element={<JobDetails />} />
+          <Route path="/Pricing" element={<Pricing />} /> 
+
         </Routes>
       </BrowserRouter>
     </>

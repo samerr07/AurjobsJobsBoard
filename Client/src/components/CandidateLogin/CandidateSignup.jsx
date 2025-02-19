@@ -144,14 +144,15 @@ const CandidateSignup = ({ navigateToLogin }) => {
 
 
 
-        <div className="min-h-screen font-sans bg-white flex items-center justify-center py-12 px-4 [&::-webkit-scrollbar]:hidden">
+        <div className="min-h-screen w-full flex items-center justify-center bg-white py-12 px-4 [&::-webkit-scrollbar]:hidden">
 
-            <div className="w-[95%] max-w-lg bg-white rounded-lg shadow-lg p-8 overflow-x-hidden max-h-[90vh] scrollbar-hide [&::-webkit-scrollbar]:hidden">
+            <div className="flex flex-col md:flex-row w-[85%] max-w-4xl justify-center">
+            {/* employer button  */}
                 <Link
                     to="/company_register"
-                    className="absolute top-24 right-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 text-sm font-medium"
+                    className="absolute top-24 right-4 inline-flex items-center px-4 py-2  text-orange-500 rounded-lg hover:text-blue-500 duration-300 text-medium font-medium "
                 >
-                    <ArrowRight className="mr-2 h-4 w-4" />
+                    <ArrowRight className="mr-2 h-4 w-4 md:relative" />
                     For Employers
                 </Link>
                 <div className="space-y-2">
@@ -166,18 +167,18 @@ const CandidateSignup = ({ navigateToLogin }) => {
 
                             <div className="flex items-center mt-2">
                                 <div className="flex items-center">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentSection >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentSection >= 1 ? 'bg-orange-500 text-white' : 'bg-gray-200'
                                         }`}>
                                         <User size={18} />
                                     </div>
                                     <span className="ml-2 text-sm font-medium">Personal Details</span>
                                 </div>
                                 <div className="flex-1 h-0.5 mx-4 bg-gray-200">
-                                    <div className={`h-full bg-blue-600 transition-all duration-300 ${currentSection >= 2 ? 'w-full' : 'w-0'
+                                    <div className={`h-full bg-orange-500 transition-all duration-300 ${currentSection >= 2 ? 'w-full' : 'w-0'
                                         }`}></div>
                                 </div>
                                 <div className="flex items-center">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentSection >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentSection >= 2 ? 'bg-orange-500 text-white' : 'bg-gray-200'
                                         }`}>
                                         <Info className=" " size={18} />
                                     </div>
@@ -194,7 +195,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                                                <User className="mr-2 text-blue-500" size={18} />
+                                                <User className="mr-2 text-orange-500" size={18} />
                                                 First Name <span className="text-red-500 ml-1">*</span>
                                             </label>
                                             <input
@@ -202,16 +203,14 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 name="firstname"
                                                 value={formData.firstname}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
-                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent 
-                      transition-all duration-300 hover:border-blue-400"
+                                                className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 transition-all duration-300 hover:border-orange-500"
                                                 placeholder="Enter first name"
                                                 required
                                             />
                                         </div>
                                         <div>
                                             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                                                <User className="mr-2 text-blue-500" size={18} />
+                                                <User className="mr-2 text-orange-500" size={18} />
                                                 Last Name <span className="text-red-500 ml-1">*</span>
                                             </label>
                                             <input
@@ -219,9 +218,9 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 name="lastname"
                                                 value={formData.lastname}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-                      transition-all duration-300 hover:border-blue-400"
+                                                className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 
+                      focus:border-transparent 
+                      transition-all duration-300 hover:border-orange-500"
                                                 placeholder="Enter last name"
                                                 required
                                             />
@@ -231,7 +230,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                                                <Mail className="mr-2 text-blue-500" size={18} />
+                                                <Mail className="mr-2 text-orange-500" size={18} />
                                                 Email <span className="text-red-500 ml-1">*</span>
                                             </label>
                                             <input
@@ -239,16 +238,16 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-                      transition-all duration-300 hover:border-blue-400"
+                                                className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                      
+                      transition-all duration-300 "
                                                 placeholder="Enter email address"
                                                 required
                                             />
                                         </div>
                                         <div>
                                             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                                                <Phone className="mr-2 text-blue-500" size={18} />
+                                                <Phone className="mr-2 text-orange-500" size={18} />
                                                 Phone Number
                                             </label>
                                             <input
@@ -256,9 +255,9 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 name="phone"
                                                 value={formData.phone}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-                      transition-all duration-300 hover:border-blue-400"
+                                                className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                      
+                      transition-all duration-300 "
                                                 placeholder="Enter phone number"
                                             />
                                         </div>
@@ -275,7 +274,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                                                <MapPin className="mr-2 text-blue-500" size={18} />
+                                                <MapPin className="mr-2 text-orange-500" size={18} />
                                                 Location
                                             </label>
                                             <input
@@ -283,9 +282,9 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 name="location"
                                                 value={formData.location}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-                      transition-all duration-300 hover:border-blue-400"
+                                                className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                      
+                      transition-all duration-300 "
                                                 placeholder="Enter your location"
                                             />
                                         </div>
@@ -298,9 +297,9 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 name="resumeUrl"
                                                 value={formData.resumeUrl}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg text-gray-900 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-                      transition-all duration-300 hover:border-blue-400"
+                                                className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                      
+                      transition-all duration-300"
                                                 placeholder="Enter resume URL"
                                             />
                                         </div>
@@ -316,8 +315,8 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                     name="password"
                                                     value={formData.password}
                                                     onChange={handleChange}
-                                                    className="w-full px-3 py-2.5 pr-10 border-2 border-gray-300 rounded-lg text-gray-900 
-                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-3 py-2.5 pr-10 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                       "
                                                     placeholder="Create password"
                                                     required
                                                 />
@@ -341,8 +340,8 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                     name="confirmPassword"
                                                     value={formData.confirmPassword}
                                                     onChange={handleChange}
-                                                    className="w-full px-3 py-2.5 pr-10 border-2 border-gray-300 rounded-lg text-gray-900 
-                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-3 py-2.5 pr-10 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                        "
                                                     placeholder="Confirm password"
                                                     required
                                                 />
@@ -362,16 +361,20 @@ const CandidateSignup = ({ navigateToLogin }) => {
                         </div>
 
                         <div className="flex justify-between mt-8">
+                        
                             {currentSection === 2 && (
                                 <button
+                                
                                     type="button"
+                                    
                                     onClick={previousSection}
-                                    className="flex items-center px-6 py-2.5 text-blue-600 font-medium rounded-lg
-                hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-blue-300
-                transition-colors duration-300"
+                                    
+                                    className="flex items-center px-6 py-2.5 bg-orange-500 font-medium rounded-lg
+                                text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
                                 >
-                                    <ArrowLeft className="mr-2" size={20} />
+                                {/* <ArrowLeft className="ml-2" size={20} /> */}
                                     Previous
+                                   
                                 </button>
                             )}
 
@@ -379,7 +382,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                 <button
                                     type="button"
                                     onClick={nextSection}
-                                    className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg 
+                                    className="flex items-center ml-auto px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg 
         hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
         transition-colors duration-300"
                                 >
@@ -388,18 +391,18 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                 </button>
                             ) : (
                                 loading ? (
-                                    <button className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg 
+                                    <button className="flex items-center ml-auto px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg 
         hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
         transition-colors duration-300"><Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </button>
                                 ) : (
                                     <button
                                         type="submit"
-                                        className="flex items-center ml-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg 
-            hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
-            transition-colors duration-300"
+                                        className="flex items-center px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg text-sm
+                                    hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors"
                                     >
                                         Create Account
                                     </button>
+
                                 )
                             )}
                         </div>
@@ -409,7 +412,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                 <Link
                                     to="/candidate_login"
                                     onClick={navigateToLogin}
-                                    className="text-blue-500 font-semibold hover:text-blue-600 transition-colors"
+                                    className="text-orange-500 font-semibold hover:text-orange-500 transition-colors"
                                 >
                                     Login
                                 </Link>
