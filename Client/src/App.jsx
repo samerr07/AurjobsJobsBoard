@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes,  useLocation } from "react-router-dom"
 import Navbar from './components/Navbar'
 import MainPage from './pages/MainPage'
 import CandidateRegisterPage from './pages/CandidateRegisterPage'
@@ -18,6 +18,8 @@ import JobsPage from './pages/JobsPage'
 
 
 function App() {
+
+  
   return (
     <>
       <BrowserRouter>

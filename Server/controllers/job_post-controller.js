@@ -1,4 +1,5 @@
-import { alljobs, createJobPost, getjobsdetailsbyid ,employer_Jobs} from "../models/job-post.js";
+import supabase from "../config/supabase-client.js";
+import { alljobs, createJobPost, getjobsdetailsbyid ,employer_Jobs, createJobApplication, getApplicationsByCandidateId} from "../models/job-post.js";
 
 console.log("in controllers job post");
 export const employer_jobs = async (req, res) => {
@@ -84,3 +85,82 @@ export const CreateJobPost = async(req, res) => {
         res.status(500).json({ error: "Internal Server Error", success: false });
     }
 };
+
+//apply for job
+
+export const applyForJob = async (req, res) => {
+    try {
+      const { job_id ,candidate_id} = req.body;
+      
+  
+      if (!candidate_id) {
+        return res.status(403).json({
+          error: "Unauthorized: Candidate ID missing",
+          success: false
+        });
+      }
+  
+      // Check if job exists
+      const jobExists = await getjobsdetailsbyid(job_id);
+      if (!jobExists) {
+        return res.status(404).json({
+          error: "Job not found",
+          success: false
+        });
+      }
+  
+      // Check if already applied
+      const { data: existingApplication } = await supabase
+        .from("applications")
+        .select("*")
+        .eq("job_id", job_id)
+        .eq("candidate_id", candidate_id)
+        .single();
+  
+      if (existingApplication) {
+        return res.status(400).json({
+          error: "You have already applied for this job",
+          success: false
+        });
+      }
+  
+      // Create application
+      const application = await createJobApplication(
+        job_id,
+        candidate_id
+      );
+  
+      res.status(201).json({
+        message: "Application submitted successfully",
+        application,
+        success: true
+      });
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      res.status(500).json({
+        error: "Internal Server Error",
+        success: false
+      });
+    }
+  };
+
+//get applied jobs of candidate
+  export const getCandidateApplications = async (req, res) => {
+    try {
+      const candidate_id  = req.params.id;
+      // console.log(req.params)
+  
+      const applications = await getApplicationsByCandidateId(candidate_id);
+      
+      res.status(200).json({
+        applications,
+        success: true
+      });
+    } catch (error) {
+      console.error("Error fetching candidate applications:", error);
+      res.status(500).json({
+        error: "Internal Server Error",
+        success: false
+      });
+    }
+  };
