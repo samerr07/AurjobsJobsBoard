@@ -1,6 +1,16 @@
-import { alljobs, createJobPost, getjobsdetailsbyid } from "../models/job-post.js";
+import { alljobs, createJobPost, getjobsdetailsbyid ,employer_Jobs} from "../models/job-post.js";
 
 console.log("in controllers job post");
+export const employer_jobs = async (req, res) => {
+    try {
+      const { id } = req.params; // Employer ID passed as a URL parameter
+      const jobs = await employer_Jobs(id); // Fetch jobs using employer_Jobs function
+      return res.status(200).json(jobs); // Return jobs in response
+    } catch (error) {
+      return res.status(500).json({ error: `Failed to fetch Employer Jobs: ${error.message}` });
+    }
+  };
+
 export const getalljobs = async(req, res) => {
     try {
         const jobs = await alljobs();
@@ -38,9 +48,10 @@ export const CreateJobPost = async(req, res) => {
             industry,
             work_mode,
         } = req.body;
-
+         console.log(req.body);
         // Get employer_id from the token (set by verifyToken middleware)
-        const employer_id = req.employerId;
+        const employer_id = req.body.employer_id;
+        console.log(employer_id);
 
         if (!employer_id) {
             return res.status(403).json({ error: "Unauthorized: Employer ID missing", success: false });

@@ -103,7 +103,11 @@ class CandidateController {
             const { id } = req.params;
             const candidateData = req.body;
 
-            console.log(candidateData, "----------------------------------");
+            if (!candidateData.candidate) {
+                return res.status(400).json({ success: false, error: "Candidate data is required" });
+              }
+
+            console.log(candidateData, "-----");
 
             // Call the updateCandidate function from the model
             const updatedCandidate = await updateCandidate(id, candidateData);

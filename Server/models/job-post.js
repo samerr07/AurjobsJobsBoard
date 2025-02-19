@@ -1,4 +1,5 @@
 import supabase from "../config/supabase-client.js";
+import { employer_jobs } from "../controllers/job_post-controller.js";
 console.log("in models job post"); // Ensure supabase is properly imported
 
 const getEmployerDetails = async(employerIds) => {
@@ -11,8 +12,28 @@ const getEmployerDetails = async(employerIds) => {
 
     if (error) throw error;
     return employers;
-};
-
+};export const employer_Jobs = async (employer_id) => {
+    try {
+      // Find all jobs posted by the employer using employer_id
+      const { data: jobs, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .eq("employer_id", employer_id); // Filtering by employer_id
+  
+      if (error) {
+        throw new Error(error.message);
+      }
+  
+      if (!jobs || jobs.length === 0) {
+        throw new Error("No jobs found for this employer");
+      }
+  
+      return jobs;
+    } catch (error) {
+      throw new Error(`Error fetching jobs: ${error.message}`);
+    }
+  };
+  
 export const alljobs = async() => {
     try {
         const { data, error } = await supabase
