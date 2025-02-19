@@ -126,3 +126,60 @@ export const createJobPost = async(
         return [];
     }
 };
+
+
+
+
+//apply job
+
+export const createJobApplication = async (
+    job_id,
+    candidate_id
+  ) => {
+    try {
+      const { data, error } = await supabase
+        .from("applications")
+        .insert([{
+          job_id,
+          candidate_id,
+          status: 'pending',
+          applied_at: new Date().toISOString(),
+        }])
+        .select("*");
+  
+      if (error) throw error;
+  
+      console.log("Job application created successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error creating job application:", error.message);
+      throw error;
+    }
+  };
+
+
+//applied jobs of candidate
+
+  export const getApplicationsByCandidateId = async (candidate_id) => {
+    try {
+      const { data, error } = await supabase
+        .from("applications")
+        .select(`
+          *,
+          jobs (
+            *,
+            employer_id (
+              company_display_name,
+              company_logo
+            )
+          )
+        `)
+        .eq("candidate_id", candidate_id);
+  
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error("Error fetching applications by candidate ID:", error.message);
+      throw error;
+    }
+  };

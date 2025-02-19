@@ -15,6 +15,7 @@ const JobDetails = () => {
             try {
                 const response = await axios.get(`http://localhost:3000/jobs_post/jobs_appliaction/${jobId}`);
                 setJob(response.data.job);
+                console.log(response.data.job)
                 setAppliedUsers(response.data.applicants);
             } catch (error) {
                 console.error("Error fetching job details:", error);

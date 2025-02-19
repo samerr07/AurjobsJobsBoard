@@ -8,8 +8,10 @@ import Languages from './Languages'
 import SocialLinks from './SocialLinks'
 import Resume from './Resume'
 import Experience from './Experience'
+import AdditionalInformation from './AdditionalInformation'
+import Address from './Address'
 
-const Profile = ({handleExperienceArrayItemChange, addExperienceArrayItem, removeExperienceArrayItem, addEducationArrayItem,addCertificationArrayItem,addLangugeArrayItem,addSkillArrayItem,removeEducationArrayItem,handleEducationArrayItemChange,isEditing,removeCertificateArrayItem,removeSkillArrayItem,handleCertificationArrayItemChange,handleSkillsArrayItemChange, candidateData, handleInputChange, errors, removeArrayItem, addArrayItem, handleArrayItemChange ,removeLanguageArrayItem,handleLanguageArrayItemChange}) => {
+const Profile = ({handleExperienceArrayItemChange,handleAddressArrayItemChange, addAddressArrayItem, removeAddressArrayItem, addExperienceArrayItem, removeExperienceArrayItem, addEducationArrayItem,addCertificationArrayItem,addLangugeArrayItem,addSkillArrayItem,removeEducationArrayItem,handleEducationArrayItemChange,isEditing,removeCertificateArrayItem,removeSkillArrayItem,handleCertificationArrayItemChange,handleSkillsArrayItemChange, candidateData, handleInputChange, errors, removeArrayItem, addArrayItem, handleArrayItemChange ,removeLanguageArrayItem,handleLanguageArrayItemChange}) => {
     return (
         <div>
             <PersonalInformation isEditing={isEditing} candidateData={candidateData} handleInputChange={handleInputChange} errors={errors} />
@@ -49,6 +51,10 @@ const Profile = ({handleExperienceArrayItemChange, addExperienceArrayItem, remov
                 addArrayItem={addArrayItem}
                 handleArrayItemChange={handleArrayItemChange} />
                 <Resume handleInputChange={handleInputChange} candidateData={candidateData} isEditing={isEditing} errors={errors} />
+            <AdditionalInformation isEditing={isEditing} candidateData={candidateData} handleInputChange={handleInputChange} errors={errors}/>
+            <Address isEditing={isEditing} candidateData={candidateData} removeAddressArrayItem={removeAddressArrayItem}
+                            handleAddressArrayItemChange={handleAddressArrayItemChange}
+                            addAddressArrayItem={addAddressArrayItem} errors={errors}/>
         </div>
     )
 }

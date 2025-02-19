@@ -19,51 +19,7 @@ const Dashboard = () => {
     // console.log(candidateProfile)
 
     const [candidateData, setCandidateData] = useState(candidateProfile);
-    // const [candidateData, setCandidateData] = useState({
-    //     candidate_first_name: "Sameer",
-    //     candidate_last_name: "Srivastava",
-    //     candidate_email: "sameer@example.com",
-    //     candidate_phone: "9876543210",
-    //     candidate_image_link: null,
-    //     candidate_current_role: "Software Engineer",
-    //     candidate_current_salary: 85000,
-    //     candidate_location: "San Francisco",
-    //     candidate_work_preference: "Hybrid",
-    //     candidate_availability: "Immediate",
-    //     candidate_github_link: "https://github.com/sameer",
-    //     candidate_linkedin_link: "https://linkedin.com/in/sameer",
-
-    //     certifications: [
-    //         {
-    //             certification_id: 1, candidate_certificate_name: "AWS Certified Solutions Architect", candidate_issuing_organization: "Amazon", candidate_issue_date
-    //                 : "2024-01"
-    //         },
-    //         {
-    //             certification_id: 2, candidate_certificate_name: "Google Cloud Professional", candidate_issuing_organization: "Google", candidate_issue_date
-    //                 : "2023-12"
-    //         }
-    //     ],
-    //     education: [
-    //         { education_id: 1, candidate_degree: "Master of Computer Science", candidate_institute: "Stanford University", candidate_end_year: "2020", candidate_start_year: "2016", candidate_score: "3.8 GPA", candidate_education_level: "Bachelors" },
-    //         { education_id: 2, candidate_degree: "Bachelor of Engineering", candidate_institute: "IIT Delhi", candidate_end_year: "2022", candidate_start_year: "2020", candidate_score: "4 GPA", candidate_education_level: "Masters" }
-    //     ],
-    //     languages: [
-    //         { language_id: 1, candidate_language: "English", candidate_proficiency: "Beginner" },
-    //         { language_id: 2, candidate_language: "Hindi", candidate_proficiency: "Advanced" },
-    //         { language_id: 3, candidate_language: "Spanish", candidate_proficiency: "Intermediate" }
-    //     ],
-    //     skills: [
-    //         {
-    //             skill_id: 1, candidate_skill
-    //                 : "React.js", level: "Expert"
-    //         },
-    //         {
-    //             skill_id: 2, candidate_skill
-    //                 : "Node.js", level: "Advanced"
-    //         },
-
-    //     ]
-    // });
+    
 
     const [backupData, setBackupData] = useState(null);
     const [errors, setErrors] = useState({});
@@ -145,6 +101,7 @@ const Dashboard = () => {
    
         if (validateForm()) {
             setIsSaving(true);
+            console.log(candidateData1)
             try {
                 axios.defaults.withCredentials = true;
                 const res = await axios.put(`${BASEURL}/candidates/CandidateProfile/${candidateProfile?.candidate_id}`,candidateData1, {
@@ -224,6 +181,15 @@ const Dashboard = () => {
         }));
     };
 
+    const handleAddressArrayItemChange = (type, id, field, value) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: prev[type]?.map(item =>
+                item.address_id === id ? { ...item, [field]: value } : item
+            )
+        }));
+    };
+
     const addArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
@@ -265,6 +231,14 @@ const Dashboard = () => {
             [type]: [...prev[type], { ...defaultItem, experience_id_id: uuidv4() }]
         }));
     };
+
+    const addAddressArrayItem = (type, defaultItem) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: [...prev[type], { ...defaultItem, address_id: uuidv4() }]
+        }));
+    };
+
     const scrollToSection = (sectionId) => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -311,6 +285,13 @@ const Dashboard = () => {
         setCandidateData(prev => ({
             ...prev,
             [type]: prev[type].filter(item => item.education_id !== id)
+        }));
+    };
+
+    const removeAddressArrayItem = (type, id) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: prev[type].filter(item => item.address_id !== id)
         }));
     };
 
@@ -523,6 +504,9 @@ const Dashboard = () => {
                             handleExperienceArrayItemChange={handleExperienceArrayItemChange}
                             addExperienceArrayItem={addExperienceArrayItem}
                             removeExperienceArrayItem={removeExperienceArrayItem}
+                            removeAddressArrayItem={removeAddressArrayItem}
+                            handleAddressArrayItemChange={handleAddressArrayItemChange}
+                            addAddressArrayItem={addAddressArrayItem}
                         />
 
 
