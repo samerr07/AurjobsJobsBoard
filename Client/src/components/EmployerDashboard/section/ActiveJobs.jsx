@@ -3,6 +3,8 @@ import JobCard from './JobCard';
 import axios from 'axios';
 // import { getEmployerProfile } from '../../../redux/employerSlice';
 import { useSelector } from 'react-redux';
+import { BASEURL } from '../../../utility/config';
+
 
 const ActiveJobs = () => {
     const [jobs, setJobs] = useState([]);
@@ -10,13 +12,13 @@ const ActiveJobs = () => {
     const [error, setError] = useState(null);
     const { employerProfile } = useSelector((state) => state.employer);
     const employerId=employerProfile.employer_id;
-    console.log(employerId);
+    // console.log(employerId);
     
     useEffect(() => {
         const fetchJobs = async () => {
             try {
                 // Replace with your actual API URL
-                const response = await axios.get(`http://localhost:3000/jobs_post/employer_jobs/${employerId}`, {
+                const response = await axios.get(`${BASEURL}/jobs_post/employer_jobs/${employerId}`, {
                     headers: {
                         "Content-Type": "application/json",
                     },
