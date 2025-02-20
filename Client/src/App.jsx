@@ -17,6 +17,7 @@ import Pricing from './components/Pricing'
 // import Footer from './components/Footer'
 
 import JobsPage from './pages/JobsPage'
+
 // import CandidateDashboard from './components/Dashboard/CandidateDashboard'
 
 
@@ -41,7 +42,6 @@ function App() {
           <Route path='/jobs/:jobId' element={<JobDetailsPage/>}/>
           <Route path="/employer_dashboard/jobs/:jobId" element={<JobDetails />} />
           <Route path="/Pricing" element={<Pricing />} /> 
-          {/* <Route path="/Footer" element={<Footer />} />  */}
 
         </Routes>
       </BrowserRouter>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CalendarDays, MapPin, Building2, Briefcase, Clock, DollarSign, GraduationCap, Laptop2 } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { CheckCircle2, XCircle, X } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { BASEURL } from '../utility/config';
 import { useSelector } from 'react-redux';
@@ -8,6 +9,10 @@ import toast from 'react-hot-toast';
 
 const JobDetailsPage = () => {
 
+  const [showModal, setShowModal] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [incompleteFields, setIncompleteFields] = useState([]);
+  const navigate = useNavigate();
   const { candidateProfile } = useSelector((state) => state.candidate);
   const candidate_id = candidateProfile.candidate_id;
   const params = useParams()
@@ -46,45 +51,90 @@ const JobDetailsPage = () => {
 
   const [jobDetails, setJobDetails] = useState(null);
 
-  const fetchJobDetails = async(jobId)=>{
-            const res = await axios.get(`${BASEURL}/jobs_post/job_details/${jobId}`)
-    
-            if(res?.data?.success){
-              console.log(res?.data?.job)
-              setJobDetails(res?.data?.job)
+  const fetchJobDetails = async (jobId) => {
+    const res = await axios.get(`${BASEURL}/jobs_post/job_details/${jobId}`)
 
-            }
-           
-          }
+    if (res?.data?.success) {
+      console.log(res?.data?.job)
+      setJobDetails(res?.data?.job)
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  };
-
-
-  const handleApply = async()=>{
-    try{
-      const res = await axios.post(`${BASEURL}/jobs_post/apply_job`,{job_id:jobDetails.job_id, candidate_id})
-      if(res?.data?.success){
-        console.log(res?.data?.message)
-        toast.success(res?.data?.message)
-      }
-    }catch(err){
-      console.log(err)
     }
 
   }
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+
+
+
+
+
+  const validateProfile = () => {
+    const requiredFields = {
+      'First Name': candidateProfile?.candidate_first_name,
+      'Last Name': candidateProfile?.candidate_last_name,
+      'Email': candidateProfile?.candidate_email,
+      'Phone': candidateProfile?.candidate_phone,
+      'Current Role': candidateProfile?.candidate_current_role,
+      'Availability': candidateProfile?.candidate_availability,
+      'Education': candidateProfile?.education?.length > 0,
+      'Skills': candidateProfile?.skills?.length > 0,
+      'Experience': candidateProfile?.experience?.length > 0
+    };
+
+    const missing = Object.entries(requiredFields)
+      .filter(([_, value]) => !value)
+      .map(([field]) => field);
+
+    setIncompleteFields(missing);
+    return missing.length === 0;
+  };
+
+  const handleApply = async () => {
+    // const isProfileComplete = validateProfile();
+    const isProfileComplete = true;
+
+
+    if (!isProfileComplete) {
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      const res = await axios.post(`${BASEURL}/jobs_post/apply_job`, {
+        job_id: jobDetails.job_id,
+        candidate_id
+      });
+
+      if (res?.data?.success) {
+
+        setIsSubmitted(true);
+        setShowModal(true);
+        toast.success(res?.data?.message);
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.response?.data?.error);
+    }
+  };
+
+  const handleCompleteProfile = () => {
+    navigate('/profile');
+    setShowModal(false);
+  };
+
   useEffect(() => {
 
-        fetchJobDetails(params.jobId)
-      
-      }, []);
+    fetchJobDetails(params.jobId)
+
+  }, []);
 
   return (
     <div className="min-h-screen mt-20 bg-gray-50 py-8 px-4">
@@ -120,9 +170,70 @@ const JobDetailsPage = () => {
                 </span>
               </div>
             </div>
-            <button onClick={handleApply} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <button
+              onClick={handleApply}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
               Apply Now
             </button>
+
+            <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+              {incompleteFields.length === 0 && isSubmitted ? (
+                <div className="text-center">
+                  <div className="bg-green-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="w-12 h-12 text-green-500" />
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                    Application Submitted!
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Your application has been successfully submitted. We'll review your profile and get back to you soon.
+                  </p>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="w-full bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-2 focus:ring-green-300 focus:ring-offset-2"
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                    <XCircle className="w-12 h-12 text-red-500" />
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                    Complete Your Profile
+                  </h2>
+                  <p className="text-gray-600 mb-4">
+                    Please complete the following information in your profile before applying:
+                  </p>
+                  <div className="bg-red-50 rounded-lg p-4 mb-6">
+                    <ul className="text-left space-y-2">
+                      {incompleteFields.map((field, index) => (
+                        <li key={index} className="text-red-600 flex items-center space-x-2">
+                          <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+                          <span>{field}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="space-y-3">
+                    <button
+                      onClick={handleCompleteProfile}
+                      className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                    >
+                      Complete Profile
+                    </button>
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </Modal>
           </div>
         </div>
 
@@ -133,7 +244,7 @@ const JobDetailsPage = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Job Description</h2>
               <p className="text-gray-600 mb-6">{jobDetails?.job_description}</p>
-              
+
               <h3 className="text-lg font-semibold mb-3">Key Responsibilities</h3>
               <ul className="list-disc pl-5 space-y-2 text-gray-600 mb-6">
                 {job.responsibilities.map((responsibility, index) => (
@@ -143,7 +254,7 @@ const JobDetailsPage = () => {
 
               <h3 className="text-lg font-semibold mb-3">Required Skills</h3>
               <div className="flex flex-wrap gap-2 mb-6">
-                {job.job_skills_required.map((skill, index) => (
+                {jobDetails?.job_skills_required.map((skill, index) => (
                   <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
                     {skill}
                   </span>
@@ -168,21 +279,21 @@ const JobDetailsPage = () => {
                   <Clock className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="text-sm text-gray-500">Posted On</p>
-                    <p className="text-gray-700">{formatDate(job.posted_at)}</p>
+                    <p className="text-gray-700">{formatDate(jobDetails?.posted_at)}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <GraduationCap className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="text-sm text-gray-500">Experience Required</p>
-                    <p className="text-gray-700">{job.job_experience_required}</p>
+                    <p className="text-gray-700">{jobDetails?.job_experience_required}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Laptop2 className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="text-sm text-gray-500">Work Mode</p>
-                    <p className="text-gray-700">{job.work_mode}</p>
+                    <p className="text-gray-700">{jobDetails?.work_mode}</p>
                   </div>
                 </div>
               </div>
@@ -190,14 +301,14 @@ const JobDetailsPage = () => {
 
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Company Info</h2>
-              <img 
-                src="/api/placeholder/120/60"
-                alt="Company Logo" 
+              <img
+                src={jobDetails?.company_logo}
+                alt="Company Logo"
                 className="mb-4 rounded"
               />
               <p className="text-gray-600 mb-4">
-                Stark Industries is a leading technology company specializing in innovative solutions 
-                for the modern world. Join our team of exceptional talents working on cutting-edge 
+                Stark Industries is a leading technology company specializing in innovative solutions
+                for the modern world. Join our team of exceptional talents working on cutting-edge
                 technologies.
               </p>
               <button className="text-blue-600 hover:text-blue-700 font-medium">
@@ -212,3 +323,47 @@ const JobDetailsPage = () => {
 };
 
 export default JobDetailsPage;
+
+
+
+
+const Modal = ({ isOpen, onClose, children }) => {
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+      {/* Backdrop with blur effect and softer opacity */}
+      <div
+        className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Modal Content with enhanced animation */}
+      <div className="relative bg-white rounded-xl w-full max-w-md mx-4 p-8 shadow-2xl transform transition-all duration-300 ease-out opacity-100 scale-100 translate-y-0">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+};

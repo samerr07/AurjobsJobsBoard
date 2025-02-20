@@ -1,3 +1,4 @@
+
 import React from 'react'
 import Logo from "../assets/Aurjobs_LogoRemBack.png"
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
