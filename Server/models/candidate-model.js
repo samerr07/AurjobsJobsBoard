@@ -54,6 +54,7 @@ export const createCandidate = async(
         return null; // Return null in case of error
     }
 };
+
 export const findByCandidateID = async(candidateID) => {
     try {
         // Fetch candidate details and related tables in parallel
@@ -98,7 +99,6 @@ export const findByCandidateID = async(candidateID) => {
     }
 };
 // import { supabase } from "../config/supabaseClient"; // Adjust import based on your setup
-
 
 export const updateCandidate = async(candidateID, candidateData) => {
     try {
@@ -183,36 +183,15 @@ export const updateCandidate = async(candidateID, candidateData) => {
             updated_at: istTimestamp,
         }));
 
-        for (const cert of certifications) {
-            const { data: existingCert } = await supabase
-                .from("candidate_certifications")
-                .select("certification_id")
-                .eq("candidate_certificate_number", cert.candidate_certificate_number)
-                .single();
-
-            if (existingCert) {
-                await supabase
-                    .from("candidate_certifications")
-                    .update({
-                        candidate_certificate_name: cert.candidate_certificate_name,
-                        certificate_issue_date: cert.certificate_issue_date,
-                        certificate_issuing_organization: cert.certificate_issuing_organization,
-                        updated_at: istTimestamp,
-                    })
-                    .eq("certification_id", existingCert.certification_id);
-            } else {
-                await supabase.from("candidate_certifications").insert({
-                    candidate_id: candidateID,
-                    certification_id: crypto.randomUUID(),
-                    candidate_certificate_name: cert.candidate_certificate_name,
-                    // candidate_certificate_number: cert.candidate_certificate_number,
-                    certificate_issue_date: cert.certificate_issue_date,
-                    certificate_issuing_organization: cert.certificate_issuing_organization,
-                    created_at: istTimestamp,
-                    updated_at: istTimestamp,
-                });
-            }
-        }
+        const candidateCertificationsData = certifications.map(cert => ({
+            candidate_id: candidateID,
+            certification_id: cert.certification_id || crypto.randomUUID(),
+            candidate_certificate_name: cert.candidate_certificate_name,
+            certificate_issue_date: cert.certificate_issue_date,
+            certificate_issuing_organization: cert.certificate_issuing_organization,
+            created_at: istTimestamp,
+            updated_at: istTimestamp,
+        }));
 
         const upsertPromises = [
             supabase.from("candidate_skills").upsert(candidateSkillsData, { onConflict: ["skill_id"] }).select(),
@@ -220,7 +199,7 @@ export const updateCandidate = async(candidateID, candidateData) => {
             supabase.from("candidate_experience").upsert(candidateExperiencesData, { onConflict: ["experience_id"] }).select(),
             supabase.from("candidate_education").upsert(candidateEducationData, { onConflict: ["education_id"] }).select(),
             supabase.from("candidate_address").upsert(candidateAddressData, { onConflict: ["address_id"] }).select(),
-            supabase.from("candidate_certifications").select(),
+            supabase.from("candidate_certifications").upsert(candidateCertificationsData, { onConflict: ["certification_id"] }).select(),
         ];
 
         const responses = await Promise.allSettled(upsertPromises);
@@ -246,7 +225,6 @@ export const updateCandidate = async(candidateID, candidateData) => {
         return { success: false, error: error.message || "Internal Server Error" };
     }
 };
-
 
 
 

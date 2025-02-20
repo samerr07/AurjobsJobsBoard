@@ -60,7 +60,7 @@ class CandidateController {
 
             // Fetch all related candidate data using findByCandidateID
             const fullCandidateData = await findByCandidateID(candidate.candidate_id);
-            console.log(fullCandidateData, "----------------------------------------------------------")
+            console.log("----------------------------------------------------------", fullCandidateData)
 
             return res.status(200).json({
                 message: "Login successful",
