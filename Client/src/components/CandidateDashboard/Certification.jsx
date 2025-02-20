@@ -2,73 +2,7 @@ import React from 'react'
 
 const Certification = ({ addCertificationArrayItem,isEditing,handleCertificationArrayItemChange,removeCertificateArrayItem, candidateData, handleInputChange, errors, removeArrayItem, addArrayItem,handleArrayItemChange }) => {
   return (
-    // <section id="certifications" className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mt-12">
-    //                         <div className="flex items-center justify-between mb-6">
-    //                             <div className="flex items-center">
-    //                                 <span className="text-2xl mr-3">📜</span>
-    //                                 <h2 className="text-xl font-semibold text-gray-800">Certifications</h2>
-    //                             </div>
-    //                             {isEditing && (
-    //                                 <button
-    //                                     type="button"
-    //                                     onClick={() => addCertificationArrayItem('certifications', { candidate_certificate_name: '', candidate_issuing_organization: '', candidate_issue_date: '' })}
-    //                                     className="px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center"
-    //                                 >
-    //                                     <span className="mr-2">+</span>
-    //                                     Add Certification
-    //                                 </button>
-    //                             )}
-    //                         </div>
-    //                         <div className="space-y-6">
-    //                             {candidateData.certifications.map((cert) => (
-    //                                 <div key={cert.certification_id} className="p-4 bg-gray-50 rounded-lg border border-gray-100">
-    //                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-    //                                         <div>
-    //                                             <label className="block text-sm font-medium text-gray-700 mb-1">Certification Name</label>
-    //                                             <input
-    //                                                 type="text"
-    //                                                 value={cert.candidate_certificate_name}
-    //                                                 onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'candidate_certificate_name', e.target.value)}
-    //                                                 disabled={!isEditing}
-    //                                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500"
-    //                                             />
-    //                                         </div>
-    //                                         <div>
-    //                                             <label className="block text-sm font-medium text-gray-700 mb-1">Issuing Organization</label>
-    //                                             <input
-    //                                                 type="text"
-    //                                                 value={cert.certificate_issuing_organization
-    //                                                 }
-    //                                                 onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'candidate_issuing_organization', e.target.value)}
-    //                                                 disabled={!isEditing}
-    //                                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500"
-    //                                             />
-    //                                         </div>
-    //                                         <div>
-    //                                             <label className="block text-sm font-medium text-gray-700 mb-1">Issue Date</label>
-    //                                             <input
-    //                                                 type="month"
-    //                                                 value={cert.candidate_issue_date}
-    //                                                 onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'candidate_issue_date', e.target.value)}
-    //                                                 disabled={!isEditing}
-    //                                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500"
-    //                                             />
-    //                                         </div>
-    //                                     </div>
-    //                                     {isEditing && (
-    //                                         <button
-    //                                             type="button"
-    //                                             onClick={() => removeCertificateArrayItem('certifications', cert.certification_id)}
-    //                                             className="mt-3 text-sm text-red-600 hover:text-red-800 transition-colors flex items-center"
-    //                                         >
-    //                                             <span className="mr-1">🗑</span>
-    //                                             Remove
-    //                                         </button>
-    //                                     )}
-    //                                 </div>
-    //                             ))}
-    //                         </div>
-    //                     </section>
+  
     <section id='certifications' className="bg-gradient-to-b from-white to-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200 mt-12">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
@@ -80,8 +14,8 @@ const Certification = ({ addCertificationArrayItem,isEditing,handleCertification
             type="button"
             onClick={() => addCertificationArrayItem('certifications', {
               candidate_certificate_name: '',
-              candidate_issuing_organization: '',
-              candidate_issue_date: ''
+              certificate_issuing_organization: '',
+              certificate_issue_date: ''
             })}
             className="px-6 py-2.5 text-sm font-medium bg-blue-600 text-white rounded-xl hover:bg-blue-700 
             transition-all duration-200 transform hover:scale-105 focus:ring-4 focus:ring-blue-200 
@@ -119,7 +53,7 @@ const Certification = ({ addCertificationArrayItem,isEditing,handleCertification
                   <input
                     type="text"
                     value={cert.certificate_issuing_organization}
-                    onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'candidate_issuing_organization', e.target.value)}
+                    onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'certificate_issuing_organization', e.target.value)}
                     placeholder="Enter organization name"
                     className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 
                     focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
@@ -130,8 +64,8 @@ const Certification = ({ addCertificationArrayItem,isEditing,handleCertification
                   <label className="block text-sm font-semibold text-gray-700">Issue Date</label>
                   <input
                     type="month"
-                    value={cert.candidate_issue_date}
-                    onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'candidate_issue_date', e.target.value)}
+                    value={cert.certificate_issue_date}
+                    onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'certificate_issue_date', e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 
                     focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
                   />
@@ -149,7 +83,7 @@ const Certification = ({ addCertificationArrayItem,isEditing,handleCertification
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-gray-500">Issued</p>
-                  <p className="text-gray-800">{cert.candidate_issue_date || '-'}</p>
+                  <p className="text-gray-800">{cert.certificate_issue_date || '-'}</p>
                 </div>
               </div>
             )}

@@ -35,7 +35,7 @@ const CandidateLoginPage = () => {
                 {/* Middle Component (Desktop Only) */}
                 {!isMobile && (
                     <div className="h-full w-1/2 flex-shrink-0">
-                        <div className="relative flex items-center justify-center min-h-screen bg-white overflow-hidden">
+                        <div className="relative flex items-center justify-center min-h-screen bg-orange-500 overflow-hidden">
                               <img
                                 src={loginImage}
                                 className={`absolute max-w-full h-auto transition-transform duration-300

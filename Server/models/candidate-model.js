@@ -99,6 +99,14 @@ export const findByCandidateID = async(candidateID) => {
     }
 };
 // import { supabase } from "../config/supabaseClient"; // Adjust import based on your setup
+<<
+<< << < HEAD
+    ===
+    === =
+
+
+    >>>
+    >>> > 29e da9e983a46050c538adf0361a62e4bd2fb791
 export const updateCandidate = async(candidateID, candidateData) => {
     try {
         const candidate = candidateData.candidate || candidateData;
@@ -197,8 +205,12 @@ export const updateCandidate = async(candidateID, candidateData) => {
             supabase.from("candidate_languages").upsert(candidateLanguagesData, { onConflict: ["language_id"] }).select(),
             supabase.from("candidate_experience").upsert(candidateExperiencesData, { onConflict: ["experience_id"] }).select(),
             supabase.from("candidate_education").upsert(candidateEducationData, { onConflict: ["education_id"] }).select(),
-            supabase.from("candidate_address").upsert(candidateAddressData, { onConflict: ["address_id"] }).select(),
-            supabase.from("candidate_certifications").upsert(candidateCertificationsData, { onConflict: ["certification_id"] }).select(),
+            supabase.from("candidate_address").upsert(candidateAddressData, { onConflict: ["address_id"] }).select(), <<
+            << << < HEAD
+            supabase.from("candidate_certifications").upsert(candidateCertificationsData, { onConflict: ["certification_id"] }).select(), ===
+            === =
+            supabase.from("candidate_certifications").select(), >>>
+            >>> > 29e da9e983a46050c538adf0361a62e4bd2fb791
         ];
 
         const responses = await Promise.allSettled(upsertPromises);
@@ -224,6 +236,17 @@ export const updateCandidate = async(candidateID, candidateData) => {
         return { success: false, error: error.message || "Internal Server Error" };
     }
 };
+
+
+
+
+
+
+
+
+
+
+
 
 // 
 // ✅ Validate UUID Format

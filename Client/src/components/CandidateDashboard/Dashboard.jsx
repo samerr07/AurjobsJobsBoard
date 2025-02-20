@@ -1,73 +1,40 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { FaUser, FaBriefcase, FaSignOutAlt, FaChevronLeft, FaChevronRight, FaGraduationCap, FaTools, FaTrophy, FaRunning, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import Profile from './Profile';
 import { BarChart, ChevronLeft, ChevronRight, Home, Mail, Search, Settings, UserRoundPen, Users } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid'
 import { BASEURL } from '../../utility/config';
+import AppliedJobs from './AppliedJobs';
 
 const Dashboard = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isExpanded, setIsExpanded] = useState(true);
     const [showDashboard, setShowDashboard] = useState(false);
+    const [activeView, setActiveView] = useState('profile'); 
     const formRef = useRef(null);
 
     const { candidateProfile } = useSelector((state) => state.candidate);
 
+    // const candidate_id = candidateProfile.candidate_id;
+
     // console.log(candidateProfile)
 
     const [candidateData, setCandidateData] = useState(candidateProfile);
-    // const [candidateData, setCandidateData] = useState({
-    //     candidate_first_name: "Sameer",
-    //     candidate_last_name: "Srivastava",
-    //     candidate_email: "sameer@example.com",
-    //     candidate_phone: "9876543210",
-    //     candidate_image_link: null,
-    //     candidate_current_role: "Software Engineer",
-    //     candidate_current_salary: 85000,
-    //     candidate_location: "San Francisco",
-    //     candidate_work_preference: "Hybrid",
-    //     candidate_availability: "Immediate",
-    //     candidate_github_link: "https://github.com/sameer",
-    //     candidate_linkedin_link: "https://linkedin.com/in/sameer",
 
-    //     certifications: [
-    //         {
-    //             certification_id: 1, candidate_certificate_name: "AWS Certified Solutions Architect", candidate_issuing_organization: "Amazon", candidate_issue_date
-    //                 : "2024-01"
-    //         },
-    //         {
-    //             certification_id: 2, candidate_certificate_name: "Google Cloud Professional", candidate_issuing_organization: "Google", candidate_issue_date
-    //                 : "2023-12"
-    //         }
-    //     ],
-    //     education: [
-    //         { education_id: 1, candidate_degree: "Master of Computer Science", candidate_institute: "Stanford University", candidate_end_year: "2020", candidate_start_year: "2016", candidate_score: "3.8 GPA", candidate_education_level: "Bachelors" },
-    //         { education_id: 2, candidate_degree: "Bachelor of Engineering", candidate_institute: "IIT Delhi", candidate_end_year: "2022", candidate_start_year: "2020", candidate_score: "4 GPA", candidate_education_level: "Masters" }
-    //     ],
-    //     languages: [
-    //         { language_id: 1, candidate_language: "English", candidate_proficiency: "Beginner" },
-    //         { language_id: 2, candidate_language: "Hindi", candidate_proficiency: "Advanced" },
-    //         { language_id: 3, candidate_language: "Spanish", candidate_proficiency: "Intermediate" }
-    //     ],
-    //     skills: [
-    //         {
-    //             skill_id: 1, candidate_skill
-    //                 : "React.js", level: "Expert"
-    //         },
-    //         {
-    //             skill_id: 2, candidate_skill
-    //                 : "Node.js", level: "Advanced"
-    //         },
-
-    //     ]
-    // });
 
     const [backupData, setBackupData] = useState(null);
     const [errors, setErrors] = useState({});
     const [activeSection, setActiveSection] = useState('personal');
-    const [activeSection1, setActiveSection1] = useState('home');
+    const [activeSection1, setActiveSection1] = useState('analytics');
+
+
+    const candidateData1 = {
+        candidate: candidateData
+    }
 
     const sections = [
         { id: 'personal', name: 'Personal Info', icon: '👤' },
@@ -84,13 +51,13 @@ const Dashboard = () => {
 
     const navItems = [
         { id: 'home', name: 'Home', icon: <Home className="w-5 h-5" /> },
-        { id: 'analytics', name: 'Profile', icon: <UserRoundPen className="w-5 h-5" /> },
-        { id: 'users', name: 'Applied Jobs', icon: <Users className="w-5 h-5" /> },
+        { id: 'analytics', name: 'Profile', icon: <UserRoundPen className="w-5 h-5" />, view: 'profile' },
+        { id: 'users', name: 'Applied Jobs', icon: <Users className="w-5 h-5" />, view: 'appliedJobs' },
         { id: 'messages', name: 'Messages', icon: <Mail className="w-5 h-5" /> },
         { id: 'settings', name: 'Settings', icon: <Settings className="w-5 h-5" /> },
     ];
 
-
+  
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCandidateData(prev => ({
@@ -119,6 +86,9 @@ const Dashboard = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+
+    
+
     const startEditing = () => {
         // setBackupData(candidateData);
         setBackupData(candidateData);
@@ -136,18 +106,19 @@ const Dashboard = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-   
+
         if (validateForm()) {
             setIsSaving(true);
+            console.log(candidateData1)
             try {
                 axios.defaults.withCredentials = true;
-                const res = await axios.put(`${BASEURL}/candidates/CandidateProfile/${candidateProfile?.candidate_id}`,candidateData, {
+                const res = await axios.put(`http://localhost:3000/candidates/CandidateProfile/${candidateProfile?.candidate_id}`, candidateData1, {
                     headers: {
                         "Content-Type": "application/json"
                     },
                     withCredentials: true
                 })
-                console.log(candidateData)
+                console.log(candidateData1)
                 console.log("API Called")
                 if (res?.data?.success) {
                     console.log(res?.data?.updatedCandidate)
@@ -218,47 +189,64 @@ const Dashboard = () => {
         }));
     };
 
+    const handleAddressArrayItemChange = (type, id, field, value) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: prev[type]?.map(item =>
+                item.address_id === id ? { ...item, [field]: value } : item
+            )
+        }));
+    };
+
     const addArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, id: uuidv4() }]
         }));
     };
 
     const addEducationArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, education_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, education_id: uuidv4() }]
         }));
     };
 
     const addLangugeArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, language_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, language_id: uuidv4() }]
         }));
     };
 
     const addSkillArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, skill_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, skill_id: uuidv4() }]
         }));
     };
 
     const addCertificationArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, certification_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, certification_id: uuidv4() }]
         }));
     };
 
     const addExperienceArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
-            [type]: [...prev[type], { ...defaultItem, experience_id_id: Date.now() }]
+            [type]: [...prev[type], { ...defaultItem, experience_id_id: uuidv4() }]
         }));
     };
+
+    const addAddressArrayItem = (type, defaultItem) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: [...prev[type], { ...defaultItem, address_id: uuidv4() }]
+        }));
+    };
+
     const scrollToSection = (sectionId) => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -308,6 +296,13 @@ const Dashboard = () => {
         }));
     };
 
+    const removeAddressArrayItem = (type, id) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: prev[type].filter(item => item.address_id !== id)
+        }));
+    };
+
     const toggleSidebar = () => {
         setIsExpanded(!isExpanded);
     };
@@ -315,6 +310,8 @@ const Dashboard = () => {
         { id: 'profile', name: 'Candidate Profile', icon: <FaUser /> },
         { id: 'jobs', name: 'Applied Jobs', icon: <FaBriefcase /> }
     ];
+
+    
 
 
     const [isMobile, setIsMobile] = useState(false);
@@ -333,16 +330,23 @@ const Dashboard = () => {
 
     const handleNavClick = (id) => {
         setActiveSection1(id);
+        const selectedItem = navItems.find(item => item.id === id);
+        if (selectedItem && selectedItem.view) {
+            setActiveView(selectedItem.view);
+            // if (selectedItem.view === 'appliedJobs') {
+            //     fetchAppliedJobs();
+            // }
+        }
+
         if (id === 'analytics') {
             setShowDashboard(true);
         } else {
             setShowDashboard(false);
         }
-        // setActiveSection(id);
-        // setShowDashboard(true);
-        // if (isMobile) {
-        //   setIsExpanded(false);
-        // }
+
+        if (isMobile) {
+            setIsExpanded(false);
+        }
     };
 
 
@@ -380,9 +384,9 @@ const Dashboard = () => {
                                 onClick={() => { handleNavClick(item.id), setIsExpanded(false) }}
                                 className="w-full flex items-center px-4 py-3 hover:bg-gray-100 cursor-pointer"
                                 style={{
-                                    backgroundColor: activeSection === item.id ? '#EBF5FF' : 'transparent',
-                                    borderRight: activeSection === item.id ? '4px solid #2563EB' : 'none',
-                                    color: activeSection === item.id ? '#2563EB' : '#4B5563',
+                                    backgroundColor: activeSection1 === item.id ? '#EBF5FF' : 'transparent',
+                                    borderRight: activeSection1 === item.id ? '4px solid #2563EB' : 'none',
+                                    color: activeSection1 === item.id ? '#2563EB' : '#4B5563',
                                     transition: 'all 0.2s ease-in-out'
                                 }}
                             >
@@ -412,19 +416,21 @@ const Dashboard = () => {
                             transition: 'all 0.2s ease-in-out'
                         }}
                     >
-                        {isExpanded ? '←' : '→'}
+                        {/* {isExpanded ? '←' : '→'} */}
+                        {isExpanded ? <FaChevronLeft /> : <FaChevronRight />}
                     </button>
                 </div>
 
 
-                {showDashboard && (
+                {showDashboard && activeView === 'profile' && (
                     <div
                         className="fixed top-0 h-full bg-white shadow-lg"
                         style={{
                             left: isExpanded ? '256px' : '80px',
                             width: '256px',
                             marginTop: '80px',
-                            transition: 'all 0.3s ease-in-out'
+                            transition: 'all 0.3s ease-in-out',
+                            zIndex: 40
                         }}
                     >
                         <div className="p-6">
@@ -434,7 +440,8 @@ const Dashboard = () => {
                                     onClick={() => { setShowDashboard(false), setIsExpanded(true) }}
                                     className="p-2 hover:bg-gray-100 rounded-full"
                                 >
-                                    ←
+                                    {/* ← */}
+                                    <FaChevronLeft />
                                 </button>
                             </div>
                             <nav className="space-y-2">
@@ -442,7 +449,8 @@ const Dashboard = () => {
                                     <button
                                         key={section.id}
                                         onClick={() => scrollToSection(section.id)}
-                                        className="w-full cursor-pointer flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
+                                        className={`w-full cursor-pointer flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg ${activeSection === section.id ? 'bg-blue-50 text-blue-600' : ''
+                                            }`}
                                         style={{ transition: 'all 0.2s ease-in-out' }}
                                     >
                                         <span className="mr-3">{section.icon}</span>
@@ -458,89 +466,115 @@ const Dashboard = () => {
 
 
             {/* Main Content */}
-            <div className="ml-76 p-8">
-                <div className="max-w-4xl mx-auto">
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Candidate Profile</h1>
-                            <p className="text-gray-500 mt-2">Manage your professional information</p>
-                        </div>
-                        <div className="space-x-4">
-                            {isEditing ? (
-                                <>
-                                    <button
-                                        onClick={cancelEditing}
-                                        className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        onClick={handleSubmit}
-                                        disabled={isSaving}
-                                        className={`px-6 py-2 bg-blue-600 text-white rounded-lg transition-colors ${isSaving ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-700'
-                                            }`}
-                                    >
-                                        {isSaving ? 'Saving...' : 'Save Changes'}
-                                    </button>
-                                </>
-                            ) : (
-                                <button
-                                    onClick={startEditing}
-                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
-                                >
-                                    <span className="mr-2">✏️</span>
-                                    Edit Profile
-                                </button>
-                            )}
-                        </div>
-                    </div>
+            <div
+                className={`p-8 transition-all duration-300`}
+                style={{
+                    // marginLeft: isExpanded ? '256px' : '80px',
+                    marginLeft: showDashboard && activeView === 'profile' ? (isExpanded ? '512px' : '336px') : (isExpanded ? '256px' : '80px'),
+                }}
+            >
 
-                    <form ref={formRef} onSubmit={handleSubmit} className="space-y-8">
-
-
-                        <Profile isEditing={isEditing} candidateData={candidateData} handleInputChange={handleInputChange} errors={errors}
-                            removeArrayItem={removeArrayItem}
-                            addArrayItem={addArrayItem}
-                            handleArrayItemChange={handleArrayItemChange}
-                            removeSkillArrayItem={removeSkillArrayItem}
-                            handleSkillsArrayItemChange={handleSkillsArrayItemChange}
-                            handleLanguageArrayItemChange={handleLanguageArrayItemChange}
-                            removeLanguageArrayItem={removeLanguageArrayItem}
-                            handleCertificationArrayItemChange={handleCertificationArrayItemChange}
-                            removeCertificateArrayItem={removeCertificateArrayItem}
-                            removeEducationArrayItem={removeEducationArrayItem}
-                            handleEducationArrayItemChange={handleEducationArrayItemChange}
-                            addCertificationArrayItem={addCertificationArrayItem}
-                            addLangugeArrayItem={addLangugeArrayItem}
-                            addSkillArrayItem={addSkillArrayItem}
-                            addEducationArrayItem={addEducationArrayItem}
-                            handleExperienceArrayItemChange={handleExperienceArrayItemChange}
-                            addExperienceArrayItem={addExperienceArrayItem}
-                            removeExperienceArrayItem={removeExperienceArrayItem}
-                        />
-
-
-
-                        {/* Save Changes Button */}
-                        {isEditing && (
-                            <div className="sticky bottom-4 flex justify-end bg-white p-4 rounded-lg shadow-lg border border-gray-100">
-                                <button
-                                    type="submit"
-                                    disabled={isSaving}
-                                    className={`px-6 py-2 bg-blue-600 text-white rounded-lg transition-colors ${isSaving ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-700'
-                                        }`}
-                                >
-                                    {isSaving ? 'Saving Changes...' : 'Save All Changes'}
-                                </button>
+                {
+                    activeView === 'profile' ? (
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex justify-between items-center mb-8">
+                                <div>
+                                    <h1 className="text-3xl font-bold text-gray-900">Candidate Profile</h1>
+                                    <p className="text-gray-500 mt-2">Manage your professional information</p>
+                                </div>
+                                <div className="space-x-4">
+                                    {isEditing ? (
+                                        <>
+                                            <button
+                                                onClick={cancelEditing}
+                                                className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={handleSubmit}
+                                                disabled={isSaving}
+                                                className={`px-6 py-2 bg-blue-600 text-white rounded-lg transition-colors ${isSaving ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-700'
+                                                    }`}
+                                            >
+                                                {isSaving ? 'Saving...' : 'Save Changes'}
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <button
+                                            onClick={startEditing}
+                                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                                        >
+                                            <span className="mr-2">✏️</span>
+                                            Edit Profile
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-                        )}
-                    </form>
+
+                            <form ref={formRef} onSubmit={handleSubmit} className="space-y-8">
 
 
-                </div>
+                                <Profile isEditing={isEditing} candidateData={candidateData} handleInputChange={handleInputChange} errors={errors}
+                                    removeArrayItem={removeArrayItem}
+                                    addArrayItem={addArrayItem}
+                                    handleArrayItemChange={handleArrayItemChange}
+                                    removeSkillArrayItem={removeSkillArrayItem}
+                                    handleSkillsArrayItemChange={handleSkillsArrayItemChange}
+                                    handleLanguageArrayItemChange={handleLanguageArrayItemChange}
+                                    removeLanguageArrayItem={removeLanguageArrayItem}
+                                    handleCertificationArrayItemChange={handleCertificationArrayItemChange}
+                                    removeCertificateArrayItem={removeCertificateArrayItem}
+                                    removeEducationArrayItem={removeEducationArrayItem}
+                                    handleEducationArrayItemChange={handleEducationArrayItemChange}
+                                    addCertificationArrayItem={addCertificationArrayItem}
+                                    addLangugeArrayItem={addLangugeArrayItem}
+                                    addSkillArrayItem={addSkillArrayItem}
+                                    addEducationArrayItem={addEducationArrayItem}
+                                    handleExperienceArrayItemChange={handleExperienceArrayItemChange}
+                                    addExperienceArrayItem={addExperienceArrayItem}
+                                    removeExperienceArrayItem={removeExperienceArrayItem}
+                                    removeAddressArrayItem={removeAddressArrayItem}
+                                    handleAddressArrayItemChange={handleAddressArrayItemChange}
+                                    addAddressArrayItem={addAddressArrayItem}
+                                />
+
+
+
+                                {/* Save Changes Button */}
+                                {isEditing && (
+                                    <div className="sticky bottom-4 flex justify-end bg-white p-4 rounded-lg shadow-lg border border-gray-100">
+                                        <button
+                                            type="submit"
+                                            disabled={isSaving}
+                                            className={`px-6 py-2 bg-blue-600 text-white rounded-lg transition-colors ${isSaving ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-700'
+                                                }`}
+                                        >
+                                            {isSaving ? 'Saving Changes...' : 'Save All Changes'}
+                                        </button>
+                                    </div>
+                                )}
+                            </form>
+
+
+                        </div>
+                    ) : activeView === 'appliedJobs' ? (
+                        <AppliedJobs  />
+                    ) : (
+                        <div className="max-w-4xl mx-auto">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-4">hfh</h1>
+                            <div className="bg-white rounded-lg shadow p-12 text-center">
+                                <h2 className="text-xl text-gray-600">This page is under construction</h2>
+                                <p className="mt-4 text-gray-500">We're working on making this feature available soon.</p>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
         </div >
     );
 };
 
 export default Dashboard
+
+

@@ -1,150 +1,305 @@
 import React, { useState } from "react";
-import { Briefcase, MapPin, DollarSign, Calendar, Layers, CheckCircle, ChevronRight, ChevronLeft } from "lucide-react";
+import { useSelector } from "react-redux";
+import axios from 'axios';
+import {
+  Briefcase,
+  MapPin,
+  DollarSign,
+  Clock,
+  Blocks,
+  FileText,
+  GraduationCap,
+  Send,
+  Building,
+  Globe
+} from "lucide-react";
+import { BASEURL } from "../../../utility/config";
 
-const CreateJobPost = ({ addJob }) => {
-    const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({
-        job_title: "",
-        job_description: "",
-        employment_type: "",
-        job_location: "",
-        remote: false,
-        salary_range: "",
-        job_experience_required: "",
-        job_skills_required: "",
-        industry: "",
-        status: "Open",
-        posted_at: new Date().toISOString().split("T")[0],
-    });
+const CreateJobPost = () => {
+  const { employerProfile } = useSelector((state) => state.employer);
+  const [formData, setFormData] = useState({
+    job_title: "",
+    job_description: "",
+    employment_type: "",
+    work_mode: "",
+    job_location: "",
+    remote: false,
+    salary_range: "",
+    job_experience_required: "",
+    job_skills_required: [],
+    industry: "",
+    status: "Open",
+    posted_at: new Date().toISOString().split("T")[0],
+    employer_id: employerProfile?.employer_id
+  });
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+  const [skillInput, setSkillInput] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSkillInputChange = (e) => {
+    setSkillInput(e.target.value);
+  };
+
+  const handleSkillAdd = () => {
+    if (skillInput.trim() && !formData.job_skills_required.includes(skillInput.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        job_skills_required: [...prev.job_skills_required, skillInput.trim()]
+      }));
+      setSkillInput('');
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if ((e.key === 'Enter' || e.key === ',') && skillInput.trim()) {
+      e.preventDefault();
+      handleSkillAdd();
+    }
+  };
+
+  const removeSkill = (skillToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      job_skills_required: prev.job_skills_required.filter(skill => skill !== skillToRemove)
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${BASEURL}/jobs_post/create_Job_Post`,
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        }
+      );
+
+      if (response.status === 201) {
+        alert('Job post created successfully!');
         setFormData({
-            ...formData,
-            [name]: type === "checkbox" ? checked : value,
+          job_title: "",
+          job_description: "",
+          employment_type: "",
+          work_mode: "",
+          job_location: "",
+          remote: false,
+          salary_range: "",
+          job_experience_required: "",
+          job_skills_required: [],
+          industry: "",
+          status: "Open",
+          posted_at: new Date().toISOString().split("T")[0],
         });
-    };
+        setSkillInput('');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Error creating job post');
+    }
+  };
 
-    const nextStep = () => setStep((prev) => prev + 1);
-    const prevStep = () => setStep((prev) => prev - 1);
+  return (
+    <div className="p-4">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
+        <div className="bg-blue-600 p-4 rounded-t-lg">
+          <h2 className="text-xl text-white flex items-center gap-2">
+            <Briefcase className="w-6 h-6 text-white" />
+            Create Job Post
+          </h2>
+        </div>
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        addJob(formData);
-        setFormData({
-            job_title: "",
-            job_description: "",
-            employment_type: "",
-            job_location: "",
-            remote: false,
-            salary_range: "",
-            job_experience_required: "",
-            job_skills_required: "",
-            industry: "",
-            status: "Open",
-            posted_at: new Date().toISOString().split("T")[0],
-        });
-        setStep(1);
-    };
+        <form onSubmit={handleSubmit} className="p-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Left Column */}
+            <div className="space-y-4">
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <Briefcase className="w-4 h-4 text-gray-600" />
+                  Job Title
+                </label>
+                <input
+                  type="text"
+                  name="job_title"
+                  value={formData.job_title}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  required
+                />
+              </div>
 
-    return (
-        <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            {/* Progress Bar */}
-            <div className="flex items-center justify-between mb-6">
-                {["Basic Info", "Job Details", "Skills & Salary"].map((label, index) => (
-                    <div key={index} className="flex flex-col items-center">
-                        {index + 1 === step ? (
-                            <CheckCircle className="w-6 h-6 text-green-500" />
-                        ) : (
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${index + 1 < step ? "bg-green-500 text-white" : "bg-gray-300 text-gray-600"}`}>
-                                {index + 1}
-                            </div>
-                        )}
-                        <span className={`text-sm mt-1 ${index + 1 === step ? "font-bold text-blue-600" : "text-gray-500"}`}>{label}</span>
-                    </div>
-                ))}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <FileText className="w-4 h-4 text-gray-600" />
+                  Job Description
+                </label>
+                <textarea
+                  name="job_description"
+                  value={formData.job_description}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all h-24"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <Clock className="w-4 h-4 text-gray-600" />
+                  Employment Type
+                </label>
+                <select
+                  name="employment_type"
+                  value={formData.employment_type}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  required
+                >
+                  <option value="">Select Type</option>
+                  <option value="Full-time">Full-time</option>
+                  <option value="Part-time">Part-time</option>
+                  <option value="Contract">Contract</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <Globe className="w-4 h-4 text-gray-600" />
+                  Work Mode
+                </label>
+                <select
+                  name="work_mode"
+                  value={formData.work_mode}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  required
+                >
+                  <option value="">Select Work Mode</option>
+                  <option value="On-site">On-site</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="Remote">Remote</option>
+                </select>
+              </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
-                {/* Step 1: Basic Info */}
-                {step === 1 && (
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Job Title</label>
-                            <input type="text" name="job_title" value={formData.job_title} onChange={handleChange} className="w-full p-2 border rounded-md" required />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Job Description</label>
-                            <textarea name="job_description" value={formData.job_description} onChange={handleChange} className="w-full p-2 border rounded-md" required />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Employment Type</label>
-                            <select name="employment_type" value={formData.employment_type} onChange={handleChange} className="w-full p-2 border rounded-md">
-                                <option value="">Select Type</option>
-                                <option value="Full-time">Full-time</option>
-                                <option value="Part-time">Part-time</option>
-                                <option value="Contract">Contract</option>
-                            </select>
-                        </div>
-                    </div>
-                )}
+            {/* Right Column */}
+            <div className="space-y-4">
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <MapPin className="w-4 h-4 text-gray-600" />
+                  Location
+                </label>
+                <input
+                  type="text"
+                  name="job_location"
+                  value={formData.job_location}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  required
+                />
+              </div>
 
-                {/* Step 2: Job Details */}
-                {step === 2 && (
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Location</label>
-                            <input type="text" name="job_location" value={formData.job_location} onChange={handleChange} className="w-full p-2 border rounded-md" required />
-                        </div>
-                        <div className="flex items-center">
-                            <input type="checkbox" name="remote" checked={formData.remote} onChange={handleChange} className="mr-2" />
-                            <label className="text-sm font-medium text-gray-700">Remote Job</label>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Industry</label>
-                            <input type="text" name="industry" value={formData.industry} onChange={handleChange} className="w-full p-2 border rounded-md" required />
-                        </div>
-                    </div>
-                )}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <Building className="w-4 h-4 text-gray-600" />
+                  Industry
+                </label>
+                <input
+                  type="text"
+                  name="industry"
+                  value={formData.industry}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  required
+                />
+              </div>
 
-                {/* Step 3: Skills & Salary */}
-                {step === 3 && (
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Salary Range</label>
-                            <input type="text" name="salary_range" value={formData.salary_range} onChange={handleChange} className="w-full p-2 border rounded-md" required />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Experience Required</label>
-                            <input type="text" name="job_experience_required" value={formData.job_experience_required} onChange={handleChange} className="w-full p-2 border rounded-md" required />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Skills Required (comma separated)</label>
-                            <input type="text" name="job_skills_required" value={formData.job_skills_required} onChange={handleChange} className="w-full p-2 border rounded-md" required />
-                        </div>
-                    </div>
-                )}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <DollarSign className="w-4 h-4 text-gray-600" />
+                  Salary Range
+                </label>
+                <input
+                  type="text"
+                  name="salary_range"
+                  value={formData.salary_range}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  required
+                />
+              </div>
 
-                {/* Navigation Buttons */}
-                <div className="mt-6 flex justify-between">
-                    {step > 1 && (
-                        <button type="button" onClick={prevStep} className="px-4 py-2 bg-gray-300 rounded-lg flex items-center gap-2">
-                            <ChevronLeft className="w-4 h-4" /> Previous
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <GraduationCap className="w-4 h-4 text-gray-600" />
+                  Experience Required
+                </label>
+                <input
+                  type="text"
+                  name="job_experience_required"
+                  value={formData.job_experience_required}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <Blocks className="w-4 h-4 text-gray-600" />
+                  Skills Required
+                </label>
+                <div className="border rounded p-3">
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {formData.job_skills_required.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm flex items-center gap-1"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => removeSkill(skill)}
+                          className="text-blue-600 hover:text-blue-800 font-bold"
+                        >
+                          ×
                         </button>
-                    )}
-                    {step < 3 ? (
-                        <button type="button" onClick={nextStep} className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center gap-2">
-                            Next <ChevronRight className="w-4 h-4" />
-                        </button>
-                    ) : (
-                        <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-lg">
-                            Submit
-                        </button>
-                    )}
+                      </span>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    value={skillInput}
+                    onChange={handleSkillInputChange}
+                    onKeyDown={handleKeyDown}
+                    className="w-full border-none focus:outline-none p-1"
+                    placeholder="Type skill and press Enter or comma to add"
+                  />
                 </div>
-            </form>
-        </div>
-    );
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <button
+              type="submit"
+              className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center gap-2 hover:bg-blue-700"
+            >
+              <Send className="w-4 h-4" />
+              Create Job Post
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default CreateJobPost;

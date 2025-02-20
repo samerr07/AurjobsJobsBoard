@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes,  useLocation } from "react-router-dom"
 import Navbar from './components/Navbar'
 import MainPage from './pages/MainPage'
 import CandidateRegisterPage from './pages/CandidateRegisterPage'
@@ -10,11 +10,20 @@ import { Toaster } from 'react-hot-toast'  // Keep the import for Toaster
 import CompanyLogin from './components/CompanyLogin'
 import CompanyRegistration from './components/CompanyRegistration'
 import JobDetails from './components/EmployerDashboard/section/JobDetails'
+import JobDetailsPage from './components/JobDetailsPage'
 import CandidateDashboard from './components/CandidateDashboard/Dashboard'
+
+import Pricing from './components/Pricing'
+// import Footer from './components/Footer'
+
+import JobsPage from './pages/JobsPage'
+
 // import CandidateDashboard from './components/Dashboard/CandidateDashboard'
 
 
 function App() {
+
+  
   return (
     <>
       <BrowserRouter>
@@ -29,8 +38,11 @@ function App() {
           <Route path='/employer_dashboard' element={<Dashboard/>} />  {/* Add this route */}
           <Route path='/company_login' element={<CompanyLogin/>}/>
           <Route path='/company_register' element={<CompanyRegistration/>}/>
-          {/* <Route path='/jobs' element={<JobsPage/>}/> */}
+          <Route path='/jobs' element={<JobsPage/>}/>
+          <Route path='/jobs/:jobId' element={<JobDetailsPage/>}/>
           <Route path="/employer_dashboard/jobs/:jobId" element={<JobDetails />} />
+          <Route path="/Pricing" element={<Pricing />} /> 
+
         </Routes>
       </BrowserRouter>
     </>

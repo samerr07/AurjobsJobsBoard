@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import JobCard from './JobCard';
+import axios from 'axios';
+// import { getEmployerProfile } from '../../../redux/employerSlice';
+import { useSelector } from 'react-redux';
+import { BASEURL } from '../../../utility/config';
+
 
 const ActiveJobs = () => {
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const { employerProfile } = useSelector((state) => state.employer);
+    const employerId=employerProfile.employer_id;
+    // console.log(employerId);
+    
     useEffect(() => {
-        // Fetch jobs from the API
         const fetchJobs = async () => {
             try {
-                // Make an API request to fetch jobs
-                const response = await fetch('http://localhost:3000/jobs_post/jobs');  // Replace with your API endpoint
-                const data = await response.json();
+                // Replace with your actual API URL
+                const response = await axios.get(`${BASEURL}/jobs_post/employer_jobs/${employerId}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    withCredentials: true,  // Include credentials if necessary
+                });
 
-                if (response.ok) {
-                    setJobs(data);  // Set the fetched jobs
+                if (response.status === 200) {
+                    setJobs(response.data);  // Set the fetched jobs
                 } else {
-                    throw new Error(data.error || 'Failed to fetch jobs');
+                    throw new Error(response.data.error || 'Failed to fetch jobs');
                 }
             } catch (error) {
                 setError(error.message);  // Handle error if API call fails
@@ -27,8 +38,7 @@ const ActiveJobs = () => {
         };
 
         fetchJobs();  // Call the fetchJobs function when the component mounts
-    }, []);
-
+    }, [employerId]);
     if (loading) {
         return <div>Loading...</div>;  // Display loading message while fetching data
     }
