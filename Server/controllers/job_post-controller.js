@@ -1,5 +1,5 @@
 import supabase from "../config/supabase-client.js";
-import { alljobs, createJobPost, getjobsdetailsbyid ,employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application,getCandidatesForJob} from "../models/job-post.js";
+import { alljobs, createJobPost, getjobsdetailsbyid ,employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application,getCandidatesForJob, getJobDetailsByJobId} from "../models/job-post.js";
 
 console.log("in controllers job post");
 export const employer_jobs = async (req, res) => {
@@ -31,11 +31,12 @@ export const getalljobs = async(req, res) => {
         return res.status(500).json({ error: "Failed to fetch jobs" });
     }
 };
+
 export const getJobsbyId = async(req, res) => {
     try {
         const { id } = req.params;
 
-        const job_details = await getjobsdetailsbyid(id);
+        const job_details = await getJobDetailsByJobId(id);
 
         if (!job_details || job_details.length === 0) {
             return res.status(404).json({ error: "Job not found", success: false });

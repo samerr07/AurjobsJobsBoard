@@ -19,7 +19,7 @@ const Dashboard = () => {
 
     const { candidateProfile } = useSelector((state) => state.candidate);
 
-    const candidate_id = candidateProfile.candidate_id;
+    // const candidate_id = candidateProfile.candidate_id;
 
     // console.log(candidateProfile)
 

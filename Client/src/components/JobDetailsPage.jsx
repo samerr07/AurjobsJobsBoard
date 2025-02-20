@@ -14,7 +14,7 @@ const JobDetailsPage = () => {
   const [incompleteFields, setIncompleteFields] = useState([]);
   const navigate = useNavigate();
   const { candidateProfile } = useSelector((state) => state.candidate);
-  const candidate_id = candidateProfile.candidate_id;
+  const candidate_id = candidateProfile?.candidate_id;
   const params = useParams()
   const job = {
     company_display_name: "Stark Industries",
@@ -254,7 +254,7 @@ const JobDetailsPage = () => {
 
               <h3 className="text-lg font-semibold mb-3">Required Skills</h3>
               <div className="flex flex-wrap gap-2 mb-6">
-                {jobDetails?.job_skills_required.map((skill, index) => (
+                {job?.job_skills_required.map((skill, index) => (
                   <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
                     {skill}
                   </span>
