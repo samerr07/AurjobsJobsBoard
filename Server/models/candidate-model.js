@@ -99,9 +99,9 @@ export const findByCandidateID = async(candidateID) => {
 };
 // import { supabase } from "../config/supabaseClient"; // Adjust import based on your setup
 
+
 export const updateCandidate = async(candidateID, candidateData) => {
     try {
-        // ✅ Extract main candidate data and related table data
         const candidate = candidateData.candidate || candidateData;
         if (!candidate) throw new Error("Candidate data is missing.");
 
@@ -109,18 +109,16 @@ export const updateCandidate = async(candidateID, candidateData) => {
             experiences,
             skills,
             languages,
-            education, 
+            education,
             certifications,
             addresses,
             ...candidateCoreData
-        } = candidateData;
-        //here im extracting the candidate central data
-        console.log("✅ Extracted Candidate Data:", candidateCoreData);
+        } = candidate;
 
-        // ✅ Get current timestamp
+        console.log("✅ Extracted Candidate Data:", candidate.experiences);
+
         const istTimestamp = new Date().toISOString();
 
-        // ✅ Update the `candidates` table (Fix: Using `update`, not `upsert`)
         const { data: updatedCandidate, error: candidateError } = await supabase
             .from("candidates")
             .upsert({
@@ -129,12 +127,11 @@ export const updateCandidate = async(candidateID, candidateData) => {
             })
             .eq("candidate_id", candidateID)
             .select();
-        // console.log("error here")
+
         if (candidateError) throw candidateError;
 
         console.log("✅ Candidate updated successfully:", updatedCandidate);
 
-        // ✅ Prepare related table data
         const candidateSkillsData = skills.map(skill => ({
             candidate_id: candidateID,
             skill_id: skill.skill_id || crypto.randomUUID(),
@@ -174,17 +171,6 @@ export const updateCandidate = async(candidateID, candidateData) => {
             updated_at: istTimestamp,
         }));
 
-        const candidateCertificationsData = certifications.map(cert => ({
-            candidate_id: candidateID,
-            certification_id: cert.certification_id || crypto.randomUUID(),
-            candidate_certificate_name: cert.candidate_certificate_name,
-            candidate_certificate_number: cert.candidate_certificate_number,
-            certificate_issue_date: cert.certificate_issue_date,
-            certificate_issuing_organization: cert.certificate_issuing_organization,
-
-            updated_at: istTimestamp,
-        }));
-
         const candidateAddressData = addresses.map(addr => ({
             candidate_id: candidateID,
             address_id: addr.address_id || crypto.randomUUID(),
@@ -197,46 +183,69 @@ export const updateCandidate = async(candidateID, candidateData) => {
             updated_at: istTimestamp,
         }));
 
-        // ✅ Upsert related tables with `onConflict()` to prevent duplicate errors
+        for (const cert of certifications) {
+            const { data: existingCert } = await supabase
+                .from("candidate_certifications")
+                .select("certification_id")
+                .eq("candidate_certificate_number", cert.candidate_certificate_number)
+                .single();
+
+            if (existingCert) {
+                await supabase
+                    .from("candidate_certifications")
+                    .update({
+                        candidate_certificate_name: cert.candidate_certificate_name,
+                        certificate_issue_date: cert.certificate_issue_date,
+                        certificate_issuing_organization: cert.certificate_issuing_organization,
+                        updated_at: istTimestamp,
+                    })
+                    .eq("certification_id", existingCert.certification_id);
+            } else {
+                await supabase.from("candidate_certifications").insert({
+                    candidate_id: candidateID,
+                    certification_id: crypto.randomUUID(),
+                    candidate_certificate_name: cert.candidate_certificate_name,
+                    // candidate_certificate_number: cert.candidate_certificate_number,
+                    certificate_issue_date: cert.certificate_issue_date,
+                    certificate_issuing_organization: cert.certificate_issuing_organization,
+                    created_at: istTimestamp,
+                    updated_at: istTimestamp,
+                });
+            }
+        }
+
         const upsertPromises = [
-            // 🔹 Fix: Ensure primary key uniqueness in upsert constraints
             supabase.from("candidate_skills").upsert(candidateSkillsData, { onConflict: ["skill_id"] }).select(),
             supabase.from("candidate_languages").upsert(candidateLanguagesData, { onConflict: ["language_id"] }).select(),
-            supabase.from("candidate_experiences").upsert(candidateExperiencesData, { onConflict: ["experience_id"] }).select(),
+            supabase.from("candidate_experience").upsert(candidateExperiencesData, { onConflict: ["experience_id"] }).select(),
             supabase.from("candidate_education").upsert(candidateEducationData, { onConflict: ["education_id"] }).select(),
-            supabase.from("candidate_certifications").upsert(candidateCertificationsData, { onConflict: ["certification_id"] }).select(),
             supabase.from("candidate_address").upsert(candidateAddressData, { onConflict: ["address_id"] }).select(),
+            supabase.from("candidate_certifications").select(),
         ];
-
 
         const responses = await Promise.allSettled(upsertPromises);
         console.log("✅ Upsert Responses:", JSON.stringify(responses, null, 2));
 
-        // ✅ Extract data from responses
         const updatedResponses = responses.map(response => response.status === "fulfilled" ? response.value.data || [] : []);
-
-        // ✅ Maintain structured response format
+        console.log("✅ Updated Certifications Table:", updatedResponses[5]);
         return {
             success: true,
             message: "Candidate and related data updated successfully",
             candidate: {
-                ...updatedCandidate[0], // ✅ Extract first object from array
-                skills: updatedResponses[0], // ✅ Nested skills data
-                languages: updatedResponses[1], // ✅ Nested languages data
-                experiences: updatedResponses[2], // ✅ Nested experiences data
-                education: updatedResponses[3], // ✅ Nested education data
-                certifications: updatedResponses[4], // ✅ Nested certifications data
-                addresses: updatedResponses[5], // ✅ Nested addresses data
+                ...updatedCandidate[0],
+                skills: updatedResponses[0],
+                languages: updatedResponses[1],
+                experiences: updatedResponses[2],
+                education: updatedResponses[3],
+                certifications: updatedResponses[5],
+                addresses: updatedResponses[4],
             },
         };
-
-
     } catch (error) {
         console.error("❌ Error updating candidate data:", error);
         return { success: false, error: error.message || "Internal Server Error" };
     }
 };
-
 
 
 
