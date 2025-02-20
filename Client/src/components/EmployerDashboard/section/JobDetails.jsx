@@ -1,103 +1,107 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MapPin, DollarSign, Calendar, Layers, Briefcase, Search } from 'lucide-react';
 import axios from 'axios';
+import JobDetailsDisplay from './JobDetailsDisplay';  // Import the new display component
+import JobApplicantsTable from './JobApplicantsTable'; // Import the table component
+import { BASEURL } from '../../../utility/config';
 
 const JobDetails = () => {
-    const [job, setJob] = useState(null);
-    const [appliedUsers, setAppliedUsers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const { jobId } = useParams();
-    const navigate = useNavigate();
+  const [job, setJob] = useState(null);
+  const [applicants, setApplicants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { jobId } = useParams(); // Extract jobId from URL
+  const navigate = useNavigate(); // Used for navigation
 
-    useEffect(() => {
-        const fetchJobDetails = async () => {
-            try {
-                const response = await axios.get(`http://localhost:3000/jobs_post/jobs_appliaction/${jobId}`);
-                setJob(response.data.job);
-                console.log(response.data.job)
-                setAppliedUsers(response.data.applicants);
-            } catch (error) {
-                console.error("Error fetching job details:", error);
-            }
-        };
+  // Fetch job details and applicants
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      try {
+        const jobResponse = await axios.get(`${BASEURL}/jobs_post/job_application/${jobId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,  // Include credentials if necessary
+        });
 
-        fetchJobDetails();
-    }, [jobId]);
+        const jobData = jobResponse.data;
+        if (jobData) {
+          setJob(jobData);  // Set the job data in state
+        } else {
+          console.error("Job not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+      }
+    };
 
-    if (!job) {
-        return (
-            <div className="p-6 text-center">
-                <h3 className="text-xl text-gray-700">Job not found</h3>
-                <button 
-                    onClick={() => navigate('/employer_dashboard')}
-                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                    Back to Dashboard
-                </button>
-            </div>
-        );
-    }
+    const fetchJobApplicants = async () => {
+      try {
+        const applicantsResponse = await axios.get(`${BASEURL}/jobs_post/job_applicants/${jobId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,  // Include credentials if necessary
+        });
 
-    const filteredUsers = appliedUsers.filter(user => 
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+        const applicantsData = applicantsResponse.data.job;
+        setApplicants(applicantsData);  // Set applicants data in state
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching job applicants:", error);
+        setLoading(false);
+      }
+    };
 
+    fetchJobDetails(); // Fetch job details
+    fetchJobApplicants(); // Fetch job applicants
+  }, [jobId]);
+
+  if (loading) {
     return (
-        <div className="p-6 max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900">{job.job_title}</h2>
-                <button 
-                    onClick={() => navigate('/employer_dashboard')}
-                    className="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium"
-                >
-                    Back to Dashboard
-                </button>
-            </div>
-
-            <div className="space-y-8">
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                    <div className="space-y-6">
-                        <div className="pb-4 border-b border-gray-100">
-                            <p className="text-gray-700 text-lg">{job.job_description}</p>
-                        </div>
-                        {/* Add other job details */}
-                    </div>
-                </div>
-
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-semibold text-gray-900">Applicants ({appliedUsers.length})</h3>
-                        <div className="relative w-64">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                            <input
-                                type="text"
-                                placeholder="Search applicants..."
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-4 max-h-[800px] pr-2">
-                        {filteredUsers.map(user => (
-                            <div key={user.id} className="bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                                <div className="flex justify-between items-start">
-                                    <div className="space-y-3">
-                                        <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
-                                        {/* Add other user details */}
-                                    </div>
-                                    {/* Add status and View Profile button */}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div className="p-6 text-center mt-20">
+        <h3 className="text-xl text-gray-700">Loading...</h3>
+      </div>
     );
+  }
+
+  if (!job) {
+    return (
+      <div className="p-6 text-center mt-20">
+        <h3 className="text-xl text-gray-700">Job not found</h3>
+        <button 
+          onClick={() => navigate('/employer_dashboard')}
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900">{job.job_title}</h2>
+        <button 
+          onClick={() => navigate('/employer_dashboard')}
+          className="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium"
+        >
+          Back to Dashboard
+        </button>
+      </div>
+
+      {/* Pass job data as prop to the JobDetailsDisplay component */}
+      <div>
+        <JobDetailsDisplay job={job} />
+      </div>
+
+      {/* Pass applicants data as prop to the JobApplicantsTable component */}
+      <div className="mt-8">
+        <h3 className="text-2xl font-semibold mb-4">Applicants</h3>
+        <JobApplicantsTable applicants={applicants} />
+      </div>
+    </div>
+  );
 };
 
 export default JobDetails;

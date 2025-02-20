@@ -12,7 +12,8 @@ const getEmployerDetails = async(employerIds) => {
 
     if (error) throw error;
     return employers;
-};export const employer_Jobs = async (employer_id) => {
+};
+export const employer_Jobs = async (employer_id) => {
     try {
       // Find all jobs posted by the employer using employer_id
       const { data: jobs, error } = await supabase
@@ -181,5 +182,69 @@ export const createJobApplication = async (
     } catch (error) {
       console.error("Error fetching applications by candidate ID:", error.message);
       throw error;
+    }
+  };
+
+  export const Job_application = async (job_id) => {
+    try {
+      // Fetch the job with the specific job_id
+      const { data: job, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .eq("job_id", job_id)  // Filtering by job_id
+        .single();  // Ensures only one job is returned
+      if (error) {
+        console.log(error.message);
+        throw new Error(error.message);
+      }
+    
+      if (!job) {
+        throw new Error("No job found with this job_id");
+      }
+    
+      return job;
+    } catch (error) {
+      throw new Error(`Error fetching job application: ${error.message}`);
+    }
+  };
+  
+  export const getCandidatesForJob = async (job_id) => {
+    try {
+      // Step 1: Fetch all applications for the given job_id
+      const { data: applications, error: applicationError } = await supabase
+        .from("applications")
+        .select("candidate_id")
+        .eq("job_id", job_id);
+  
+      if (applicationError) throw applicationError;
+  
+      if (!applications || applications.length === 0) {
+        return { message: "No candidates have applied for this job." };
+      }
+  
+      // Step 2: Extract candidate_ids from the applications
+      const candidateIds = applications.map((application) => application.candidate_id);
+  
+      // Step 3: Fetch candidate details using the candidate_ids
+      const { data: candidates, error: candidateError } = await supabase
+        .from("candidates")
+        .select("*")
+        .in("candidate_id", candidateIds);
+  
+      if (candidateError) throw candidateError;
+      if (!candidates || candidates.length === 0) {
+        return { message: "No candidate details found." };
+      }
+  
+      // Step 4: Combine application and candidate details (optional)
+      const result = candidates.map((candidate) => ({
+        ...candidate,
+        job_id: job_id, // Include the job_id for clarity
+      }));
+  
+      return result; // Returning the candidate details with job information
+    } catch (error) {
+      console.error("Error fetching candidates for job:", error.message);
+      return { error: error.message };
     }
   };

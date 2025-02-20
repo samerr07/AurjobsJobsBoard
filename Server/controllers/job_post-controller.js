@@ -1,5 +1,5 @@
 import supabase from "../config/supabase-client.js";
-import { alljobs, createJobPost, getjobsdetailsbyid ,employer_Jobs, createJobApplication, getApplicationsByCandidateId} from "../models/job-post.js";
+import { alljobs, createJobPost, getjobsdetailsbyid ,employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application,getCandidatesForJob} from "../models/job-post.js";
 
 console.log("in controllers job post");
 export const employer_jobs = async (req, res) => {
@@ -11,6 +11,17 @@ export const employer_jobs = async (req, res) => {
       return res.status(500).json({ error: `Failed to fetch Employer Jobs: ${error.message}` });
     }
   };
+
+  export const job_application=async(req,res)=>{
+    try {
+       const {id}=req.params;
+       console.log(id)
+       const job=await Job_application(id);
+       return res.status(200).json(job);
+    } catch (error) {
+      return res.status(500).json({ error: `Failed to fetch Employer Jobs: ${error.message}` }); 
+    }
+  }
 
 export const getalljobs = async(req, res) => {
     try {
@@ -162,5 +173,26 @@ export const applyForJob = async (req, res) => {
         error: "Internal Server Error",
         success: false
       });
+    }
+  };
+
+  export const job_applicants = async (req, res) => {
+    try {
+      const { id } = req.params;  // Get the job_id from the request parameters
+  
+      // Fetch all candidates for the given job_id
+      console.log("f")
+      const job_applicants = await getCandidatesForJob(id);
+  
+      // If no applicants found, return a 404 response
+      if (job_applicants.error || job_applicants.length === 0) {
+        return res.status(404).json({ error: "Applicants not found", success: false });
+      }
+  
+      // Return the list of applicants with the job details
+      res.status(200).json({ job: job_applicants, success: true });
+    } catch (error) {
+      console.error("Error fetching applicants by job ID:", error);
+      res.status(500).json({ error: "Internal Server Error", success: false });
     }
   };

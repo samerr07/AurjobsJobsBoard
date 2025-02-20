@@ -10,7 +10,7 @@ const ActiveJobs = () => {
     const [error, setError] = useState(null);
     const { employerProfile } = useSelector((state) => state.employer);
     const employerId=employerProfile.employer_id;
-    console.log(employerId);
+    // console.log(employerId);
     
     useEffect(() => {
         const fetchJobs = async () => {
