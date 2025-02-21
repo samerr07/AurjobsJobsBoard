@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
-import { CalendarDays, MapPin, Building2, Briefcase, Clock, DollarSign, GraduationCap, Laptop2 } from 'lucide-react';
+import { CalendarDays, MapPin, Building2, Briefcase, Clock, DollarSign, GraduationCap, Laptop2, LogIn, IndianRupee } from 'lucide-react';
 import { CheckCircle2, XCircle, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -11,43 +12,14 @@ const JobDetailsPage = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [incompleteFields, setIncompleteFields] = useState([]);
   const navigate = useNavigate();
-  const { candidateProfile } = useSelector((state) => state.candidate);
+  const { candidateProfile, isAuthenticated } = useSelector((state) => state.candidate);
+  console.log(candidateProfile)
   const candidate_id = candidateProfile?.candidate_id;
   const params = useParams()
-  const job = {
-    company_display_name: "Stark Industries",
-    company_logo: "https://www.starkindustries.com/logo.png",
-    employer_id: "cc4ea805-ae10-41e0-a6bb-050f16cc0559",
-    employment_type: "Internship",
-    industry: "Technology",
-    job_description: "We are looking for a skilled Software Engineer to develop and maintain applications.",
-    job_experience_required: "2+ years",
-    job_id: "08cbeaa7-e4fb-4653-8237-4a7eaa8c554a",
-    job_location: "New York, USA",
-    job_skills_required: ['JavaScript', 'Node.js', 'React', 'PostgreSQL'],
-    job_title: "Software Engineer",
-    posted_at: "2025-02-14T14:27:43.998021",
-    salary_range: "$80,000 - $120,000",
-    status: "active",
-    work_mode: "Remote",
-    // Additional fields
-    benefits: [
-      "Health, dental, and vision insurance",
-      "401(k) matching",
-      "Unlimited PTO",
-      "Professional development budget",
-      "Home office stipend"
-    ],
-    responsibilities: [
-      "Develop and maintain web applications",
-      "Write clean, maintainable, and efficient code",
-      "Collaborate with cross-functional teams",
-      "Participate in code reviews",
-      "Troubleshoot and debug applications"
-    ]
-  };
+
 
   const [jobDetails, setJobDetails] = useState(null);
 
@@ -82,11 +54,21 @@ const JobDetailsPage = () => {
       'Last Name': candidateProfile?.candidate_last_name,
       'Email': candidateProfile?.candidate_email,
       'Phone': candidateProfile?.candidate_phone,
-      'Current Role': candidateProfile?.candidate_current_role,
-      'Availability': candidateProfile?.candidate_availability,
+      // 'Current Role': candidateProfile?.candidate_current_role,
+      // 'Availability': candidateProfile?.candidate_availability,
       'Education': candidateProfile?.education?.length > 0,
       'Skills': candidateProfile?.skills?.length > 0,
-      'Experience': candidateProfile?.experience?.length > 0
+      'Languages': candidateProfile?.languages?.length > 0,
+      // 'Certifications': candidateProfile?.certifications?.length > 0,
+      'Addresses': candidateProfile?.addresses?.length > 0,
+      'Date of Birth': candidateProfile?.candidate_date_of_birth,
+      'Gender': candidateProfile?.candidate_gender,
+      // 'Github': candidateProfile?.candidate_github_link,
+      'LinkedIn': candidateProfile?.candidate_linkedin_link,
+      'Image': candidateProfile?.candidate_image_link,
+      'Location': candidateProfile?.candidate_location,
+      'Resume': candidateProfile?.candidate_resume_link,
+      'Work Preference': candidateProfile?.candidate_work_preference,
     };
 
     const missing = Object.entries(requiredFields)
@@ -98,8 +80,15 @@ const JobDetailsPage = () => {
   };
 
   const handleApply = async () => {
-    // const isProfileComplete = validateProfile();
-    const isProfileComplete = true;
+
+
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    const isProfileComplete = validateProfile();
+    // const isProfileComplete = false;
 
 
     if (!isProfileComplete) {
@@ -125,8 +114,28 @@ const JobDetailsPage = () => {
     }
   };
 
+  const parseJobDescription = (text) => {
+    if (!text) return [];
+
+    const sections = text.split(/(?=\|\|\| :)/g);
+    return sections.map(section => section.trim()).filter(Boolean);
+  };
+
+  const sections = parseJobDescription(jobDetails?.job_description);
+
+
+  const handleLogin = () => {
+    navigate('/candidate_login');
+    setShowLoginModal(false);
+  };
+
+  const handleSignup = () => {
+    navigate('/candidate_register');
+    setShowLoginModal(false);
+  };
+
   const handleCompleteProfile = () => {
-    navigate('/profile');
+    navigate('/candidate_dashboard');
     setShowModal(false);
   };
 
@@ -154,7 +163,7 @@ const JobDetailsPage = () => {
                   <span>{jobDetails?.job_location}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <DollarSign className="w-4 h-4" />
+                  <IndianRupee className="w-4 h-4" />
                   <span>{jobDetails?.salary_range}</span>
                 </div>
               </div>
@@ -176,6 +185,40 @@ const JobDetailsPage = () => {
             >
               Apply Now
             </button>
+
+            <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)}>
+              <div className="text-center">
+                <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <LogIn className="w-12 h-12 text-blue-500" />
+                </div>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                  Login Required
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Please login or create an account to apply for this job.
+                </p>
+                <div className="space-y-3">
+                  <button
+                    onClick={handleLogin}
+                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={handleSignup}
+                    className="w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                  >
+                    Create Account
+                  </button>
+                  <button
+                    onClick={() => setShowLoginModal(false)}
+                    className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </Modal>
 
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
               {incompleteFields.length === 0 && isSubmitted ? (
@@ -243,30 +286,42 @@ const JobDetailsPage = () => {
           <div className="col-span-2 space-y-6">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Job Description</h2>
-              <p className="text-gray-600 mb-6">{jobDetails?.job_description}</p>
+              {/* <p className="text-gray-600 mb-6">{jobDetails?.job_description}</p> */}
 
-              <h3 className="text-lg font-semibold mb-3">Key Responsibilities</h3>
-              <ul className="list-disc pl-5 space-y-2 text-gray-600 mb-6">
-                {job.responsibilities.map((responsibility, index) => (
-                  <li key={index}>{responsibility}</li>
-                ))}
-              </ul>
+              <div className="space-y-8">
+                {sections.map((section, index) => {
+                  const [title, ...content] = section.split('\n');
+                  return (
+                    <div key={index} className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+                      {content.map((paragraph, pIndex) => (
+                        <p key={pIndex} className="text-gray-600 leading-relaxed">
+                          {paragraph.trim()}
+                        </p>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
 
-              <h3 className="text-lg font-semibold mb-3">Required Skills</h3>
+
+
+
+              <h3 className="text-lg font-semibold mt-4 mb-3">Required Skills</h3>
               <div className="flex flex-wrap gap-2 mb-6">
-                {job?.job_skills_required.map((skill, index) => (
+                {jobDetails?.job_skills_required.map((skill, index) => (
                   <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
                     {skill}
                   </span>
                 ))}
               </div>
 
-              <h3 className="text-lg font-semibold mb-3">Benefits</h3>
+              {/* <h3 className="text-lg font-semibold mb-3">Benefits</h3>
               <ul className="list-disc pl-5 space-y-2 text-gray-600">
                 {job.benefits.map((benefit, index) => (
                   <li key={index}>{benefit}</li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
           </div>
 
@@ -312,7 +367,7 @@ const JobDetailsPage = () => {
                 technologies.
               </p>
               <button className="text-blue-600 hover:text-blue-700 font-medium">
-                Learn more about {job.company_display_name}
+                Learn more about {jobDetails?.company_display_name}
               </button>
             </div>
           </div>

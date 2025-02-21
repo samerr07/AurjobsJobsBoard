@@ -143,7 +143,7 @@ function PaymentGateway() {
                                                         type="number"
                                                         value={jobCredits}
                                                         onChange={handleInputChange}
-                                                        className="shadow appearance-none border rounded w-16 md:w-20 py-1 px-2 md:py-2 md:px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-black hide-number-arrows"
+                                                        className="shadow appearance-none border rounded w-16 md:w-20 py-1 px-2 md:py-2 md:px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  hide-number-arrows"
                                                         min="1"
                                                         disabled={planDetails.fixedCredits}
                                                         style={{ appearance: 'none', fontSize: '0.75rem' }}
@@ -187,7 +187,7 @@ function PaymentGateway() {
                                                         type="number"
                                                         value={jobCredits}
                                                         onChange={handleInputChange}
-                                                        className="shadow appearance-none border rounded w-16 md:w-20 py-1 px-2 md:py-2 md:px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-black hide-number-arrows"
+                                                        className="shadow appearance-none border rounded w-16 md:w-20 py-1 px-2 md:py-2 md:px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  hide-number-arrows"
                                                         min="1"
                                                         style={{ appearance: 'none', fontSize: '0.75rem' }}
                                                     />
