@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import PaymentGateway from './PaymentGateway';
 
 const Pricing = () => {
     // Prices and features
@@ -6,9 +8,32 @@ const Pricing = () => {
     const bundlePlanPrice = '₹7,480';
 
     const [activeTab, setActiveTab] = useState('jobPosting');
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
+    };
+
+    // Define plan details objects
+    const payAsYouGoPlan = {
+        name: 'Pay-as-You-Go (Single Credit)',
+        price: 399,
+        credits: 1,
+        fixedCredits: true,
+        description: 'Perfect for occasional hiring - No commitment required!',
+    };
+
+    const bundlePlan = {
+        name: 'Bundle Plan (Best Value)',
+        price: 7480,
+        credits: 20,
+        fixedCredits: true,
+        description: '🚀 Most Popular Plan – Save ₹1,500!',
+    };
+
+    const handleBuyNow = (plan) => {
+        // Navigate to the payments page and pass the selected plan as state
+        navigate('/PaymentGateway', { state: { selectedPlan: plan } });
     };
 
     return (
@@ -113,12 +138,12 @@ const Pricing = () => {
                                     ₹399
                                 </div>
                                 <div className="mt-2">
-                                    <a
-                                        href="#"
+                                     <button
+                                        onClick={() => handleBuyNow(payAsYouGoPlan)}
                                         className="block w-full text-center rounded-md py-3 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
                                     >
                                         Buy Now
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -197,12 +222,12 @@ const Pricing = () => {
                                     ₹7,480
                                 </div>
                                 <div className="mt-2">
-                                    <a
-                                        href="#"
+                                    <button
+                                        onClick={() => handleBuyNow(bundlePlan)}
                                         className="block w-full text-center rounded-md py-3 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
                                     >
                                         Buy Now
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -303,7 +328,6 @@ const Pricing = () => {
                             </div>
                         </div>
                     )}
-                    
                     {activeTab === 'database' && (
     <div className="flex flex-col justify-center items-center rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300" style={{ height: '700px', width: '360px' }}>
         <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6 flex-grow">
@@ -404,7 +428,7 @@ const Pricing = () => {
 
 
 
-
+                    {/* You can add more plans here following the same structure */}
                 </div>
             </div>
         </div>
