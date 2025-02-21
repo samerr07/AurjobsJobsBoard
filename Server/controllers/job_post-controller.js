@@ -15,7 +15,6 @@ export const employer_jobs = async (req, res) => {
   export const job_application=async(req,res)=>{
     try {
        const {id}=req.params;
-       console.log(id)
        const job=await Job_application(id);
        return res.status(200).json(job);
     } catch (error) {
