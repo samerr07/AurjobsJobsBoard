@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Profile from './section/Profile';
 import JobPost from './section/JobPost';
 import { UserCircle, BriefcaseIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import EmployerProfile from './section/EmployerProfile';
 
 const EmployerDashBoard = () => {
   const [activeSection, setActiveSection] = useState("profile");
@@ -25,7 +25,7 @@ const EmployerDashBoard = () => {
         {/* Toggle Button */}
         <button 
           onClick={() => setIsExpanded(!isExpanded)}
-          className="absolute -right-3 top-1/2 z-50 hidden lg:flex
+          className="absolute -right-3 top-1/60 z-50 hidden lg:flex
             items-center justify-center h-6 w-6
             bg-white border border-gray-200 
             rounded-full shadow-sm text-gray-600 
@@ -58,7 +58,7 @@ const EmployerDashBoard = () => {
 
       {/* Main Content */}
       <main className={`flex-1 transition-all duration-300 ease-in-out ${isExpanded ? 'ml-64' : 'ml-20'}`}>
-        {activeSection === 'profile' && <Profile />}
+        {activeSection === 'profile' && <EmployerProfile/>}
         {activeSection === 'job_post' && <JobPost />}
       </main>
 
