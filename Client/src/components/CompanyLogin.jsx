@@ -8,24 +8,24 @@ import toast from "react-hot-toast";
 import { getEmployerProfile, setEmployerAuthentication } from "../redux/employerSlice";
 
 function CompanyLogin() {
-  
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-      company_email: '',
-      company_password: '',
-    });
+    company_email: '',
+    company_password: '',
+  });
 
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      console.log(e.target.value)
-      console.log(name)
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }))
-    };
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(e.target.value)
+    console.log(name)
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,7 +57,7 @@ function CompanyLogin() {
           }
         });
         navigate("/")
-       
+
         dispatch(getEmployerProfile(res?.data?.employer))
         dispatch(setEmployerAuthentication(true))
 
@@ -91,7 +91,7 @@ function CompanyLogin() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-white">
       <div className="flex flex-col md:flex-row w-full justify-center shadow-lg rounded-lg overflow-hidden">
-  
+
         {/* Left: Form */}
         <div className="w-full md:w-1/2 flex justify-center items-center p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -118,7 +118,7 @@ function CompanyLogin() {
                   Email address
                 </label>
               </div>
-  
+
               <div className="relative">
                 <input
                   type="password"
@@ -137,14 +137,14 @@ function CompanyLogin() {
                 </label>
               </div>
             </div>
-  
+
             <button
               type="submit"
               className="w-full bg-orange-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 transition duration-200"
             >
               LOG IN
             </button>
-  
+
             <div className="text-center space-y-3">
               <p className="text-gray-600">
                 Don't have an account?{" "}
@@ -157,9 +157,9 @@ function CompanyLogin() {
             </div>
           </form>
         </div>
-  
+
         {/* Right: Image */}
-        <div className=" md:block md:w-1/2 p-6 flex items-center justify-center bg-orange-500">
+        <div className=" hidden md:block md:w-1/2 p-6 flex items-center justify-center bg-orange-500">
           <img
             src={LoginImage}
             alt="Login"
@@ -169,8 +169,8 @@ function CompanyLogin() {
       </div>
     </div>
   );
-  
-  
+
+
 
 }
 
