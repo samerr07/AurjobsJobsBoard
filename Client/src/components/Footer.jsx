@@ -15,7 +15,7 @@ const Footer = () => {
     },
     support: {
       title: 'Support',
-      links: ['Help Center', 'Privacy Policy', 'Community', 'Documentation', 'Training', 'Contact Us']
+      links: ['Help Center', 'Privacy Policy', 'Terms and Conditions' , 'Community', 'Documentation', 'Training', 'Contact Us']
     },
     company: {
       title: 'Company',
