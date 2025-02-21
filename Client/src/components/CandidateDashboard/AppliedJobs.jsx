@@ -5,6 +5,7 @@ import { ChevronUp, ChevronDown, Search, Filter, ChevronLeft, ChevronRight } fro
 import { useSelector } from 'react-redux';
 import { BASEURL } from '../../utility/config';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const AppliedJobs = () => {
 
@@ -35,6 +36,7 @@ const AppliedJobs = () => {
     }
   }
 
+  
   // Effect to filter jobs based on search term and status
   useEffect(() => {
 
@@ -237,7 +239,8 @@ const AppliedJobs = () => {
                       className="hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
+                        <Link to={`/jobs/${application.jobs.job_id}`}>
+                        <div className="flex items-center gap-3" >
                           <img
                             src={application.jobs.employer_id.company_logo}
                             alt={application.jobs.employer_id.company_display_name}
@@ -247,6 +250,7 @@ const AppliedJobs = () => {
                             {application.jobs.employer_id.company_display_name}
                           </span>
                         </div>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-gray-900">{application.jobs.job_title}</span>

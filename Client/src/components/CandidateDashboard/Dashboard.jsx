@@ -3,11 +3,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FaUser, FaBriefcase, FaSignOutAlt, FaChevronLeft, FaChevronRight, FaGraduationCap, FaTools, FaTrophy, FaRunning, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import Profile from './Profile';
 import { BarChart, ChevronLeft, ChevronRight, Home, Mail, Search, Settings, UserRoundPen, Users } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid'
 import { BASEURL } from '../../utility/config';
 import AppliedJobs from './AppliedJobs';
+import { getCandidateProfile } from '../../redux/candidateSlice';
 
 const Dashboard = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -16,6 +17,8 @@ const Dashboard = () => {
     const [showDashboard, setShowDashboard] = useState(false);
     const [activeView, setActiveView] = useState('profile'); 
     const formRef = useRef(null);
+
+    const dispatch = useDispatch()
 
     const { candidateProfile } = useSelector((state) => state.candidate);
 
@@ -112,7 +115,7 @@ const Dashboard = () => {
             console.log(candidateData1)
             try {
                 axios.defaults.withCredentials = true;
-                const res = await axios.put(`http://localhost:3000/candidates/CandidateProfile/${candidateProfile?.candidate_id}`, candidateData1, {
+                const res = await axios.put(`${BASEURL}/candidates/CandidateProfile/${candidateProfile?.candidate_id}`, candidateData1, {
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -122,6 +125,7 @@ const Dashboard = () => {
                 console.log("API Called")
                 if (res?.data?.success) {
                     console.log(res?.data?.updatedCandidate)
+                    dispatch(getCandidateProfile(res?.data?.updatedCandidate?.candidate))
                     setIsSaving(false);
                     setIsEditing(false);
                 }
