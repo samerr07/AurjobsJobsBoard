@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import {
     Search,
@@ -7,7 +8,11 @@ import {
     CheckCircle2,
     XCircle,
     ChevronDown,
-     X
+    ChevronLeft,
+    ChevronRight,
+    ChevronsLeft,
+    ChevronsRight,
+    X
 } from 'lucide-react';
 import JobCard from '../components/JobCard';
 import axios from 'axios';
@@ -15,20 +20,20 @@ import { BASEURL } from '../utility/config';
 
 const JobsPage = () => {
 
-   
+
     const filterCategories = [
         {
+            title: "Location",
+            type: "input",
+            value: ""
+        },
+        {
             title: "Salary Range",
-            options: [
-                { label: "Technology", checked: false },
-                { label: "Design", checked: false },
-                { label: "Science", checked: false },
-                { label: "Business", checked: false },
-                { label: "Finance", checked: false },
-                { label: "Marketing", checked: false },
-                { label: "Customer Service", checked: false },
-                { label: "Human Resource", checked: false }
-            ]
+            type: "salary-range",
+            values: {
+                min: "",
+                max: ""
+            }
         },
         {
             title: "Experience",
@@ -58,11 +63,17 @@ const JobsPage = () => {
         workMode: 'all',
         industryType: 'all',
         workType: 'all',
-        salaryRange: 0,
+        salaryRange: {
+            min: '',
+            max: ''
+        },
+        location: '',
         categories: [...filterCategories]
     });
     const [sortBy, setSortBy] = useState('lastUpdated');
     const [isFilterOpen, setIsFilterOpen] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12
     const [salaryRange, setSalaryRange] = useState(0);
 
     const handleFilterChange = (filterType, value) => {
@@ -71,32 +82,67 @@ const JobsPage = () => {
             [filterType]: value
         }));
     };
+
+    const handleLocationChange = (value) => {
+        const newFilters = { ...filters };
+        newFilters.categories[0].value = value;
+        newFilters.location = value;
+        setFilters(newFilters);
+    };
+
+    const handleSalaryRangeChange = (type, value) => {
+        // Only allow numbers
+        const numericValue = value.replace(/[^0-9]/g, '');
+
+        const newFilters = { ...filters };
+        newFilters.categories[1].values[type] = numericValue;
+        newFilters.salaryRange[type] = numericValue;
+        setFilters(newFilters);
+    };
+
     // const parseSalaryString = (salaryString) => {
     //     // Extract numbers from strings like "$120,000 - $150,000/year"
-    //     const numbers = salaryString.replace(/[^0-9-]/g, '')
-    //         .split('-')
-    //         .map(num => parseInt(num.trim()));
+    //     const salary = parseInt(salaryString.replace(/[^0-9]/g, ''));
 
-    //     // Return [minSalary, maxSalary]
-    //     return numbers.length >= 2 ? [numbers[0], numbers[1]] : [0, 0];
+    //     // If we have a valid number, return it as both min and max
+    //     return isNaN(salary) ? [0, 0] : [salary, salary];
     // };
 
-    const fetchAllJobs = async()=>{
-        try{
+    const parseSalaryString = (salaryString) => {
+        if (!salaryString) return 0;
+
+        // If it's already a number as a string, just parse it
+        if (/^\d+$/.test(salaryString)) {
+            return parseInt(salaryString);
+        }
+
+        // For ranges like "120000-150000", take the average
+        if (salaryString.includes('-')) {
+            const [min, max] = salaryString.split('-').map(s => parseInt(s.replace(/[^0-9]/g, '')));
+            return (min + max) / 2;
+        }
+
+        // Remove all non-numeric characters and parse
+        return parseInt(salaryString.replace(/[^0-9]/g, '')) || 0;
+    };
+
+
+    const fetchAllJobs = async () => {
+        try {
             console.log("APi calling initated")
             const res = await axios.get(`${BASEURL}/jobs_post/jobs`, {
                 headers: {
-                  "Content-Type": "application/json"
+                    "Content-Type": "application/json"
                 },
                 withCredentials: true
-        })
+            })
             console.log("Api called")
-           
-                console.log(res?.data)
-                setJobs(res?.data);
-                
-            
-        }catch(err){
+
+            console.log(res?.data)
+            setJobs(res?.data);
+
+
+        } catch (err) {
             console.log(err)
         }
     }
@@ -104,9 +150,13 @@ const JobsPage = () => {
     // Load initial jobs
     useEffect(() => {
         fetchAllJobs()
-        
+
         setLoading(false);
     }, []);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filters, sortBy]);
 
     // Event handlers
     const handleWorkModeChange = (e) => {
@@ -117,7 +167,7 @@ const JobsPage = () => {
         handleFilterChange('workType', e.target.value);
     };
 
-    const handleIndustryTypeChange = (e)=>{
+    const handleIndustryTypeChange = (e) => {
         handleFilterChange('industryType', e.target.value);
     }
 
@@ -126,7 +176,7 @@ const JobsPage = () => {
     };
 
 
-    
+
 
     const toggleOption = (categoryIndex, optionIndex) => {
         const newFilters = { ...filters };
@@ -158,15 +208,27 @@ const JobsPage = () => {
 
     const clearAll = () => {
         setFilters({
-            searchTerm:"",
+            searchTerm: "",
             workMode: 'all',
             workType: 'all',
             industryType: 'all',
-            salaryRange: 0,
-            categories: filterCategories.map(category => ({
-                ...category,
-                options: category.options.map(option => ({ ...option, checked: false }))
-            }))
+            salaryRange: {
+                min: '',
+                max: ''
+            },
+            location: '',
+            categories: filterCategories.map(category => {
+                if (category.type === "input") {
+                    return { ...category, value: "" };
+                }
+                if (category.type === "salary-range") {
+                    return { ...category, values: { min: "", max: "" } };
+                }
+                return {
+                    ...category,
+                    options: category.options.map(option => ({ ...option, checked: false }))
+                };
+            })
         });
         setSalaryRange(0);
     };
@@ -180,21 +242,21 @@ const JobsPage = () => {
 
         switch (sortBy) {
             case 'lastUpdated':
-                return jobsCopy.sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate));
+                return jobsCopy.sort((a, b) => new Date(b.posted_at) - new Date(a.posted_at));
             case 'companyAZ':
                 return jobsCopy.sort((a, b) => a.company_display_name
-                .localeCompare(b.company_display_name
-                ));
+                    .localeCompare(b.company_display_name
+                    ));
             case 'companyZA':
                 return jobsCopy.sort((a, b) => b.company_display_name
-                .localeCompare(a.company_display_name
-                ));
-            // case 'salaryHighToLow':
-            //     return jobsCopy.sort((a, b) => {
-            //         const [aMin] = parseSalaryString(a.salary_range);
-            //         const [bMin] = parseSalaryString(b.salary_range);
-            //         return bMin - aMin;
-            //     });
+                    .localeCompare(a.company_display_name
+                    ));
+            case 'salaryHighToLow':
+                return jobsCopy.sort((a, b) => {
+                    const salaryA = parseSalaryString(a.salary_range);
+                    const salaryB = parseSalaryString(b.salary_range);
+                    return salaryB - salaryA;
+                });
             default:
                 return jobsCopy;
         }
@@ -203,28 +265,47 @@ const JobsPage = () => {
 
 
     // Memoized filtering function
-    const filteredJobs = useMemo(() => {
-        return sortedJobs.filter(job => {
+
+
+    const getPaginationInfo = (total, current, perPage) => {
+        const start = (current - 1) * perPage + 1;
+        const end = Math.min(start + perPage - 1, total);
+        return `Showing ${start}-${end} of ${total} jobs`;
+    };
+
+    const paginatedJobs = useMemo(() => {
+        const filtered = sortedJobs.filter(job => {
+
+            if (filters.salaryRange.min || filters.salaryRange.max) {
+                const jobSalary = parseSalaryString(job.salary_range); // Update to use salary_range
+                const minSalary = filters.salaryRange.min ? parseInt(filters.salaryRange.min) : 0;
+                const maxSalary = filters.salaryRange.max ? parseInt(filters.salaryRange.max) : Infinity;
+
+                if (jobSalary < minSalary || (maxSalary !== Infinity && jobSalary > maxSalary)) {
+                    return false;
+                }
+            }
+
+            if (filters.location && !job.job_location.toLowerCase().includes(filters.location.toLowerCase())) {
+                return false;
+            }
+
             if (filters.searchTerm) {
                 const searchTerm = filters.searchTerm.toLowerCase();
                 const searchableFields = [
                     job.job_title,
                     job.job_location,
-                    // Add more searchable fields as needed
+                    job.company_display_name
                 ].map(field => field.toLowerCase());
-    
-                // Check if any field contains the search term
-                const matchesSearch = searchableFields.some(field => 
+
+                const matchesSearch = searchableFields.some(field =>
                     field.includes(searchTerm)
                 );
-    
+
                 if (!matchesSearch) {
                     return false;
                 }
             }
-            // if (filters.jobTitle !== 'all' && !job.jobTitle.toLowerCase().includes(filters.jobTitle.toLowerCase())) {
-            //     return false;
-            // }
 
             if (filters.workMode !== 'all' && filters.workMode !== 'Work Mode' &&
                 job?.work_mode?.toLowerCase() !== filters.workMode.toLowerCase()) {
@@ -240,27 +321,25 @@ const JobsPage = () => {
                 return false;
             }
 
-            // const [minSalary] = parseSalaryString(job.salary_range);
-            // if (salaryRange > 0 && minSalary < salaryRange) {
-            //     return false;
-            // }
-
-           
-            // Experience filter
-            const selectedExperiences = filters.categories[1].options.filter(opt => opt.checked);
+            const selectedExperiences = filters.categories[2].options.filter(opt => opt.checked);
             if (!matchesExperienceFilter(job.job_experience_required, selectedExperiences)) {
                 return false;
             }
 
-            // const selectedIndustries = filters.categories[0].options.filter(opt => opt.checked);
-            // if (!matchesIndustryFilter(job.industry, selectedIndustries)) {
-            //     return false;
-            // }
-
-
             return true;
         });
-    }, [sortedJobs, filters, salaryRange]);
+
+        // Calculate pagination indexes
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        return {
+            jobs: filtered.slice(startIndex, endIndex),
+            totalJobs: filtered.length,
+            totalPages: Math.ceil(filtered.length / itemsPerPage),
+            currentRange: getPaginationInfo(filtered.length, currentPage, itemsPerPage)
+        };
+    }, [sortedJobs, filters, currentPage, itemsPerPage]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -273,7 +352,7 @@ const JobsPage = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5">
                         {/* Job Title Filter */}
-                        
+
 
                         <div className="group">
                             <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-indigo-100 
@@ -341,58 +420,31 @@ const JobsPage = () => {
                     </div>
 
                     <div className="group">
-                            <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-indigo-100 
+                        <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-indigo-100 
                                 transition-all duration-300 hover:shadow-md hover:border-indigo-300
                                 group-focus-within:ring-2 group-focus-within:ring-indigo-500">
-                                <MapPin className="w-5 h-5 text-green-500 group-hover:text-green-600 transition-colors" />
-                                <select
-                                    className="bg-transparent outline-none w-full text-gray-800 font-medium 
+                            <MapPin className="w-5 h-5 text-green-500 group-hover:text-green-600 transition-colors" />
+                            <select
+                                className="bg-transparent outline-none w-full text-gray-800 font-medium 
                                     placeholder-gray-400 hover:text-green-700"
-                                    value={filters.industryType}
-                                    onChange={handleIndustryTypeChange}
-                                >
-                                    <option value="all">All Industry</option>
-                                    <option value="Technology">Technology</option>
-                                    <option value="Design">Design</option>
-                                    <option value="Science">Science</option>
-                                    <option value="Business">Business</option>
-                                    <option value="Finance">Finance</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Customer Service">Customer Service</option>
-                                    <option value="Human Resource">Human Resource</option>
-                                    
-                                </select>
-                            </div>
-                        </div>
+                                value={filters.industryType}
+                                onChange={handleIndustryTypeChange}
+                            >
+                                <option value="all">All Industry</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Design">Design</option>
+                                <option value="Science">Science</option>
+                                <option value="Business">Business</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Customer Service">Customer Service</option>
+                                <option value="Human Resource">Human Resource</option>
 
-                    {/* Salary Range Slider */}
-                    {/* <div className="w-full lg:w-72">
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between text-sm text-gray-700">
-                                <span className="font-semibold">Salary Range</span>
-                                <span className="font-bold text-indigo-600">
-                                    ${salaryRange.toLocaleString()} - $200,000
-                                </span>
-                            </div>
-                            <input
-                                type="range"
-                                min="0"
-                                max="200000"
-                                step="10000"
-                                value={salaryRange}
-                                onChange={(e) => setSalaryRange(Number(e.target.value))}
-                                className="w-full h-2.5 bg-indigo-100 rounded-full appearance-none cursor-pointer 
-                                    [&::-webkit-slider-thumb]:appearance-none 
-                                    [&::-webkit-slider-thumb]:w-5 
-                                    [&::-webkit-slider-thumb]:h-5 
-                                    [&::-webkit-slider-thumb]:bg-indigo-600 
-                                    [&::-webkit-slider-thumb]:rounded-full 
-                                    [&::-webkit-slider-thumb]:shadow-xl 
-                                    hover:[&::-webkit-slider-thumb]:bg-indigo-700 
-                                    transition-all duration-300"
-                            />
+                            </select>
                         </div>
-                    </div> */}
+                    </div>
+
+
                 </div>
             </div>
 
@@ -424,34 +476,94 @@ const JobsPage = () => {
                                     <h4 className="text-gray-600 mb-4 font-semibold text-sm uppercase tracking-wider">
                                         {category.title}
                                     </h4>
-                                    <div className="space-y-3">
-                                        {category.options.map((option, optionIndex) => (
-                                            <label
-                                                key={optionIndex}
-                                                className="flex items-center gap-3 group cursor-pointer"
-                                                onClick={() => toggleOption(categoryIndex, optionIndex)}
-                                            >
-                                                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300
-                                                    ${option.checked
-                                                        ? 'bg-indigo-600 border-indigo-600'
-                                                        : 'border-gray-300 bg-white group-hover:border-indigo-400'}`}
+
+                                    {category.type === "input" && (
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={category.value}
+                                                onChange={(e) => handleLocationChange(e.target.value)}
+                                                placeholder="Enter location..."
+                                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray"
+                                            />
+                                            {category.value && (
+                                                <button
+                                                    onClick={() => handleLocationChange('')}
+                                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                                 >
-                                                    {option.checked && <CheckCircle2 className="w-4 h-4 text-white" />}
-                                                </div>
-                                                <span className={`text-sm transition-colors
-                                                    ${option.checked
-                                                        ? 'text-indigo-700 font-semibold'
-                                                        : 'text-gray-700 group-hover:text-indigo-600'}`}
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                    {category.type === "salary-range" && (
+                                        <div className="space-y-2">
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    value={category.values.min}
+                                                    onChange={(e) => handleSalaryRangeChange('min', e.target.value)}
+                                                    placeholder="Minimum salary"
+                                                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none  focus:border-gray"
+                                                />
+                                                {category.values.min && (
+                                                    <button
+                                                        onClick={() => handleSalaryRangeChange('min', '')}
+                                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    value={category.values.max}
+                                                    onChange={(e) => handleSalaryRangeChange('max', e.target.value)}
+                                                    placeholder="Maximum salary"
+                                                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none  focus:border-black"
+                                                />
+                                                {category.values.max && (
+                                                    <button
+                                                        onClick={() => handleSalaryRangeChange('max', '')}
+                                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {!category.type && (
+                                        <div className="space-y-3">
+                                            {category.options.map((option, optionIndex) => (
+                                                <label
+                                                    key={optionIndex}
+                                                    className="flex items-center gap-3 group cursor-pointer"
+                                                    onClick={() => toggleOption(categoryIndex, optionIndex)}
                                                 >
-                                                    {option.label}
-                                                </span>
-                                            </label>
-                                        ))}
-                                    </div>
+                                                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300
+                            ${option.checked
+                                                            ? 'bg-indigo-600 border-indigo-600'
+                                                            : 'border-gray-300 bg-white group-hover:border-indigo-400'}`}
+                                                    >
+                                                        {option.checked && <CheckCircle2 className="w-4 h-4 text-white" />}
+                                                    </div>
+                                                    <span className={`text-sm transition-colors
+                            ${option.checked
+                                                            ? 'text-indigo-700 font-semibold'
+                                                            : 'text-gray-700 group-hover:text-indigo-600'}`}
+                                                    >
+                                                        {option.label}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
 
-                            {/* Filter Actions */}
+
                             <div className="flex justify-between mt-6 pt-4 border-t border-gray-200">
                                 <button
                                     onClick={clearAll}
@@ -477,7 +589,10 @@ const JobsPage = () => {
                         <div className="flex items-center gap-2">
                             <h2 className="text-xl font-semibold">Recommended Jobs</h2>
                             <span className="bg-gray-200 px-3 py-0.5 rounded-full text-sm">
-                                {filteredJobs.length}
+                                {paginatedJobs.totalJobs}
+                            </span>
+                            <span className="text-sm text-gray-600">
+                                {paginatedJobs.currentRange}
                             </span>
                         </div>
 
@@ -498,15 +613,128 @@ const JobsPage = () => {
                         </div>
                     </div>
 
+
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredJobs.map(job => (
-                            <JobCard key={job.companyName + job.jobTitle} job={job} />
+                        {paginatedJobs.jobs.map(job => (
+                            <JobCard key={job?.job_id} job={job} />
                         ))}
                     </div>
+
+                    {/* Pagination */}
+
                 </div>
             </div>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={paginatedJobs.totalPages}
+                onPageChange={setCurrentPage}
+            />
         </div>
     );
 };
 
 export default JobsPage;
+
+
+
+
+
+
+
+const Pagination = ({
+    currentPage = 1,
+    totalPages = 1,
+    onPageChange,
+    showFirstLast = true,
+    maxVisiblePages = 5
+}) => {
+    const getPageNumbers = () => {
+        let pages = [];
+        let start = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let end = Math.min(totalPages, start + maxVisiblePages - 1);
+
+        // Adjust start if we're near the end
+        if (end - start + 1 < maxVisiblePages) {
+            start = Math.max(1, end - maxVisiblePages + 1);
+        }
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    };
+
+    if (totalPages <= 1) return null;
+
+    return (
+        <nav className="flex items-center justify-center space-x-2 my-8">
+            {showFirstLast && (
+                <button
+                    onClick={() => onPageChange(1)}
+                    disabled={currentPage === 1}
+                    className={`p-2 rounded-lg border ${currentPage === 1
+                        ? 'text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-indigo-600'
+                        }`}
+                    aria-label="First page"
+                >
+                    <ChevronsLeft className="w-5 h-5" />
+                </button>
+            )}
+
+            <button
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-lg border ${currentPage === 1
+                    ? 'text-gray-400 border-gray-200 cursor-not-allowed'
+                    : 'text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-indigo-600'
+                    }`}
+                aria-label="Previous page"
+            >
+                <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-1">
+                {getPageNumbers().map((pageNum) => (
+                    <button
+                        key={pageNum}
+                        onClick={() => onPageChange(pageNum)}
+                        className={`px-4 py-2 rounded-lg border ${currentPage === pageNum
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-indigo-600'
+                            }`}
+                    >
+                        {pageNum}
+                    </button>
+                ))}
+            </div>
+
+            <button
+                onClick={() => onPageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-lg border ${currentPage === totalPages
+                    ? 'text-gray-400 border-gray-200 cursor-not-allowed'
+                    : 'text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-indigo-600'
+                    }`}
+                aria-label="Next page"
+            >
+                <ChevronRight className="w-5 h-5" />
+            </button>
+
+            {showFirstLast && (
+                <button
+                    onClick={() => onPageChange(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className={`p-2 rounded-lg border ${currentPage === totalPages
+                        ? 'text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-indigo-600'
+                        }`}
+                    aria-label="Last page"
+                >
+                    <ChevronsRight className="w-5 h-5" />
+                </button>
+            )}
+        </nav>
+    );
+};

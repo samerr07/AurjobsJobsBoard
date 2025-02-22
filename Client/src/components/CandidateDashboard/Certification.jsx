@@ -63,7 +63,7 @@ const Certification = ({ addCertificationArrayItem,isEditing,handleCertification
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700">Issue Date</label>
                   <input
-                    type="month"
+                    type="date"
                     value={cert.certificate_issue_date}
                     onChange={(e) => handleCertificationArrayItemChange('certifications', cert.certification_id, 'certificate_issue_date', e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 

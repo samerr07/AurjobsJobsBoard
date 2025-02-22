@@ -52,7 +52,7 @@ const Navbar = () => {
         <div className="md:flex space-x-4 gap-4">
           <Link to="/candidate_register">
             <button className="bg-transparent border-2 border-indigo-600 rounded-lg px-6 py-2 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-300">
-              Sign Up
+             Get Job
             </button>
           </Link>
           <Link to={"/company_register"}>
