@@ -33,7 +33,7 @@ function CompanyLogin() {
     console.log(formData)
     try {
       setLoading(true)
-      const res = await axios.post(`${BASEURL}/employers/EmployerLogin`, formData, {
+      const res = await axios.post(`${BASEURL}/employers/Employer_Login`, formData, {
         headers: {
           "Content-Type": "application/json"
         },
