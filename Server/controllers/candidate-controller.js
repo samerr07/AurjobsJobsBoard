@@ -4,42 +4,31 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import _ from 'lodash';
 class CandidateController {
-    // ✅ Candidate Signup
+    //  Candidate Signup
     static async signupCandidate(req, res) {
         try {
             const { email, password, firstname, lastname, phone, location, resume_url } = req.body;
 
-            // Convert email to lowercase for consistency
-            const normalizedEmail = _.toLower(email);
-
             // Check if the candidate already exists
-            const candidate = await findByCandidateEmail(normalizedEmail);
+            const candidate = await findByCandidateEmail(email);
             if (candidate) {
-                return res.status(400).json({ error: 'Candidate already exists', success: false });
+                return res.status(400).json({ error: "Candidate already exists", success: false });
             }
 
             // Hash the password before storing
             const hashedPassword = await bcrypt.hash(password, 10);
 
             // Create a new candidate
-            const newCandidate = await createCandidate(
-                normalizedEmail,
-                hashedPassword,
-                firstname,
-                lastname,
-                phone,
-                location,
-                resume_url
-            );
+            const newCandidate = await createCandidate(email, hashedPassword, firstname, lastname, phone, location, resume_url);
 
             if (!newCandidate) {
-                return res.status(500).json({ error: 'Failed to create Candidate', success: false });
+                return res.status(500).json({ error: "Failed to create Candidate", success: false });
             }
 
-            return res.status(201).json({ success: true, message: 'Candidate created successfully' });
+            return res.status(201).json({ success: true, message: "Candidate created successfully" });
         } catch (error) {
-            console.error('Signup Error:', error);
-            return res.status(500).json({ error: 'Internal Server Error' });
+            console.error("Signup Error:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
@@ -48,50 +37,48 @@ class CandidateController {
         try {
             const { email, password } = req.body;
 
-            // Normalize email to lowercase for consistency
-            const normalizedEmail = _.toLower(email);
-
-            // Check if the candidate exists
-            const candidate = await findByCandidateEmail(normalizedEmail);
+            // Checking if the candidate exists
+            const candidate = await findByCandidateEmail(email);
             if (!candidate) {
-                return res.status(401).json({ error: 'Invalid email or password', success: false });
+                return res.status(401).json({ error: "Invalid email or password", success: false });
             }
 
             // Compare the password
             const isMatch = await bcrypt.compare(password, candidate.candidate_password);
             if (!isMatch) {
-                return res.status(401).json({ error: 'Invalid email or password', success: false });
+                return res.status(401).json({ error: "Invalid email or password", success: false });
             }
 
-            // Create a JWT token
-            console.log('Candidate ID:', candidate.candidate_id);
+            // Creating a JWT token
+            console.log("Candidate ID:", candidate.candidate_id);
             const token = jwt.sign({ candidate_id: candidate.candidate_id },
-                process.env.JWT_SECRET, { expiresIn: '72h' }
+                process.env.JWT_SECRET, { expiresIn: "72h" }
             );
 
-            // Set the token in the cookie
-            res.cookie('authToken', token, {
-                httpOnly: true,
-                sameSite: 'none',
-                secure: true, // Ensure secure cookies in production
-                path: '/',
-            });
+            // Setting the token in the cookiei
+            res.cookie("authToken", token, { httpOnly: true, sameSite: "none", secure: true, path: "/" });
 
             // Fetch all related candidate data using findByCandidateID
             const fullCandidateData = await findByCandidateID(candidate.candidate_id);
-            console.log('----------------------------------------------------------', fullCandidateData);
+            console.log("----------------------------------------------------------", fullCandidateData)
 
             return res.status(200).json({
-                message: 'Login successful',
+                message: "Login successful",
                 token,
                 candidate: fullCandidateData, // Returning full candidate details with related data
                 success: true,
+                // samesite:
             });
+
         } catch (error) {
-            console.error('Error during login:', error);
-            return res.status(500).json({ error: 'Internal Server Error' });
+            console.error("Error during login:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
         }
     }
+
+
+
+
 
 
 
