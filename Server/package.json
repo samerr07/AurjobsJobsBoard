@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"nodemon index.js"
+    "start": "nodemon index.js"
   },
   "keywords": [
     "Aurjobs",
@@ -23,8 +23,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
     "nodemon": "^3.1.9",
     "postgres": "^3.4.5"
-  },
-  "devDependencies": {}
+  }
 }
