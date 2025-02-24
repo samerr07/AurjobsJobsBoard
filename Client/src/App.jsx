@@ -18,6 +18,8 @@ import Pricing from './components/Pricing'
 
 import JobsPage from './pages/JobsPage'
 import PaymentGateway from './components/PaymentGateway'
+import PrivacyPolicy from './components/PrivacyPolicy'
+import TermsofService from './components/TermsofService'
 
 // import CandidateDashboard from './components/Dashboard/CandidateDashboard'
 
@@ -44,7 +46,8 @@ function App() {
           <Route path="/employer_dashboard/jobs/:jobId" element={<JobDetails />} />
           <Route path="/Pricing" element={<Pricing />} /> 
           <Route path='/payment_gateway' element={<PaymentGateway/>}/>
-
+          <Route path='/privacy_policy' element={<PrivacyPolicy/>}/>
+          <Route path='/terms_and_conditions' element={<TermsofService/>}/>
         </Routes>
       </BrowserRouter>
     </>
