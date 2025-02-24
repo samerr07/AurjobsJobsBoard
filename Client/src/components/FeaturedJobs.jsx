@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Briefcase, MapPin, Clock } from 'lucide-react';
+import { BASEURL } from '../utility/config';
 
 const FeaturedJobs = () => {
+
+  // const [jobs, setJobs] = useState()
+  // const [jobLoading, setJobLoading] = useState(false)
   const jobs = [
     {
       title: "Digital Marketing Specialist",
@@ -71,6 +75,39 @@ const FeaturedJobs = () => {
     }
   ];
 
+
+
+  // const fetchAllJobs = async () => {
+  //   try {
+  //     console.log("APi calling initated")
+  //     setJobLoading(true); // Set loading to true before the API call
+  //     setError(null);
+  //     const res = await axios.get(`${BASEURL}/jobs_post/jobs`, {
+  //       headers: {
+  //         "Content-Type": "application/json"
+  //       },
+  //       withCredentials: true
+  //     })
+  //     console.log("Api called")
+
+  //     console.log(res?.data)
+  //     setJobLoading(false);
+  //     setJobs(res?.data);
+  //     // setLoading(false);
+
+
+  //   } catch (err) {
+  //     console.log(err)
+  //     setJobLoading(false);
+  //   } finally {
+  //     setJobLoading(false);
+  //   }
+  // }
+
+  // useEffect(()=>{
+  //   fetchAllJobs()
+  // },[])
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <h2 className="text-4xl font-bold mb-2 text-gray-900 text-center">Featured Jobs</h2>
@@ -79,14 +116,14 @@ const FeaturedJobs = () => {
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {jobs.map((job, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-2"
           >
             <div className="flex items-center mb-4">
-              <img 
-                src={job.image} 
-                alt={job.title} 
+              <img
+                src={job.image}
+                alt={job.title}
                 className="w-16 h-16 rounded-full object-cover mr-4 border-2 border-blue-100"
               />
               <div>
@@ -94,7 +131,7 @@ const FeaturedJobs = () => {
                 <p className="text-gray-500 text-sm">{job.company}</p>
               </div>
             </div>
-            
+
             <div className="space-y-3 mb-4">
               <div className="flex items-center text-gray-600">
                 <MapPin className="w-4 h-4 mr-2 text-blue-500" />
@@ -116,8 +153,8 @@ const FeaturedJobs = () => {
 
             <div className="flex flex-wrap gap-2 mb-4">
               {job.skills.map((skill, skillIndex) => (
-                <span 
-                  key={skillIndex} 
+                <span
+                  key={skillIndex}
                   className="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded-full"
                 >
                   {skill}
