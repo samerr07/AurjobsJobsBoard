@@ -1,8 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import { ChevronDown, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import HeroImg from "../assets/HeroImg.png"
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
+
+    const [filters, setFilters] = useState({
+        keyword: '',
+        location: '',
+        qualification: ''
+      });
+      const navigate = useNavigate()
+    
+      const handleSearch = () => {
+        // Navigate to jobs page with filters
+        const queryParams = new URLSearchParams(filters).toString();
+        // window.location.href = `/jobs?${queryParams}`;
+        navigate(`/jobs?${queryParams}`)
+      };
+    
+      const handleChange = (e) => {
+        setFilters({
+          ...filters,
+          [e.target.name]: e.target.value
+        });
+      };
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const companies = [
@@ -92,43 +114,51 @@ const HeroSection = () => {
 
                     {/* Search Bar */}
 
+                 
+
                     <div className="bg-white rounded-xl shadow-lg px-8 py-5 border border-gray-100">
                         <div className="flex items-center gap-2">
-                            <div className="relative flex-1 group">
-                                <select className="w-full appearance-none bg-gray-50 border-0 rounded-lg px-4 py-2 cursor-pointer focus:outline-none focus:bg-gray-100 group-hover:bg-gray-100 transition-colors">
-                                    <option value="">Keyword</option>
-                                    <option value="physical">Software</option>
-                                    <option value="visual">Medical</option>
-                                    <option value="hearing">Finance</option>
-                                </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <div className="flex-1">
+                                <input
+                                    type="text"
+                                    name="keyword"
+                                    placeholder="Keyword (e.g. Software, Medical, Finance)"
+                                    className="w-full bg-gray-50 border-0 rounded-lg px-4 py-2 focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors"
+                                    value={filters.keyword}
+                                    onChange={handleChange}
+                                />
                             </div>
 
-                            <div className="w-px h-10 bg-gray-200"></div>
+                            <div className="w-px h-10 bg-gray-200 hidden lg:block md:block" />
 
-                            <div className="relative flex-1 group">
-                                <select className="w-full appearance-none bg-gray-50 border-0 rounded-lg px-4 py-2 cursor-pointer focus:outline-none focus:bg-gray-100 group-hover:bg-gray-100 transition-colors">
-                                    <option value="">Location</option>
-                                    <option value="delhi">Delhi</option>
-                                    <option value="mumbai">Mumbai</option>
-                                    <option value="bangalore">Bangalore</option>
-                                </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <div className="flex-1 hidden lg:block md:block">
+                                <input
+                                    type="text"
+                                    name="location"
+                                    placeholder="Location"
+                                    className="w-full bg-gray-50 border-0 rounded-lg px-4 py-2 focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors"
+                                    value={filters.location}
+                                    onChange={handleChange}
+                                />
                             </div>
 
-                            <div className="w-px h-10 bg-gray-200"></div>
+                            <div className="w-px h-10 bg-gray-200 hidden lg:block md:block" />
 
-                            <div className="relative flex-1 group">
-                                <select className="w-full appearance-none bg-gray-50 border-0 rounded-lg px-4 py-2 cursor-pointer focus:outline-none focus:bg-gray-100 group-hover:bg-gray-100 transition-colors">
-                                    <option value="">Qualification</option>
-                                    <option value="graduate">Graduate</option>
-                                    <option value="postgraduate">Post Graduate</option>
-                                    <option value="diploma">Diploma</option>
-                                </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <div className="flex-1 hidden lg:block md:block">
+                                <input
+                                    type="text"
+                                    name="qualification"
+                                    placeholder="Qualification"
+                                    className="w-full bg-gray-50 border-0 rounded-lg px-4 py-2 focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors"
+                                    value={filters.qualification}
+                                    onChange={handleChange}
+                                />
                             </div>
 
-                            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                            <button
+                                onClick={handleSearch}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+                            >
                                 <Search size={18} />
                                 Find Jobs
                             </button>
@@ -154,7 +184,7 @@ const HeroSection = () => {
                 </div>
 
                 {/* Company Logos */}
-               
+
                 <div className="relative overflow-hidden mb-1">
                     <div
                         className="flex transition-transform duration-500 ease-in-out"
