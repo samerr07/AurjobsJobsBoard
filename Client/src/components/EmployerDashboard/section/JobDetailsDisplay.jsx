@@ -1,12 +1,13 @@
 import React from 'react';
-import { MapPin, DollarSign, Calendar, Layers, Briefcase, ChevronLeft } from 'lucide-react';
+import { MapPin, DollarSign, Calendar, Layers, Briefcase, ChevronLeft ,IndianRupee} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const JobDetailsDisplay = ({ job }) => {
   const navigate = useNavigate();  // Hook to navigate to different routes
 
   const handleBackButtonClick = () => {
-    navigate('/employer_dashboard');  // Navigate to employer_dashboard
+    // Navigate to employer_dashboard and set the active section to 'job_post'
+    navigate('/employer_dashboard', { state: { section: 'job_post' } });
   };
 
   return (
@@ -42,7 +43,7 @@ const JobDetailsDisplay = ({ job }) => {
 
           <div className="flex items-center space-x-2">
             <label className="text-sm text-gray-500">Salary Range</label>
-            <DollarSign className="text-green-500" /> {/* Green for salary */}
+            <IndianRupee className="text-green-500" /> {/* Green for salary */}
             <span className="font-semibold">{job.salary_range}</span>
           </div>
 
