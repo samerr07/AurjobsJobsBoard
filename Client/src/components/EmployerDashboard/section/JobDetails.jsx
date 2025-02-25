@@ -1,60 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-import JobDetailsDisplay from './JobDetailsDisplay';  // Import the new display component
-import JobApplicantsTable from './JobApplicantsTable'; // Import the table component
-import { BASEURL } from '../../../utility/config';
+import JobDetailsDisplay from './JobDetailsDisplay';
+import JobApplicantsTable from './JobApplicantsTable';
+import useFetchJobData from './useFetchJobData'; // Import the custom hook
 
 const JobDetails = () => {
-  const [job, setJob] = useState(null);
-  const [applicants, setApplicants] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { jobId } = useParams(); // Extract jobId from URL
-  const navigate = useNavigate(); // Used for navigation
-
-  // Fetch job details and applicants
-  useEffect(() => {
-    const fetchJobDetails = async () => {
-      try {
-        const jobResponse = await axios.get(`${BASEURL}/jobs_post/job_application/${jobId}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,  // Include credentials if necessary
-        });
-
-        const jobData = jobResponse.data;
-        if (jobData) {
-          setJob(jobData);  // Set the job data in state
-        } else {
-          console.error("Job not found.");
-        }
-      } catch (error) {
-        console.error("Error fetching job details:", error);
-      }
-    };
-
-    const fetchJobApplicants = async () => {
-      try {
-        const applicantsResponse = await axios.get(`${BASEURL}/jobs_post/job_applicants/${jobId}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,  // Include credentials if necessary
-        });
-
-        const applicantsData = applicantsResponse.data.job;
-        setApplicants(applicantsData);  // Set applicants data in state
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching job applicants:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchJobDetails(); // Fetch job details
-    fetchJobApplicants(); // Fetch job applicants
-  }, [jobId]);
+  const navigate = useNavigate();
+  
+  // Use the custom hook to fetch data
+  const { job, applicants, loading } = useFetchJobData(jobId);
 
   if (loading) {
     return (
@@ -90,12 +45,10 @@ const JobDetails = () => {
         </button>
       </div>
 
-      {/* Pass job data as prop to the JobDetailsDisplay component */}
-      <div>
-        <JobDetailsDisplay job={job} />
-      </div>
+      {/* Job Details Section */}
+      <JobDetailsDisplay job={job} />
 
-      {/* Pass applicants data as prop to the JobApplicantsTable component */}
+      {/* Applicants Table Section */}
       <div className="mt-8">
         <h3 className="text-2xl font-semibold mb-4">Applicants</h3>
         <JobApplicantsTable applicants={applicants} />
