@@ -102,8 +102,9 @@ export const CreateJobPost = async(req, res) => {
 
 export const applyForJob = async(req, res) => {
     try {
-        const { job_id, candidate_id } = req.body;
+        const { job_id, candidate_id ,score} = req.body;
 
+        const screening_score = score;
 
         if (!candidate_id) {
             return res.status(403).json({
@@ -139,7 +140,8 @@ export const applyForJob = async(req, res) => {
         // Create application
         const application = await createJobApplication(
             job_id,
-            candidate_id
+            candidate_id,
+            screening_score
         );
 
         res.status(201).json({

@@ -166,7 +166,8 @@ export const createJobPost = async (
 
 export const createJobApplication = async (
   job_id,
-  candidate_id
+  candidate_id,
+  screening_score
 ) => {
   try {
     const { data, error } = await supabase
@@ -175,6 +176,7 @@ export const createJobApplication = async (
         job_id,
         candidate_id,
         status: 'pending',
+        screening_score,
         applied_at: new Date().toISOString(),
       }])
       .select("*");
