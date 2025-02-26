@@ -7,10 +7,17 @@ import { BASEURL } from '../utility/config';
 import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import JobDetailsSkeleton from './JobDetailsSkeleton';
+import AIMatchingLoader from './AIMatchingLoader';
 
 const JobDetailsPage = () => {
 
+  const [hasApplied, setHasApplied] = useState(false);
+  const [applicationStatusChecked, setApplicationStatusChecked] = useState(false);
+  console.log(hasApplied)
+  const [appliedDate, setAppliedDate] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isProfileCompeleteModal, setIsCompleteProfileModal] = useState(false);
+  const [isAIScreening, setIsAIScreening] = useState(false);
   const [loading, setLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -23,7 +30,7 @@ const JobDetailsPage = () => {
   const candidate_id = candidateProfile?.candidate_id;
   const params = useParams()
 
-  console.log(candidateScore)
+ 
 
   const skills = candidateProfile?.skills?.map((skill) => skill.candidate_skill).join(', ');
   const formatExperience = (experience) => {
@@ -55,19 +62,12 @@ const JobDetailsPage = () => {
 
   const education = candidateProfile?.education?.map((edu) => `${edu.candidate_degree} (${edu.candidate_education_level}) from ${edu.candidate_institute}, Score: ${edu.candidate_score}, ${edu.candidate_start_year}-${edu.candidate_end_year}`).join(', ');
 
-  console.log(education)
+
 
 
   const [jobDetails, setJobDetails] = useState(null);
 
   const fetchJobDetails = async (jobId) => {
-    // const res = await axios.get(`${BASEURL}/jobs_post/job_details/${jobId}`)
-
-    // if (res?.data?.success) {
-    //   console.log(res?.data?.job)
-    //   setJobDetails(res?.data?.job)
-
-    // }
     try {
       setLoading(true);
       const res = await axios.get(`${BASEURL}/jobs_post/job_details/${jobId}`);
@@ -178,25 +178,40 @@ const JobDetailsPage = () => {
 
 
     if (!isProfileComplete) {
-      setShowModal(true);
+      setIsCompleteProfileModal(true);
       return;
     }
 
     const score = await aiScreening();
+
+
+    // Show AI screening loader
+    setIsAIScreening(true);
     setShowEligibilityModal(true);
 
 
-    if (score >= 70) {
+    // setShowEligibilityModal(true);
+
+    setTimeout(() => {
+      setIsAIScreening(false);
+    }, 5000); // Adjust timing as needed
+
+
+    if (score >= 60) {
       try {
         const res = await axios.post(`${BASEURL}/jobs_post/apply_job`, {
           job_id: jobDetails.job_id,
-          candidate_id
+          candidate_id,
+          score
         });
 
         if (res?.data?.success) {
           setIsSubmitted(true);
-          setShowModal(true)
-          toast.success(res?.data?.message);
+          setHasApplied(true);
+          // setAppliedDate(currentDate);
+          setApplicationStatusChecked(true);
+          // setShowModal(true);
+          // toast.success(res?.data?.message);
         }
       } catch (err) {
         console.log(err);
@@ -204,6 +219,64 @@ const JobDetailsPage = () => {
       }
     }
   };
+  const handleEligibilityModalClose = () => {
+    setShowEligibilityModal(false);
+    
+    // If they were eligible and application was submitted, show success modal
+    if (isSubmitted) {
+      setShowModal(true);
+    }
+  };
+
+
+  // const handleApply = async () => {
+  //   // Authentication check
+  //   if (!isAuthenticated) {
+  //     setShowLoginModal(true);
+  //     return;
+  //   }
+
+  //   // Profile validation check
+  //   const isProfileComplete = validateProfile();
+  //   if (!isProfileComplete) {
+  //     setShowModal(true);
+  //     return;
+  //   }
+
+  //   // Perform AI screening without showing loader first
+  //   const score = await aiScreening();
+
+  //   // If score is sufficient, proceed directly to job application
+  //   if (score >= 60) {
+  //     try {
+  //       const res = await axios.post(`${BASEURL}/jobs_post/apply_job`, {
+  //         job_id: jobDetails.job_id,
+  //         candidate_id
+  //       });
+
+  //       if (res?.data?.success) {
+  //         setHasApplied(true);
+  //         setAppliedDate(new Date().toISOString());
+  //         setIsSubmitted(true);
+  //         setShowModal(true);
+
+  //         toast.success(res?.data?.message);
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+  //       toast.error(err?.response?.data?.error);
+  //     }
+  //   } else {
+  //     // Only show AI screening loader and eligibility modal if score is insufficient
+  //     setIsAIScreening(true);
+  //     setShowEligibilityModal(true);
+
+  //     // Hide loader after a delay
+  //     setTimeout(() => {
+  //       setIsAIScreening(false);
+  //     }, 5000);
+  //   }
+  // };
 
   const parseJobDescription = (text) => {
     if (!text) return [];
@@ -230,11 +303,51 @@ const JobDetailsPage = () => {
     setShowModal(false);
   };
 
+
+  const checkApplicationStatus = async (jobId, candidateId) => {
+    try {
+      const res = await axios.get(`${BASEURL}/jobs_post/applied_jobs/${candidate_id}`);
+
+      // console.log(res?.data?.applications)
+
+      if (res?.data?.success) {
+        // Check if this specific job is in the user's applied jobs
+        const applicationMatch = res?.data?.applications?.find(
+          application => application.job_id.toString() === jobId.toString()
+        );
+
+        if (applicationMatch) {
+          setHasApplied(true);
+          setAppliedDate(applicationMatch.applied_at);
+        } else {
+          setHasApplied(false);
+          setAppliedDate(null);
+        }
+      }
+
+      setApplicationStatusChecked(true);
+    } catch (error) {
+      console.error('Error checking application status:', error);
+      // setHasApplied(false);
+      // setAppliedDate(null);
+    }
+  };
+
   useEffect(() => {
 
-    fetchJobDetails(params.jobId)
+    const loadJobAndApplicationStatus = async () => {
+      await fetchJobDetails(params.jobId);
 
-  }, []);
+      if (isAuthenticated && candidate_id) {
+        await checkApplicationStatus(params.jobId, candidate_id);
+      }
+    };
+
+    loadJobAndApplicationStatus();
+
+  }, [params.jobId, candidate_id, isAuthenticated]);
+
+
 
   return (
     loading ? (
@@ -273,55 +386,39 @@ const JobDetailsPage = () => {
                   </span>
                 </div>
               </div>
-              <button
-                onClick={handleApply}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Apply Now
-              </button>
-
-              <Modal isOpen={showEligibilityModal} onClose={() => setShowEligibilityModal(false)}>
-                {candidateScore >= 70 ? (
-                  <div className="text-center">
-                    <div className="bg-green-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle2 className="w-12 h-12 text-green-500" />
-                    </div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Congratulations! You're Eligible
-                    </h2>
-                    <p className="text-gray-600 mb-4">
-                      Your profile match score is {candidateScore}%. Your application has been submitted successfully.
-                    </p>
+              
+              {
+                hasApplied ? (
+                  <div className="text-right">
                     <button
-                      onClick={() => setShowEligibilityModal(false)}
-                      className="w-full bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 transition-colors"
+                      disabled
+                      className="bg-green-500 text-white px-6 py-2 rounded-lg cursor-not-allowed flex items-center gap-2"
                     >
-                      Close
+                      <CheckCircle2 className="w-5 h-5" />
+                      Applied
                     </button>
+                    {appliedDate && (
+                      <p className="text-sm text-gray-500 mt-2">
+                        Applied on {formatDate(appliedDate)}
+                      </p>
+                    )}
                   </div>
                 ) : (
-                  <div className="text-center">
-                    <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <AlertCircle className="w-12 h-12 text-red-500" />
-                    </div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Not Eligible
-                    </h2>
-                    <p className="text-gray-600 mb-4">
-                      Your profile match score is {candidateScore}%. Unfortunately, this position requires a minimum match score of 70%.
-                    </p>
-                    <p className="text-gray-600 mb-6">
-                      Consider improving your profile or applying for positions that better match your skills and experience.
-                    </p>
-                    <button
-                      onClick={() => setShowEligibilityModal(false)}
-                      className="w-full bg-gray-500 text-white py-3 px-4 rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                      Close
-                    </button>
-                  </div>
-                )}
-              </Modal>
+                  <button
+                    onClick={handleApply}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Apply Now
+                  </button>
+                )
+              }
+              <AIMatchingLoader
+                isOpen={showEligibilityModal}
+                onClose={handleEligibilityModalClose}
+                score={candidateScore || 0}
+                isLoading={isAIScreening}
+                isSubmitted={isSubmitted}
+              />
               <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)}>
                 <div className="text-center">
                   <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
@@ -356,7 +453,49 @@ const JobDetailsPage = () => {
                 </div>
               </Modal>
 
-              <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+              <Modal isOpen={isProfileCompeleteModal} onClose={() => setIsCompleteProfileModal(false)}>
+                {!isSubmitted && (
+                
+                
+                  <div className="text-center">
+                    <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                      <XCircle className="w-12 h-12 text-red-500" />
+                    </div>
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                      Complete Your Profile
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      Please complete the following information in your profile before applying:
+                    </p>
+                    <div className="bg-red-50 rounded-lg p-4 mb-6">
+                      <ul className="text-left space-y-2">
+                        {incompleteFields.map((field, index) => (
+                          <li key={index} className="text-red-600 flex items-center space-x-2">
+                            <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+                            <span>{field}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="space-y-3">
+                      <button
+                        onClick={handleCompleteProfile}
+                        className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                      >
+                        Complete Profile
+                      </button>
+                      <button
+                        onClick={() => setIsCompleteProfileModal(false)}
+                        className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </Modal>
+
+              {/* <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
                 {incompleteFields.length === 0 && isSubmitted ? (
                   <div className="text-center">
                     <div className="bg-green-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
@@ -412,7 +551,7 @@ const JobDetailsPage = () => {
                     </div>
                   </div>
                 )}
-              </Modal>
+              </Modal> */}
             </div>
           </div>
 
