@@ -20,6 +20,7 @@ import JobsPage from './pages/JobsPage'
 import PaymentGateway from './components/PaymentGateway'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import TermsofService from './components/TermsofService'
+import ApplicantProfile from './components/EmployerDashboard/section/ApplicantProfile'
 
 // import CandidateDashboard from './components/Dashboard/CandidateDashboard'
 
@@ -48,6 +49,7 @@ function App() {
           <Route path='/payment_gateway' element={<PaymentGateway/>}/>
           <Route path='/privacy_policy' element={<PrivacyPolicy/>}/>
           <Route path='/terms_and_conditions' element={<TermsofService/>}/>
+          <Route path='/applicant_profile/:id' element={<ApplicantProfile/>}/>
         </Routes>
       </BrowserRouter>
     </>
