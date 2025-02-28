@@ -1,4 +1,4 @@
-import { getalljobs, CreateJobPost, getJobsbyId, employer_jobs, applyForJob, getCandidateApplications, job_application, job_applicants } from "../controllers/job_post-controller.js";
+import { getalljobs, CreateJobPost, getJobsbyId, employer_jobs, applyForJob, getCandidateApplications, job_application, job_applicants } from "../controllers/job-controller.js";
 import { Router } from "express";
 import { verifyToken } from "../middleware/employer-auth.js";
 
