@@ -25,7 +25,8 @@ const JobsPage = () => {
     const [searchParams] = useSearchParams();
     const keyword = searchParams.get('keyword');
     const keywordLocation = searchParams.get('location');
-    console.log(keywordLocation)
+    const keywordIndustry = searchParams.get('industry');
+    console.log(keywordIndustry)
 
     const filterCategories = [
         {
@@ -68,7 +69,7 @@ const JobsPage = () => {
         searchTerm: keyword || '',
         jobTitle: 'all',
         workMode: 'all',
-        industryType: 'all',
+        industryType: keywordIndustry || 'all',
         workType: 'all',
         salaryRange: {
             min: '',
