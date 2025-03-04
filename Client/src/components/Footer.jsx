@@ -28,46 +28,46 @@ const Footer = () => {
     product: {
       title: 'Product',
       routes: [
-        { name: 'Features', path: '/#' },
-        { name: 'Security', path: '/#' },
-        { name: 'Enterprise', path: '/#' },
-        { name: 'Case Studies', path: '/#' },
+        // { name: 'Features', path: '/#' },
+        // { name: 'Security', path: '/#' },
+        // { name: 'Enterprise', path: '/#' },
+        // { name: 'Case Studies', path: '/#' },
         { name: 'Pricing', path: '/pricing' },
-        { name: 'Resources', path: '/#' },
+        // { name: 'Resources', path: '/#' },
       ]
     },
-    solutions: {
-      title: 'Solutions',
-      routes: [
-        { name: 'AI Sourcing', path: '/#' },
-        { name: 'Talent Pipeline', path: '/#' },
-        { name: 'Analytics', path: '/#' },
-        { name: 'Integration', path: '/#' },
-        { name: 'API Access', path: '/#' },
-      ]
-    },
+    // solutions: {
+    //   title: 'Solutions',
+    //   routes: [
+    //     { name: 'AI Sourcing', path: '/#' },
+    //     { name: 'Talent Pipeline', path: '/#' },
+    //     { name: 'Analytics', path: '/#' },
+    //     { name: 'Integration', path: '/#' },
+    //     { name: 'API Access', path: '/#' },
+    //   ]
+    // },
     support: {
       title: 'Support',
       routes: [
-        { name: 'Help Center', path: '/#' },
+        // { name: 'Help Center', path: '/#' },
         { name: 'Privacy Policy', path: '/privacy_policy' },
         { name: 'Terms and Conditions', path: '/terms_and_conditions' },
-        { name: 'Community', path: '/#' },
-        { name: 'Documentation', path: '/#' },
-        { name: 'Training', path: '/#' },
+        // { name: 'Community', path: '/#' },
+        // { name: 'Documentation', path: '/#' },
+        // { name: 'Training', path: '/#' },
         { name: 'Contact Us', path: '/contact' },
       ]
     },
-    company: {
-      title: 'Company',
-      routes: [
-        { name: 'About', path: '/#' },
-        { name: 'Blog', path: '/#' },
-        { name: 'Careers', path: '/#' },
-        { name: 'Press', path: '/#' },
-        { name: 'Partners', path: '/#' },
-      ]
-    }
+    // company: {
+    //   title: 'Company',
+    //   routes: [
+    //     { name: 'About', path: '/#' },
+    //     { name: 'Blog', path: '/#' },
+    //     { name: 'Careers', path: '/#' },
+    //     { name: 'Press', path: '/#' },
+    //     { name: 'Partners', path: '/#' },
+    //   ]
+    // }
   };
 
   return (

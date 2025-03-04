@@ -179,7 +179,7 @@ const ContactPage = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-medium text-gray-900">Our Location</h3>
-                                        <p className="text-gray-600">Bangalore, India</p>
+                                        <p className="text-gray-600">Whitefield, Bangalore, India, 560084</p>
                                     </div>
                                 </div>
 

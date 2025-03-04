@@ -1,5 +1,5 @@
 import supabase from "../config/supabase-client.js";
-import { alljobs, createJobPost, getjobsdetailsbyid, employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application, getCandidatesForJob, getJobDetailsByJobId } from "../models/job-post.js";
+import { alljobs, createJobPost, employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application, getCandidatesForJob, getJobDetailsByJobId, delete_Job_FromDB } from "../models/job-post.js";
 
 console.log("in controllers job post");
 export const employer_jobs = async(req, res) => {
@@ -102,7 +102,7 @@ export const CreateJobPost = async(req, res) => {
 
 export const applyForJob = async(req, res) => {
     try {
-        const { job_id, candidate_id ,score} = req.body;
+        const { job_id, candidate_id, score } = req.body;
 
         const screening_score = score;
 
@@ -114,7 +114,7 @@ export const applyForJob = async(req, res) => {
         }
 
         // Check if job exists
-        const jobExists = await getjobsdetailsbyid(job_id);
+        const jobExists = await getJobDetailsByJobId(job_id);
         if (!jobExists) {
             return res.status(404).json({
                 error: "Job not found",
@@ -163,7 +163,6 @@ export const getCandidateApplications = async(req, res) => {
     try {
         const candidate_id = req.params.id;
         // console.log(req.params)
-
         const applications = await getApplicationsByCandidateId(candidate_id);
 
         res.status(200).json({
@@ -196,6 +195,27 @@ export const job_applicants = async(req, res) => {
         res.status(200).json({ job: job_applicants, success: true });
     } catch (error) {
         console.error("Error fetching applicants by job ID:", error);
+        res.status(500).json({ error: "Internal Server Error", success: false });
+    }
+};
+
+export const delete_job = async(req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ error: "Invalid ID", success: false });
+        }
+
+        const { error } = await delete_Job_FromDB(id);
+
+        if (error) {
+            console.error("Error deleting job:", error);
+            return res.status(500).json({ error: "Failed to delete job", success: false });
+        }
+
+        res.status(200).json({ message: "Job deleted successfully", success: true });
+    } catch (error) {
+        console.error("Server error:", error);
         res.status(500).json({ error: "Internal Server Error", success: false });
     }
 };

@@ -127,9 +127,10 @@ const Category = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <h2 className="text-4xl font-bold mb-2 text-gray-900 text-center">Browse by Industry</h2>
+      <h2 className="text-4xl font-bold mb-2 text-gray-900 text-center">Explore Opportunities by Industry</h2>
       <p className="text-center text-gray-500 mb-8 max-w-2xl mx-auto">
-        Find the jobs you're looking for in your desired industry.
+      Discover tailored job openings across diverse industries and take the next step in your career.
+      
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {categories.map((category, index) => {

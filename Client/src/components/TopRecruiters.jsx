@@ -23,7 +23,7 @@ const TopRecruiters = () => {
     <div className="max-w-6xl mx-auto py-12 px-4">
       <h2 className="text-4xl font-bold text-center text-gray-800 mb-2">Top Recruiters</h2>
       <p className="text-center text-gray-500 mb-8 max-w-2xl mx-auto">
-        Discover your next career move, freelance gig, or internship
+      Connect with leading employers and industry pioneers. Land your dream job with top recruiters today!
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {recruiters.map((recruiter, index) => (

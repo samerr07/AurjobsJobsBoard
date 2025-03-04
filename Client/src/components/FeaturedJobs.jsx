@@ -51,7 +51,7 @@ const FeaturedJobs = () => {
     <div className="max-w-6xl mx-auto px-4 py-12">
       <h2 className="text-4xl font-bold mb-2 text-gray-900 text-center">Featured Jobs</h2>
       <p className="text-center text-gray-500 mb-8 max-w-2xl mx-auto">
-        Explore our curated list of featured jobs that match your skills and interests.
+      Handpicked job opportunities tailored to your expertise. Find your ideal role today!
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {featuredJobs?.map((job, index) => (

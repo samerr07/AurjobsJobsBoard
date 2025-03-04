@@ -3,36 +3,39 @@ import { createCandidate, findByCandidateEmail, findByCandidateID, updateCandida
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import _ from 'lodash';
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
+// const nodemailer = require("nodemailer");
 class CandidateController {
     //  Candidate Signup
     static async signupCandidate(req, res) {
-        try {
-            const { email, password, firstname, lastname, phone, location, resume_url } = req.body;
+            try {
+                const { email, password, firstname, lastname, phone, location, resume_url } = req.body;
 
-            // Check if the candidate already exists
-            const candidate = await findByCandidateEmail(email);
-            if (candidate) {
-                return res.status(400).json({ error: "Candidate already exists", success: false });
+                // Check if the candidate already exists
+                const candidate = await findByCandidateEmail(email);
+                if (candidate) {
+                    return res.status(400).json({ error: "Candidate already exists", success: false });
+                }
+
+                // Hash the password before storing
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                // Create a new candidate
+                const newCandidate = await createCandidate(email, hashedPassword, firstname, lastname, phone, location, resume_url);
+
+                if (!newCandidate) {
+                    return res.status(500).json({ error: "Failed to create Candidate", success: false });
+                }
+
+                return res.status(201).json({ success: true, message: "Candidate created successfully" });
+            } catch (error) {
+                console.error("Signup Error:", error);
+                return res.status(500).json({ error: "Internal Server Error" });
             }
-
-            // Hash the password before storing
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            // Create a new candidate
-            const newCandidate = await createCandidate(email, hashedPassword, firstname, lastname, phone, location, resume_url);
-
-            if (!newCandidate) {
-                return res.status(500).json({ error: "Failed to create Candidate", success: false });
-            }
-
-            return res.status(201).json({ success: true, message: "Candidate created successfully" });
-        } catch (error) {
-            console.error("Signup Error:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
         }
-    }
-
-    // ✅ Candidate Login
+        // ✅ Candidate Login
     static async loginCandidate(req, res) {
         try {
             const { email, password } = req.body;
@@ -76,16 +79,9 @@ class CandidateController {
         }
     }
 
-
-
-
-
-
-
-
     static async getCandidateProfile(req, res) {
         try {
-            const candidate_id = req.params.id; // Ensure candidateId is set from authentication middleware
+            const candidate_id = req.candidateId; // Ensure candidateId is set from authentication middleware
             console.log(candidate_id)
             if (!candidate_id) {
                 return res.status(400).json({ error: "Candidate ID is missing", success: false });
@@ -126,6 +122,44 @@ class CandidateController {
         }
     }
 
+    static async candidate_reset_password(req, res) {
+        try {
+            const { email } = req.body;
+            console.log("Reset password request for:", email);
+
+            if (!email) {
+                return res.status(400).json({ error: "Email is required" });
+            }
+
+            const transporter = nodemailer.createTransport({
+                host: "smtp.zoho.in",
+                port: 465,
+                secure: true,
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.PASSWORD,
+                },
+            });
+
+            const mailOptions = {
+                from: "abhijeet1312@zohomail.in",
+                to: email,
+                subject: "Password Reset Request",
+                text: "Click the link to reset your password.",
+            };
+
+            const info = await transporter.sendMail(mailOptions);
+            console.log("Email sent:", info);
+
+            return res.status(200).json({ message: "Password reset email sent successfully" });
+        } catch (error) {
+            console.error("Error sending email:", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+    static async candidate_login_google(req, res) {
+
+    }
 
 }
 
