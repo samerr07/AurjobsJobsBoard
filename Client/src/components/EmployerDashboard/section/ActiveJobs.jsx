@@ -6,6 +6,7 @@ import { BASEURL } from '../../../utility/config';
 
 const ActiveJobs = memo(() => {
     const [jobs, setJobs] = useState([]);
+    console.log(jobs)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 

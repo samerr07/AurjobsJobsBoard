@@ -1,434 +1,566 @@
+// import React, { useState } from 'react';
+// import PaymentGateway from './PaymentGateway'; // Import the PaymentGateway component
+
+// const Pricing = () => {
+//     const [activeTab, setActiveTab] = useState('jobPosting');
+//     const [showPayment, setShowPayment] = useState(false);
+//     const [selectedPlan, setSelectedPlan] = useState(null);
+
+//     const [preservedPlanState, setPreservedPlanState] = useState(null);
+
+//     // Create arrays for plans data for different tabs
+//     const jobPostingPlans = [
+//         {
+//             id: 'pay-as-you-go',
+//             name: 'Pay-as-You-Go (Single Credit)',
+//             price: 399,
+//             credits: 1,
+//             fixedCredits: true,
+//             description: 'Perfect for occasional hiring - No commitment required!',
+//             features: [
+//                 '✅ 1 Job Post = 1 Credit',
+//                 '✅ Job Live for: 30 Days',
+//                 '✅ Credit Validity: 6 Months',
+//                 '✅ AI-powered candidate matching included (🚀 Free for a limited time!)',
+//                 '⚡ Limited-time Offer – Get started now!'
+//             ],
+//             isPopular: false,
+//             ctaText: 'Buy Now'
+//         },
+//         {
+//             id: 'bundle-plan',
+//             name: 'Bundle Plan (Best Value)',
+//             price: 7480,
+//             credits: 20,
+//             fixedCredits: true,
+//             description: '🚀 Most Popular Plan – Save ₹1,500!',
+//             features: [
+//                 '✅ 20 Job Posts (20 Credits)',
+//                 '✅ Job Live for: 30 Days Each',
+//                 '✅ Credit Validity: 6 Months',
+//                 '✅ Free Featured Listing for 2 Jobs (📌 Get 5X more visibility!)',
+//                 '✅ Priority Candidate Matching (🚀 AI-suggested top profiles)',
+//                 '🔥 Limited-time Deal – Boost Your Hiring Now!'
+//             ],
+//             isPopular: true,
+//             ctaText: 'Buy Now'
+//         },
+//         {
+//             id: 'enterprise-job',
+//             name: 'Enterprise Plan - Custom Pricing',
+//             price: 'Custom',
+//             description: '🚀 Access Top Talent Instantly!',
+//             features: [
+//                 'Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.',
+//                 '✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.',
+//                 '✅ 44+ Advanced Filters – Find the perfect match with precise filtering.',
+//                 '✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.',
+//                 '✅ Direct Contact Details – Connect with candidates instantly.',
+//                 '✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.',
+//                 '📞 Get Pricing & Unlock Access',
+//                 '💡 Talk to our team & get started today!'
+//             ],
+//             isPopular: false,
+//             ctaText: 'Contact Us',
+//             isContactPlan: true
+//         }
+//     ];
+
+//     const databasePlans = [
+//         {
+//             id: 'enterprise-database',
+//             name: 'Enterprise Plan - Custom Pricing',
+//             price: 'Custom',
+//             description: '🚀 Access Top Talent Instantly!',
+//             features: [
+//                 'Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.',
+//                 '✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.',
+//                 '✅ 44+ Advanced Filters – Find the perfect match with precise filtering.',
+//                 '✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.',
+//                 '✅ Direct Contact Details – Connect with candidates instantly.',
+//                 '✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.',
+//                 '📞 Get Pricing & Unlock Access',
+//                 '💡 Talk to our team & get started today!'
+//             ],
+//             isPopular: false,
+//             ctaText: 'Contact Us',
+//             isContactPlan: true
+//         }
+//     ];
+
+//     const handleTabClick = (tab) => {
+//         setActiveTab(tab);
+//     };
+
+//     const handlePlanSelection = (plan) => {
+//         if (plan.isContactPlan) {
+//             // Handle contact us action for enterprise plans
+//             window.location.href = "mailto:sales@aurjobs.com";
+//         } else {
+//             // Set the selected plan and show payment gateway
+//             setSelectedPlan(plan);
+//             setShowPayment(true);
+//         }
+//     };
+
+//     const handleBackFromPayment = (paymentState) => {
+//         // Preserve the credits and plan when going back
+//         setPreservedPlanState(paymentState);
+//         setShowPayment(false);
+//     };
+
+//     // Get current plans based on active tab
+//     const currentPlans = activeTab === 'jobPosting' ? jobPostingPlans : databasePlans;
+
+//     // If showPayment is true, render PaymentGateway component
+//     if (showPayment && selectedPlan) {
+//         return (
+//             <PaymentGateway 
+//                 selectedPlan={selectedPlan} 
+//                 onBackClick={handleBackFromPayment}
+//                 initialCredits={preservedPlanState?.credits}
+//             />
+//         );
+//     }
+
+//     return (
+//         <div className="bg-gradient-to-b from-white to-blue-50 py-16 md:py-24">
+//             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+//                 <div className="text-center">
+//                     <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-2">
+//                         Aurjobs Pricing Plans
+//                     </h2>
+//                     <p className="text-xl text-indigo-600 font-medium">
+//                         Hire Smarter, Faster!
+//                     </p>
+//                     <div className="mt-3 mx-auto w-24 h-1 bg-indigo-500 rounded-full"></div>
+//                 </div>
+
+//                 {/* Tabs - Styled with gradient background */}
+//                 <div className="mt-12 flex justify-center">
+//                     <div className="bg-white p-1 rounded-lg shadow-md inline-flex">
+//                         <button
+//                             className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
+//                                 activeTab === 'jobPosting'
+//                                 ? 'bg-indigo-600 text-white shadow-md'
+//                                 : 'text-gray-700 hover:bg-indigo-100'
+//                             }`}
+//                             onClick={() => handleTabClick('jobPosting')}
+//                         >
+//                             Job Posting
+//                         </button>
+//                         <button
+//                             className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
+//                                 activeTab === 'database'
+//                                 ? 'bg-indigo-600 text-white shadow-md'
+//                                 : 'text-gray-700 hover:bg-indigo-100'
+//                             }`}
+//                             onClick={() => handleTabClick('database')}
+//                         >
+//                             Database
+//                         </button>
+//                     </div>
+//                 </div>
+
+//                 {/* Pricing Plans - Grid Layout */}
+//                 <div className="mt-16 grid gap-8 max-w-md mx-auto lg:grid-cols-3 lg:max-w-none">
+//                     {currentPlans.map((plan) => (
+//                         <div 
+//                             key={plan.id}
+//                             className={`flex flex-col rounded-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl ${
+//                                 plan.isPopular 
+//                                 ? 'border-2 border-indigo-500 shadow-lg relative bg-white' 
+//                                 : 'border border-gray-200 shadow-md bg-white'
+//                             }`}
+//                             style={{ height: plan.features.length > 6 ? 'auto' : '500px' }}
+//                         >
+//                             {/* Popular Badge */}
+//                             {plan.isPopular && (
+//                                 <div className="absolute top-0 right-0 bg-indigo-600 text-white py-1 px-3 rounded-bl-lg text-xs font-medium">
+//                                     Most Popular
+//                                 </div>
+//                             )}
+                            
+//                             {/* Plan Header */}
+//                             <div className="px-6 py-8 bg-gradient-to-br from-white to-indigo-50">
+//                                 <h3 className="text-2xl font-bold text-gray-900 text-center">
+//                                     {plan.name}
+//                                 </h3>
+//                                 <p className={`mt-2 text-sm text-center ${plan.isPopular ? 'text-indigo-700 font-medium' : 'text-gray-600'}`}>
+//                                     {plan.description}
+//                                 </p>
+                                
+//                                 {/* Price Display */}
+//                                 <div className="mt-4 text-center">
+//                                     <span className="text-3xl font-extrabold text-gray-900">
+//                                         {typeof plan.price === 'number' ? `₹${plan.price.toLocaleString()}` : plan.price}
+//                                     </span>
+//                                     {typeof plan.price === 'number' && <span className="text-gray-600 ml-1">/plan</span>}
+//                                 </div>
+//                             </div>
+                            
+//                             {/* Features List */}
+//                             <div className="flex-grow px-6 py-4 bg-white">
+//                                 <ul className="space-y-3">
+//                                     {plan.features.map((feature, index) => (
+//                                         <li key={index} className="flex items-start">
+//                                             <div className="flex-shrink-0 text-indigo-500">
+//                                                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+//                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+//                                                 </svg>
+//                                             </div>
+//                                             <p className="ml-3 text-sm text-gray-700">{feature}</p>
+//                                         </li>
+//                                     ))}
+//                                 </ul>
+//                             </div>
+                            
+//                             {/* CTA Button */}
+//                             <div className="px-6 py-6 bg-gray-50 border-t border-gray-100 ">
+//                                 <button
+//                                     onClick={() => handlePlanSelection(plan)}
+//                                     className={`w-full rounded-lg py-3 font-medium transition-all duration-300 ${
+//                                         plan.isPopular 
+//                                         ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md' 
+//                                         : 'bg-orange-500 hover:bg-orange-600 text-white'
+//                                     }`}
+//                                 >
+//                                     {plan.ctaText}
+//                                 </button>
+//                             </div>
+//                         </div>
+//                     ))}
+//                 </div>
+                
+//                 {/* Additional Info */}
+//                 <div className="mt-12 text-center">
+//                     <p className="text-gray-600">
+//                         Need a custom solution? <a href="mailto:sales@aurjobs.com" className="text-indigo-600 font-medium">Contact our sales team</a>
+//                     </p>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default Pricing;
+
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import PaymentGateway from './PaymentGateway';
+import PaymentGateway from './PaymentGateway'; // Import the PaymentGateway component
 
 const Pricing = () => {
-    // Prices and features
-    const payAsYouGoPrice = '₹399';
-    const bundlePlanPrice = '₹7,480';
-
     const [activeTab, setActiveTab] = useState('jobPosting');
-    const navigate = useNavigate(); // Initialize useNavigate
+    const [showPayment, setShowPayment] = useState(false);
+    const [selectedPlans, setSelectedPlans] = useState([]);
+    const [preservedPlanState, setPreservedPlanState] = useState(null);
+
+    // Create arrays for plans data for different tabs
+    const jobPostingPlans = [
+        {
+            id: 'pay-as-you-go',
+            name: 'Pay-as-You-Go (Single Credit)',
+            price: 399,
+            credits: 1,
+            fixedCredits: true,
+            description: 'Perfect for occasional hiring - No commitment required!',
+            features: [
+                '✅ 1 Job Post = 1 Credit',
+                '✅ Job Live for: 30 Days',
+                '✅ Credit Validity: 6 Months',
+                '✅ AI-powered candidate matching included (🚀 Free for a limited time!)',
+                '⚡ Limited-time Offer – Get started now!'
+            ],
+            isPopular: false,
+            ctaText: 'Buy Now'
+        },
+        {
+            id: 'bundle-plan',
+            name: 'Bundle Plan (Best Value)',
+            price: 7480,
+            credits: 20,
+            fixedCredits: true,
+            description: '🚀 Most Popular Plan – Save ₹1,500!',
+            features: [
+                '✅ 20 Job Posts (20 Credits)',
+                '✅ Job Live for: 30 Days Each',
+                '✅ Credit Validity: 6 Months',
+                '✅ Free Featured Listing for 2 Jobs (📌 Get 5X more visibility!)',
+                '✅ Priority Candidate Matching (🚀 AI-suggested top profiles)',
+                '🔥 Limited-time Deal – Boost Your Hiring Now!'
+            ],
+            isPopular: true,
+            ctaText: 'Buy Now'
+        },
+        {
+            id: 'enterprise-job',
+            name: 'Enterprise Plan - Custom Pricing',
+            price: 'Custom',
+            description: '🚀 Access Top Talent Instantly!',
+            features: [
+                'Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.',
+                '✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.',
+                '✅ 44+ Advanced Filters – Find the perfect match with precise filtering.',
+                '✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.',
+                '✅ Direct Contact Details – Connect with candidates instantly.',
+                '✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.',
+                '📞 Get Pricing & Unlock Access',
+                '💡 Talk to our team & get started today!'
+            ],
+            isPopular: false,
+            ctaText: 'Contact Us',
+            isContactPlan: true
+        }
+    ];
+
+    const databasePlans = [
+        {
+            id: 'enterprise-database',
+            name: 'Enterprise Plan - Custom Pricing',
+            price: 'Custom',
+            description: '🚀 Access Top Talent Instantly!',
+            features: [
+                'Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.',
+                '✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.',
+                '✅ 44+ Advanced Filters – Find the perfect match with precise filtering.',
+                '✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.',
+                '✅ Direct Contact Details – Connect with candidates instantly.',
+                '✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.',
+                '📞 Get Pricing & Unlock Access',
+                '💡 Talk to our team & get started today!'
+            ],
+            isPopular: false,
+            ctaText: 'Contact Us',
+            isContactPlan: true
+        }
+    ];
+
+    const [previouslySelectedPlans, setPreviouslySelectedPlans] = useState([]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
 
-    // Define plan details objects
-    const payAsYouGoPlan = {
-        name: 'Pay-as-You-Go (Single Credit)',
-        price: 399,
-        credits: 1,
-        fixedCredits: true,
-        description: 'Perfect for occasional hiring - No commitment required!',
+    // const handlePlanSelection = (plan) => {
+    //     if (plan.isContactPlan) {
+    //         // Handle contact us action for enterprise plans
+    //         window.location.href = "mailto:sales@aurjobs.com";
+    //     } else {
+    //         // Check if plan is already in selected plans
+    //         const existingPlanIndex = selectedPlans.findIndex(p => p.id === plan.id);
+            
+    //         if (existingPlanIndex > -1) {
+    //             // If plan exists, remove it
+    //             const updatedPlans = [...selectedPlans];
+    //             updatedPlans.splice(existingPlanIndex, 1);
+    //             setSelectedPlans(updatedPlans);
+    //         } else {
+    //             // Add plan to selected plans
+    //             setSelectedPlans([...selectedPlans, plan]);
+    //         }
+    //     }
+    // };
+    const handlePlanSelection = (plan) => {
+        if (plan.isContactPlan) {
+            // Handle contact us action for enterprise plans
+            window.location.href = "mailto:sales@aurjobs.com";
+            return;
+        }
+
+        // Check if plan is already in selected plans
+        const existingPlanIndex = selectedPlans.findIndex(p => p.id === plan.id);
+        
+        let updatedPlans;
+        if (existingPlanIndex > -1) {
+            // If plan exists, remove it
+            updatedPlans = selectedPlans.filter(p => p.id !== plan.id);
+        } else {
+            // Add plan to selected plans
+            updatedPlans = [...selectedPlans, plan];
+        }
+
+        setSelectedPlans(updatedPlans);
+    };
+    // const handleProceedToPayment = () => {
+    //     if (selectedPlans.length > 0) {
+    //         setShowPayment(true);
+    //     }
+    // };
+    const handleProceedToPayment = () => {
+        if (selectedPlans.length > 0) {
+            // Store current selected plans before moving to payment
+            setPreviouslySelectedPlans(selectedPlans);
+            setShowPayment(true);
+        }
     };
 
-    const bundlePlan = {
-        name: 'Bundle Plan (Best Value)',
-        price: 7480,
-        credits: 20,
-        fixedCredits: true,
-        description: '🚀 Most Popular Plan – Save ₹1,500!',
+    // const handleBackFromPayment = (paymentState) => {
+    //     // You can handle any state preservation if needed
+    //     setShowPayment(false);
+    //     setPreservedPlanState(paymentState);
+    //     // Optionally update selected plans based on payment state
+    //     setSelectedPlans(paymentState.plans || []);
+    // };
+    const handleBackFromPayment = (paymentState) => {
+        // Restore previously selected plans
+        setShowPayment(false);
+        
+        // If payment state contains plans, update selected plans
+        if (paymentState && paymentState.plan) {
+            // Merge previously selected plans with any new plans from payment state
+            const mergedPlans = [...previouslySelectedPlans, ...paymentState.plan].filter(
+                (plan, index, self) => 
+                    index === self.findIndex((p) => p.id === plan.id)
+            );
+            
+            setSelectedPlans(mergedPlans);
+        } else {
+            // If no plans in payment state, restore previous selection
+            setSelectedPlans(previouslySelectedPlans);
+        }
     };
 
-    const handleBuyNow = (plan) => {
-        // Navigate to the payments page and pass the selected plan as state
-        navigate('/payment_gateway', { state: { selectedPlan: plan } });
-    };
+    // Get current plans based on active tab
+    const currentPlans = activeTab === 'jobPosting' ? jobPostingPlans : databasePlans;
+
+    // If showPayment is true, render PaymentGateway component
+    if (showPayment) {
+        return (
+            <PaymentGateway 
+                selectedPlans={selectedPlans} 
+                onBackClick={handleBackFromPayment}
+                initialCredits={preservedPlanState?.credits}
+            />
+        );
+    }
 
     return (
-        <div className="bg-white  py-36">
+        <div className="bg-gradient-to-b from-white to-blue-50 py-16 md:py-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center ">
-                    <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                        Aurjobs Pricing Plans – Hire Smarter, Faster!
+                <div className="text-center">
+                    <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-2">
+                        Aurjobs Pricing Plans
                     </h2>
-                    <p className="mt-2 text-md text-indigo-600">
-                        Start Hiring Now
+                    <p className="text-xl text-indigo-600 font-medium">
+                        Hire Smarter, Faster!
                     </p>
+                    <div className="mt-3 mx-auto w-24 h-1 bg-indigo-500 rounded-full"></div>
                 </div>
 
                 {/* Tabs */}
-                <div className="mt-8 flex justify-center">
-                    <nav className="space-x-4">
-                        <a
-                            href="#"
-                            className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'jobPosting'
-                                ? 'bg-indigo-100 text-indigo-700'
-                                : 'text-gray-500 hover:text-gray-900'
-                                }`}
+                <div className="mt-12 flex justify-center">
+                    <div className="bg-white p-1 rounded-lg shadow-md inline-flex">
+                        <button
+                            className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
+                                activeTab === 'jobPosting'
+                                ? 'bg-indigo-600 text-white shadow-md'
+                                : 'text-gray-700 hover:bg-indigo-100'
+                            }`}
                             onClick={() => handleTabClick('jobPosting')}
                         >
-                            Job posting
-                        </a>
-                        <a
-                            href="#"
-                            className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'database'
-                                ? 'bg-indigo-100 text-indigo-700'
-                                : 'text-gray-500 hover:text-gray-900'
-                                }`}
+                            Job Posting
+                        </button>
+                        <button
+                            className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
+                                activeTab === 'database'
+                                ? 'bg-indigo-600 text-white shadow-md'
+                                : 'text-gray-700 hover:bg-indigo-100'
+                            }`}
                             onClick={() => handleTabClick('database')}
                         >
                             Database
-                        </a>
-                    </nav>
+                        </button>
+                    </div>
                 </div>
 
-                {/* Pricing Plans */}
-                <div className="mt-12 grid gap-5 max-w-lg mx-auto lg:grid-cols-3 lg:max-w-none">
-                    {/* Plan 1: Job Posting - Pay-as-You-Go */}
-                    {activeTab === 'jobPosting' && (
-                        <div className="flex flex-col rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300" style={{ height: '500px', width: '360px' }}>
-                            <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6 flex-grow">
-                                <div>
-                                    <h3 className=" leading-6 text-2xl font-bold  text-gray-900 text-center">
-                                        Pay-as-You-Go (Single Credit)
-                                    </h3>
-                                    <p className="mt-2 text-sm text-gray-500 text-center">
-                                        Perfect for occasional hiring - No commitment required!
-                                    </p>
+                {/* Pricing Plans Grid */}
+                <div className="mt-16 grid gap-8 max-w-md mx-auto lg:grid-cols-3 lg:max-w-none">
+                    {currentPlans.map((plan) => (
+                        <div 
+                            key={plan.id}
+                            className={`flex flex-col rounded-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl ${
+                                plan.isPopular 
+                                ? 'border-2 border-indigo-500 shadow-lg relative bg-white' 
+                                : 'border border-gray-200 shadow-md bg-white'
+                            }`}
+                        >
+                            {/* Popular Badge */}
+                            {plan.isPopular && (
+                                <div className="absolute top-0 right-0 bg-indigo-600 text-white py-1 px-3 rounded-bl-lg text-xs font-medium">
+                                    Most Popular
                                 </div>
-                                <div className="mt-6">
-                                    <ul className="space-y-4">
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ 1 Job Post = 1 Credit
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Job Live for: 30 Days
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Credit Validity: 6 Months
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ AI-powered candidate matching included (🚀 Free for a limited time!)
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ⚡ Limited-time Offer – Get started now!
-                                            </p>
-                                        </li>
-                                    </ul>
+                            )}
+                            
+                            {/* Plan Header */}
+                            <div className="px-6 py-8 bg-gradient-to-br from-white to-indigo-50">
+                                <h3 className="text-2xl font-bold text-gray-900 text-center">
+                                    {plan.name}
+                                </h3>
+                                <p className={`mt-2 text-sm text-center ${plan.isPopular ? 'text-indigo-700 font-medium' : 'text-gray-600'}`}>
+                                    {plan.description}
+                                </p>
+                                
+                                {/* Price Display */}
+                                <div className="mt-4 text-center">
+                                    <span className="text-3xl font-extrabold text-gray-900">
+                                        {typeof plan.price === 'number' ? `₹${plan.price.toLocaleString()}` : plan.price}
+                                    </span>
+                                    {typeof plan.price === 'number' && <span className="text-gray-600 ml-1">/plan</span>}
                                 </div>
                             </div>
-                            <div className="px-6 py-4 bg-white sm:p-10 flex items-center justify-between" style={{ height: '120px' }}>
-                                <div className="text-3xl font-extrabold text-gray-900">
-                                    ₹399
-                                </div>
-                                <div className="mt-2">
-                                    <button
-                                        onClick={() => handleBuyNow(payAsYouGoPlan)}
-                                        className="block w-full text-center rounded-md py-3 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
-                                    >
-                                        Buy Now
-                                    </button>
-                                </div>
+                            
+                            {/* Features List */}
+                            <div className="flex-grow px-6 py-4 bg-white">
+                                <ul className="space-y-3">
+                                    {plan.features.map((feature, index) => (
+                                        <li key={index} className="flex items-start">
+                                            <div className="flex-shrink-0 text-indigo-500">
+                                                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <p className="ml-3 text-sm text-gray-700">{feature}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            
+                            {/* CTA Button */}
+                            <div className="px-6 py-6 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                                <button
+                                    onClick={() => handlePlanSelection(plan)}
+                                    className={`w-full rounded-lg py-3 font-medium transition-all duration-300 ${
+                                        selectedPlans.some(p => p.id === plan.id)
+                                        ? 'bg-green-500 text-white hover:bg-green-600'
+                                        : (plan.isPopular 
+                                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md' 
+                                            : 'bg-orange-500 hover:bg-orange-600 text-white')
+                                    }`}
+                                >
+                                    {selectedPlans.some(p => p.id === plan.id) ? 'Remove' : plan.ctaText}
+                                </button>
                             </div>
                         </div>
-                    )}
-                    {/* Plan 2: Job Posting - Bundle Plan */}
-                    {activeTab === 'jobPosting' && (
-                        <div className="flex flex-col rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300 relative" style={{ height: '500px', width: '360px' }}>
-                            {/* Most Popular Badge */}
-                            <div className="absolute top-0 right-0 bg-indigo-600 text-white py-1 px-3 rounded-bl-lg text-xs font-medium">
-                                Most Popular
-                            </div>
-                            <div className="px-6 py-8 sm:p-10 sm:pb-6 flex-grow">
-                                <div>
-                                    <h3 className=" leading-6 text-2xl font-bold text-gray-900 text-center">
-                                        Bundle Plan (Best Value)
-                                    </h3>
-                                    <p className="mt-2 text-sm text-indigo-700 text-center">
-                                        🚀 Most Popular Plan – Save ₹1,500!
-                                    </p>
-                                </div>
-                                <div className="mt-6">
-                                    <ul className="space-y-4">
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ 20 Job Posts (20 Credits)
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Job Live for: 30 Days Each
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Credit Validity: 6 Months
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Free Featured Listing for 2 Jobs (📌 Get 5X more visibility!)
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Priority Candidate Matching (🚀 AI-suggested top profiles)
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                🔥 Limited-time Deal – Boost Your Hiring Now!
-                                            </p>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="px-6 py-4 bg-white sm:p-10 flex items-center justify-between" style={{ height: '100px' }}>
-                                <div className="text-3xl font-extrabold text-gray-900">
-                                    ₹7,480
-                                </div>
-                                <div className="mt-2">
-                                    <button
-                                        onClick={() => handleBuyNow(bundlePlan)}
-                                        className="block w-full text-center rounded-md py-3 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
-                                    >
-                                        Buy Now
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === 'jobPosting' && (
-                        <div className="flex flex-col rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300" style={{ height: '700px', width: '360px' }}>
-                            <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6 flex-grow">
-                                <div>
-                                    <h3 className=" leading-6 text-2xl font-bold text-gray-900 text-center">
-                                        Enterprise Plan - Custom Pricing
-                                    </h3>
-                                    <p className="mt-2 text-sm text-gray-500 text-center">
-                                        🚀 Access Top Talent Instantly!
-                                    </p>
-                                </div>
-                                <div className="mt-6">
-                                    <ul className="space-y-4">
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅                                             44+ Advanced Filters – Find the perfect match with precise filtering.
+                    ))}
+                </div>
+                
+                {/* Proceed to Payment Button */}
+                {selectedPlans.length > 0 && (
+                    <div className="mt-8 text-center">
+                        <button 
+                            onClick={handleProceedToPayment}
+                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transition duration-300 transform hover:scale-105"
+                        >
+                            Proceed to Payment ({selectedPlans.length} Plan{selectedPlans.length > 1 ? 's' : ''})
+                        </button>
+                    </div>
+                )}
 
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Direct Contact Details – Connect with candidates instantly.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                📞 Get Pricing & Unlock Access
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                💡 Talk to our team & get started today!
-                                            </p>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="px-6 py-5 bg-white sm:p-10 flex items-center justify-between" style={{ height: '100px' }}>
-                                <div className="text-3xl font-extrabold text-gray-900">
-                                    Custom
-                                </div>
-                                <div className="mt-2">
-                                    <a
-                                        href="#"
-                                        className="block w-full text-center rounded-md py-2 px-5 bg-orange-500 hover:bg-green-700 text-white font-medium"
-                                    >
-                                        Contact Us
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === 'database' && (
-                        <div className="flex flex-col justify-center items-center rounded-lg shadow-lg overflow-hidden border-b-[1.5px] transition-transform transform hover:scale-105 hover:shadow-xl duration-300" style={{ height: '700px', width: '360px' }}>
-                            <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6 flex-grow">
-                                {/* Centered Heading */}
-                                <div className="flex flex-col items-center justify-center">
-                                    <h3 className="text-2xl font-bold leading-6 text-gray-900 text-center">
-                                        Enterprise Plan - Custom Pricing
-                                    </h3>
-                                    <p className="mt-2 text-sm text-gray-500 text-center">
-                                        🚀 Access Top Talent Instantly!
-                                    </p>
-                                </div>
-
-                                <div className="mt-6">
-                                    <ul className="space-y-4">
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                Unlimited Candidate Profiles – Explore a vast talent pool with unrestricted access.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ AI-Screened Profiles – Get pre-vetted candidates to save hiring time.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ 44+ Advanced Filters – Find the perfect match with precise filtering.
-
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Unlimited Resume Downloads – No limits on accessing candidate resumes.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ Direct Contact Details – Connect with candidates instantly.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                ✅ AI-Powered Shortlisting – Smart recommendations tailored to your needs.
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                📞 Get Pricing & Unlock Access
-                                            </p>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <div className="flex-shrink-0">
-                                                <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                                            </div>
-                                            <p className="ml-3 text-sm text-gray-700">
-                                                💡 Talk to our team & get started today!
-                                            </p>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            {/* Centered Contact Us Button */}
-                            <div className="px-6 py-4 bg-white sm:p-10 flex items-center justify-center" style={{ height: '120px' }}>
-                                <div className="mt-2">
-                                    <a
-                                        href="#"
-                                        className="block w-full rounded-md mt-[-30] py-3 px-16 bg-orange-500 hover:bg-green-700 text-white font-medium"
-                                    >
-                                        Contact Us
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-
-
-
-                    {/* You can add more plans here following the same structure */}
+                {/* Additional Info */}
+                <div className="mt-12 text-center">
+                    <p className="text-gray-600">
+                        Need a custom solution? <a href="mailto:sales@aurjobs.com" className="text-indigo-600 font-medium">Contact our sales team</a>
+                    </p>
                 </div>
             </div>
         </div>
