@@ -10,4 +10,6 @@ router.post("/CandidateLogin", CandidateController.loginCandidate); // Handles c
 router.get("/CandidateProfile/:id", CandidateController.getCandidateProfile); // Handles candidate profile
 router.put("/CandidateProfile/:id", verifyToken, CandidateController.updateCandidateProfile); // Updates candidate profile and related tables
 console.log("hey im in candidate-route.js file");
+router.post("/candidate_reset_password", CandidateController.candidate_reset_password);
+
 export default router;
