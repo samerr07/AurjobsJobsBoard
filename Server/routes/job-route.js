@@ -1,4 +1,4 @@
-import { getalljobs, CreateJobPost, getJobsbyId, employer_jobs, applyForJob, getCandidateApplications, job_application, job_applicants } from "../controllers/job-controller.js";
+import { getalljobs, CreateJobPost, getJobsbyId, employer_jobs, applyForJob, getCandidateApplications, job_application, job_applicants, delete_job } from "../controllers/job_post-controller.js";
 import { Router } from "express";
 import { verifyToken } from "../middleware/employer-auth.js";
 
@@ -12,6 +12,7 @@ router.post("/apply_job", applyForJob) //
 router.get("/applied_jobs/:id", getCandidateApplications);
 router.get("/job_application/:id", job_application);
 router.get("/job_applicants/:id", job_applicants);
+router.delete("/job_delete/:id", delete_job)
 
 console.log("in job post route", );
 export default router;

@@ -1,5 +1,4 @@
 import supabase from "../config/supabase-client.js";
-import { employer_jobs } from "../controllers/job-controller.js";
 console.log("in models job post"); // Ensure supabase is properly imported
 
 const getEmployerDetails = async(employerIds) => {
@@ -132,43 +131,19 @@ export const createJobPost = async(
         return [];
     }
 };
-
-
-//apply job
-
-<<<<<<< Updated upstream
-export const createJobApplication = async (
-  job_id,
-  candidate_id,
-  screening_score
-) => {
-  try {
-    const { data, error } = await supabase
-      .from("applications")
-      .insert([{
-        job_id,
-        candidate_id,
-        status: 'pending',
-        screening_score,
-        applied_at: new Date().toISOString(),
-      }])
-      .select("*");
-=======
 export const createJobApplication = async(
     job_id,
-    candidate_id
+    candidate_id,
+    screening_score = null // Optional parameter
 ) => {
     try {
-        const { data, error } = await supabase
-            .from("applications")
-            .insert([{
-                job_id,
-                candidate_id,
-                status: 'pending',
-                applied_at: new Date().toISOString(),
-            }])
-            .select("*");
->>>>>>> Stashed changes
+        const { data, error } = await supabase.from("applications").insert([{
+            job_id,
+            candidate_id,
+            status: "pending",
+            screening_score,
+            applied_at: new Date().toISOString(),
+        }, ]).select("*");
 
         if (error) throw error;
 
@@ -180,23 +155,12 @@ export const createJobApplication = async(
     }
 };
 
-
-//applied jobs of candidate
-
+// Fetch applications by candidate ID
 export const getApplicationsByCandidateId = async(candidate_id) => {
     try {
         const { data, error } = await supabase
             .from("applications")
-            .select(`
-          *,
-          jobs (
-            *,
-            employer_id (
-              company_display_name,
-              company_logo
-            )
-          )
-        `)
+            .select(`*, jobs (*, employer_id (company_display_name, company_logo))`)
             .eq("candidate_id", candidate_id);
 
         if (error) throw error;
@@ -207,203 +171,38 @@ export const getApplicationsByCandidateId = async(candidate_id) => {
     }
 };
 
+// Fetch job by job_id
 export const Job_application = async(job_id) => {
     try {
-        // Fetch the job with the specific job_id
         const { data: job, error } = await supabase
             .from("jobs")
             .select("*")
-            .eq("job_id", job_id) // Filtering by job_id
-            .single(); // Ensures only one job is returned
-        if (error) {
-            console.log(error.message);
-            throw new Error(error.message);
-        }
+            .eq("job_id", job_id)
+            .single();
 
-        if (!job) {
-            throw new Error("No job found with this job_id");
-        }
+        if (error) throw error;
+        if (!job) throw new Error("No job found with this job_id");
 
         return job;
     } catch (error) {
-        throw new Error(`Error fetching job application: ${error.message}`);
+        console.error("Error fetching job application:", error.message);
+        throw error;
     }
 };
+
+// Fetch candidates who applied for a job
 export const getCandidatesForJob = async(job_id) => {
     try {
-        // Step 1: Fetch all applications for the given job_id, including screening_score
         const { data: applications, error: applicationError } = await supabase
             .from("applications")
             .select("candidate_id, screening_score")
             .eq("job_id", job_id);
 
-<<<<<<< Updated upstream
-export const getCandidatesForJob = async(job_id) => {
-
-  try {
-
-      // Step 1: Fetch all applications for the given job_id, including screening_score
-
-      const { data: applications, error: applicationError } = await supabase
-
-          .from("applications")
-
-          .select("candidate_id, screening_score")
-
-          .eq("job_id", job_id);
-
-
-
-      if (applicationError) throw applicationError;
-
-
-
-      if (!applications || applications.length === 0) {
-
-          return { message: "No candidates have applied for this job." };
-
-      }
-
-
-
-      // Step 2: Extract candidate_ids and their screening_scores
-
-      const candidateMap = applications.reduce((acc, app) => {
-
-          acc[app.candidate_id] = app.screening_score;
-
-          return acc;
-
-      }, {});
-
-
-
-      const candidateIds = Object.keys(candidateMap);
-
-
-
-      // Step 3: Fetch all candidate details in parallel
-
-      const candidateDetailsPromises = candidateIds.map(async(candidateID) => {
-
-          const [
-
-              candidate,
-
-              experiences,
-
-              skills,
-
-              languages,
-
-              education,
-
-              certifications,
-
-              addresses
-
-          ] = await Promise.all([
-
-              supabase.from("candidates").select("*").eq("candidate_id", candidateID).single(),
-
-              supabase.from("candidate_experience").select("*").eq("candidate_id", candidateID),
-
-              supabase.from("candidate_skills").select("*").eq("candidate_id", candidateID),
-
-              supabase.from("candidate_languages").select("*").eq("candidate_id", candidateID),
-
-              supabase.from("candidate_education").select("*").eq("candidate_id", candidateID),
-
-              supabase.from("candidate_certifications").select("*").eq("candidate_id", candidateID),
-
-              supabase.from("candidate_address").select("*").eq("candidate_id", candidateID)
-
-          ]);
-
-
-
-          if (candidate.error) {
-
-              console.error(`Error fetching candidate ${candidateID}:`, candidate.error.message);
-
-              return null;
-
-          }
-
-
-
-          return {
-
-              ...candidate.data,
-
-              job_id,
-
-              screening_score: candidateMap[candidateID], // Include screening_score
-
-              experiences: experiences.data || [],
-
-              skills: skills.data || [],
-
-              languages: languages.data || [],
-
-              education: education.data || [],
-
-              certifications: certifications.data || [],
-
-              addresses: addresses.data || []
-
-          };
-
-      });
-
-
-
-      // Wait for all candidate details to resolve
-
-      const candidates = await Promise.all(candidateDetailsPromises);
-
-
-
-      // Filter out any null results (in case of errors)
-
-      const validCandidates = candidates.filter((candidate) => candidate !== null);
-
-
-
-      if (validCandidates.length === 0) {
-
-          return { message: "No detailed candidate information found." };
-
-      }
-
-
-
-      return validCandidates;
-
-  } catch (error) {
-
-      console.error("Error fetching candidates for job:", error.message);
-
-      return { error: error.message };
-
-  }
-
-};
-
-
-
-
-
-
-
-=======
         if (applicationError) throw applicationError;
-
         if (!applications || applications.length === 0) {
             return { message: "No candidates have applied for this job." };
         }
 
-        // Step 2: Extract candidate_ids and their screening_scores
         const candidateMap = applications.reduce((acc, app) => {
             acc[app.candidate_id] = app.screening_score;
             return acc;
@@ -411,7 +210,6 @@ export const getCandidatesForJob = async(job_id) => {
 
         const candidateIds = Object.keys(candidateMap);
 
-        // Step 3: Fetch all candidate details in parallel
         const candidateDetailsPromises = candidateIds.map(async(candidateID) => {
             const [
                 candidate,
@@ -439,7 +237,7 @@ export const getCandidatesForJob = async(job_id) => {
             return {
                 ...candidate.data,
                 job_id,
-                screening_score: candidateMap[candidateID], // Include screening_score
+                screening_score: candidateMap[candidateID],
                 experiences: experiences.data || [],
                 skills: skills.data || [],
                 languages: languages.data || [],
@@ -449,20 +247,356 @@ export const getCandidatesForJob = async(job_id) => {
             };
         });
 
-        // Wait for all candidate details to resolve
         const candidates = await Promise.all(candidateDetailsPromises);
-
-        // Filter out any null results (in case of errors)
         const validCandidates = candidates.filter((candidate) => candidate !== null);
 
-        if (validCandidates.length === 0) {
-            return { message: "No detailed candidate information found." };
-        }
-
-        return validCandidates;
+        return validCandidates.length > 0 ? validCandidates : { message: "No detailed candidate information found." };
     } catch (error) {
         console.error("Error fetching candidates for job:", error.message);
         return { error: error.message };
     }
 };
->>>>>>> Stashed changes
+
+
+export const delete_Job_FromDB = async(job_id) => {
+    try {
+        const { data, error } = await supabase
+            .from("jobs")
+            .delete()
+            .eq("job_id", job_id);
+        return { data, error };
+
+    } catch (error) {
+        console.error("Supabase error:", error);
+        return { error };
+    }
+};
+//apply job
+
+
+// export const createJobApplication = async(
+//         job_id,
+//         candidate_id,
+//         screening_score
+//     ) => {
+//         try {
+//             const { data, error } = await supabase
+//                 .from("applications")
+//                 .insert([{
+//                     job_id,
+//                     candidate_id,
+//                     status: 'pending',
+//                     screening_score,
+//                     applied_at: new Date().toISOString(),
+//                 }])
+//                 .select("*"); ===
+//             ===
+//             =
+//             export const createJobApplication = async(
+//                 job_id,
+//                 candidate_id
+//             ) => {
+//                 try {
+//                     const { data, error } = await supabase
+//                         .from("applications")
+//                         .insert([{
+//                             job_id,
+//                             candidate_id,
+//                             status: 'pending',
+//                             applied_at: new Date().toISOString(),
+//                         }])
+//                         .select("*"); >>>
+//                     >>>
+//                     >
+//                     Stashed changes
+
+//                     if (error) throw error;
+
+//                     console.log("Job application created successfully:", data);
+//                     return data;
+//                 } catch (error) {
+//                     console.error("Error creating job application:", error.message);
+//                     throw error;
+//                 }
+//             };
+
+
+//             //applied jobs of candidate
+
+//             export const getApplicationsByCandidateId = async(candidate_id) => {
+//                 try {
+//                     const { data, error } = await supabase
+//                         .from("applications")
+//                         .select(`
+//           *,
+//           jobs (
+//             *,
+//             employer_id (
+//               company_display_name,
+//               company_logo
+//             )
+//           )
+//         `)
+//                         .eq("candidate_id", candidate_id);
+
+//                     if (error) throw error;
+//                     return data;
+//                 } catch (error) {
+//                     console.error("Error fetching applications by candidate ID:", error.message);
+//                     throw error;
+//                 }
+//             };
+
+//             export const Job_application = async(job_id) => {
+//                 try {
+//                     // Fetch the job with the specific job_id
+//                     const { data: job, error } = await supabase
+//                         .from("jobs")
+//                         .select("*")
+//                         .eq("job_id", job_id) // Filtering by job_id
+//                         .single(); // Ensures only one job is returned
+//                     if (error) {
+//                         console.log(error.message);
+//                         throw new Error(error.message);
+//                     }
+
+//                     if (!job) {
+//                         throw new Error("No job found with this job_id");
+//                     }
+
+//                     return job;
+//                 } catch (error) {
+//                     throw new Error(`Error fetching job application: ${error.message}`);
+//                 }
+//             };
+//             export const getCandidatesForJob = async(job_id) => {
+//                 try {
+//                     // Step 1: Fetch all applications for the given job_id, including screening_score
+//                     const { data: applications, error: applicationError } = await supabase
+//                         .from("applications")
+//                         .select("candidate_id, screening_score")
+//                         .eq("job_id", job_id);
+
+//                     <<
+//                     <<
+//                     <<
+//                     < Updated upstream
+//                     export const getCandidatesForJob = async(job_id) => {
+
+//                         try {
+
+//                             // Step 1: Fetch all applications for the given job_id, including screening_score
+
+//                             const { data: applications, error: applicationError } = await supabase
+
+//                                 .from("applications")
+
+//                             .select("candidate_id, screening_score")
+
+//                             .eq("job_id", job_id);
+
+
+
+//                             if (applicationError) throw applicationError;
+
+
+
+//                             if (!applications || applications.length === 0) {
+
+//                                 return { message: "No candidates have applied for this job." };
+
+//                             }
+
+
+
+//                             // Step 2: Extract candidate_ids and their screening_scores
+
+//                             const candidateMap = applications.reduce((acc, app) => {
+
+//                                 acc[app.candidate_id] = app.screening_score;
+
+//                                 return acc;
+
+//                             }, {});
+
+
+
+//                             const candidateIds = Object.keys(candidateMap);
+
+
+
+//                             // Step 3: Fetch all candidate details in parallel
+
+//                             const candidateDetailsPromises = candidateIds.map(async(candidateID) => {
+
+//                                 const [
+
+//                                     candidate,
+
+//                                     experiences,
+
+//                                     skills,
+
+//                                     languages,
+
+//                                     education,
+
+//                                     certifications,
+
+//                                     addresses
+
+//                                 ] = await Promise.all([
+
+//                                     supabase.from("candidates").select("*").eq("candidate_id", candidateID).single(),
+
+//                                     supabase.from("candidate_experience").select("*").eq("candidate_id", candidateID),
+
+//                                     supabase.from("candidate_skills").select("*").eq("candidate_id", candidateID),
+
+//                                     supabase.from("candidate_languages").select("*").eq("candidate_id", candidateID),
+
+//                                     supabase.from("candidate_education").select("*").eq("candidate_id", candidateID),
+
+//                                     supabase.from("candidate_certifications").select("*").eq("candidate_id", candidateID),
+
+//                                     supabase.from("candidate_address").select("*").eq("candidate_id", candidateID)
+
+//                                 ]);
+
+
+
+//                                 if (candidate.error) {
+
+//                                     console.error(`Error fetching candidate ${candidateID}:`, candidate.error.message);
+
+//                                     return null;
+
+//                                 }
+
+
+
+//                                 return {
+
+//                                     ...candidate.data,
+
+//                                     job_id,
+
+//                                     screening_score: candidateMap[candidateID], // Include screening_score
+
+//                                     experiences: experiences.data || [],
+
+//                                     skills: skills.data || [],
+
+//                                     languages: languages.data || [],
+
+//                                     education: education.data || [],
+
+//                                     certifications: certifications.data || [],
+
+//                                     addresses: addresses.data || []
+
+//                                 };
+
+//                             });
+
+
+
+//                             // Wait for all candidate details to resolve
+
+//                             const candidates = await Promise.all(candidateDetailsPromises);
+
+
+
+//                             // Filter out any null results (in case of errors)
+
+//                             const validCandidates = candidates.filter((candidate) => candidate !== null);
+
+
+
+//                             if (validCandidates.length === 0) {
+
+//                                 return { message: "No detailed candidate information found." };
+
+//                             }
+
+
+
+//                             return validCandidates;
+
+//                         } catch (error) {
+
+//                             console.error("Error fetching candidates for job:", error.message);
+
+//                             return { error: error.message };
+
+//                         }
+
+//                     };
+//                     if (applicationError) throw applicationError;
+
+//                     if (!applications || applications.length === 0) {
+//                         return { message: "No candidates have applied for this job." };
+//                     }
+
+//                     // Step 2: Extract candidate_ids and their screening_scores
+//                     const candidateMap = applications.reduce((acc, app) => {
+//                         acc[app.candidate_id] = app.screening_score;
+//                         return acc;
+//                     }, {});
+
+//                     const candidateIds = Object.keys(candidateMap);
+
+//                     // Step 3: Fetch all candidate details in parallel
+//                     const candidateDetailsPromises = candidateIds.map(async(candidateID) => {
+//                         const [
+//                             candidate,
+//                             experiences,
+//                             skills,
+//                             languages,
+//                             education,
+//                             certifications,
+//                             addresses
+//                         ] = await Promise.all([
+//                             supabase.from("candidates").select("*").eq("candidate_id", candidateID).single(),
+//                             supabase.from("candidate_experience").select("*").eq("candidate_id", candidateID),
+//                             supabase.from("candidate_skills").select("*").eq("candidate_id", candidateID),
+//                             supabase.from("candidate_languages").select("*").eq("candidate_id", candidateID),
+//                             supabase.from("candidate_education").select("*").eq("candidate_id", candidateID),
+//                             supabase.from("candidate_certifications").select("*").eq("candidate_id", candidateID),
+//                             supabase.from("candidate_address").select("*").eq("candidate_id", candidateID)
+//                         ]);
+
+//                         if (candidate.error) {
+//                             console.error(`Error fetching candidate ${candidateID}:`, candidate.error.message);
+//                             return null;
+//                         }
+
+//                         return {
+//                             ...candidate.data,
+//                             job_id,
+//                             screening_score: candidateMap[candidateID], // Include screening_score
+//                             experiences: experiences.data || [],
+//                             skills: skills.data || [],
+//                             languages: languages.data || [],
+//                             education: education.data || [],
+//                             certifications: certifications.data || [],
+//                             addresses: addresses.data || []
+//                         };
+//                     });
+
+//                     // Wait for all candidate details to resolve
+//                     const candidates = await Promise.all(candidateDetailsPromises);
+
+//                     // Filter out any null results (in case of errors)
+//                     const validCandidates = candidates.filter((candidate) => candidate !== null);
+
+//                     if (validCandidates.length === 0) {
+//                         return { message: "No detailed candidate information found." };
+//                     }
+
+//                     return validCandidates;
+//                 } catch (error) {
+//                     console.error("Error fetching candidates for job:", error.message);
+//                     return { error: error.message };
+//                 }
+//             };
