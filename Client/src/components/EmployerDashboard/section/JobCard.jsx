@@ -59,7 +59,7 @@ const JobCard = ({ job }) => {
                             : 'bg-red-100 text-red-700'
                     }`}>
                         Status: {job.status}
-                        {console.log(job.status)}
+                        {/* {console.log(job.status)} */}
                     </div>
 
                     <button

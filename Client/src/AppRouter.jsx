@@ -21,6 +21,7 @@ import PaymentGateway from './components/PaymentGateway'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import TermsofService from './components/TermsofService'
 import ApplicantProfile from './components/EmployerDashboard/section/ApplicantProfile'
+import AdminDashboard from './components/Admin/AdminDashboard'
 
 const AppRouter = () => {
 
@@ -57,6 +58,7 @@ const AppRouter = () => {
           <Route path='/privacy_policy' element={<PrivacyPolicy/>}/>
           <Route path='/terms_and_conditions' element={<TermsofService/>}/>
           <Route path='/applicant_profile/:id' element={<ApplicantProfile/>}/>
+          <Route path='/admin_dashboard' element={<AdminDashboard/>} />
         </Routes>
     </>
   )
