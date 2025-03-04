@@ -32,9 +32,7 @@ const Platform = () => {
               <span className="text-blue-600">Right</span> For You
             </h1>
             <p className="text-gray-600">
-              Search all the open positions on the web. Get your own personalized
-              salary estimate. Read reviews on over 600,000 companies worldwide.
-              The right job is out there.
+            Millions of opportunities are waiting for you. Discover jobs that match your skills, interests, and career goals.
             </p>
             <div className="flex gap-4">
               <Link to={"/jobs"}>
@@ -54,27 +52,27 @@ const Platform = () => {
           {/* Completed Cases */}
           <div className="space-y-4">
             <p className="text-gray-600">
-              We always provide people a complete solution upon focused of any business
+            We provide end-to-end solutions for job seekers and employers to make hiring and job searching seamless.
             </p>
-            <h3 className="text-2xl font-bold">Completed Cases</h3>
+            <h3 className="text-2xl font-bold">Successful Placements</h3>
             <div className="text-5xl font-bold text-blue-600">25k+</div>
           </div>
 
           {/* Our Office */}
           <div className="space-y-4">
             <p className="text-gray-600">
-              We always provide people a complete solution upon focused of any business
+            Build a strong network connecting you with top employers, industry leaders, and career opportunities for continuous growth.
             </p>
-            <h3 className="text-2xl font-bold">Our Office</h3>
+            <h3 className="text-2xl font-bold">Office Locations</h3>
             <div className="text-5xl font-bold text-blue-600">17+</div>
           </div>
 
           {/* Skilled People */}
           <div className="space-y-4">
             <p className="text-gray-600">
-              We always provide people a complete solution upon focused of any business
+            Bridging the gap between skilled professionals and top employers to create meaningful career opportunities worldwide.
             </p>
-            <h3 className="text-2xl font-bold">Skilled People</h3>
+            <h3 className="text-2xl font-bold">Skilled Professionals</h3>
             <div className="text-5xl font-bold text-blue-600">86+</div>
           </div>
         </div>

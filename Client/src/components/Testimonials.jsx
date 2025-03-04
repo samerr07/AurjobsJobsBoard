@@ -17,35 +17,42 @@ const Testimonials = () => {
     const testimonials = [
         {
             id: 1,
-            name: "Emily Johnson",
+            name: "Sophia Martinez",
             rating: 5,
-            text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa dolor, voluptatibus quos ipsam et est!"
+            text: "Absolutely fantastic service! The team was professional, responsive, and exceeded my expectations. Highly recommend!",
+            company: "Amazon"
         },
         {
             id: 2,
-            name: "Michael Chen",
+            name: "James Anderson",
             rating: 4,
-            text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa dolor, voluptatibus quos ipsam et est!"
+            text: "Great experience overall. The process was smooth, and the support team was very helpful. A few minor issues, but nothing major.",
+            company: "Google"
         },
         {
             id: 3,
-            name: "Sarah Thompson",
+            name: "Olivia Brown",
             rating: 5,
-            text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa dolor, voluptatibus quos ipsam et est!"
+            text: "I’m beyond impressed with the quality and attention to detail. Everything was handled flawlessly from start to finish!",
+            company: "Microsoft"
         },
         {
             id: 4,
-            name: "David Rodriguez",
+            name: "Daniel Wilson",
             rating: 5,
-            text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa dolor, voluptatibus quos ipsam et est!"
+            text: "Outstanding service! The team went above and beyond to ensure everything was perfect. Would definitely use again!",
+            company: "Tesla"
         },
         {
             id: 5,
-            name: "Lisa Patel",
+            name: "Ava Patel",
             rating: 4,
-            text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa dolor, voluptatibus quos ipsam et est!"
+            text: "Very satisfied with my experience. The service was excellent, and the team was very accommodating. Just a little room for improvement.",
+            company: "Apple"
         }
-    ]
+    ];
+    
+    
 
     return (
         <div id='testimonials' className='py-10 bg-gray-50 relative ' >
@@ -102,7 +109,7 @@ const Testimonials = () => {
                                 <div className='flex justify-between items-center'>
                                     <div>
                                         <h3 className='font-semibold text-blue-600 text-lg'>{item.name}</h3>
-                                        <p className='text-sm mt-1'>CEO, Webelite Builders</p>
+                                        <p className='text-sm mt-1'>{item.company}</p>
                                     </div>
                                     <Quote className='text-blue-600'/>
                                 </div>

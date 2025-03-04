@@ -31,7 +31,7 @@ const AppRouter = () => {
     '/candidate_login',
     '/candidate_register',
     '/company_login',
-    '/company_register'
+    '/company_register',
   ];
 
   // Check if current path should have navbar
