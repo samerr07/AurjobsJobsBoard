@@ -1,17 +1,119 @@
 import supabase from "../config/supabase-client.js";
+import { employerDetails } from "./employer-model.js";
 console.log("in models job post"); // Ensure supabase is properly imported
 
-const getEmployerDetails = async(employerIds) => {
-    if (employerIds.length === 0) return [];
+// const getEmployerDetails = async(employerIds) => {
+//     if (employerIds.length === 0) return [];
 
-    const { data: employers, error } = await supabase
-        .from("employers")
-        .select("employer_id, company_display_name, company_logo")
-        .in("employer_id", employerIds);
+//     const { data: employers, error } = await supabase
+//         .from("employers")
+//         .select("employer_id, company_display_name, company_logo")
+//         .in("employer_id", employerIds);
+//     if (error) throw error;
+//     return employers;
+// };
+// export const alljobs = async() => { //copy
+//     try {
+//         // Step 1: Fetch all jobs sorted by 'posted_at' in descending order
+//         const { data, error } = await supabase
+//             .from("jobs")
+//             .select("*")
+//             .order("posted_at", { ascending: false }); // Sorting using Supabase
+//         const { data1, error1 } = await supabase.
+//         from("jobs_external").
+//         select("*").
+//         order("posted_at", { ascending: false })
 
-    if (error) throw error;
-    return employers;
+//         if (error) throw error;
+
+//         // Step 2: Get employer IDs and their details
+//         const employerIds = data.map(job => job.employer_id).filter(id => id);
+//         const employers = await getEmployerDetails(employerIds);
+
+//         // Step 3: Combine job details with employer info
+//         const jobsWithCompany = data.map(job => {
+//             const employer = employers.find(emp => emp.employer_id === job.employer_id);
+//             return {
+//                 ...job,
+//                 company_display_name: employer ? employer.company_display_name : null,
+//                 company_logo: employer ? employer.company_logo : null
+//             };
+//         });
+
+//         return jobsWithCompany; //spread opearator
+//     } catch (error) {
+//         console.error("Error fetching jobs:", error.message);
+//         return [];
+//     }
+// };
+
+
+
+const getEmployerDetails = async(employerIDs, tableName) => {
+    try {
+        if (employerIDs.length === 0) return [];
+
+        const { data: employers, error } = await supabase
+            .from(tableName)
+            .select("employer_id, company_display_name, company_logo")
+            .in("employer_id", employerIDs);
+
+        if (error) throw error;
+
+        return employers;
+    } catch (error) {
+        console.error("Error fetching employers from", tableName, ":", error.message);
+        return [];
+    }
 };
+
+export const alljobs = async() => {
+    try {
+        // Step 1: Fetch jobs from both tables
+        const { data: internalJobs, error: internalError } = await supabase
+            .from("jobs")
+            .select("*")
+            .order("posted_at", { ascending: false });
+
+        const { data: externalJobs, error: externalError } = await supabase
+            .from("jobs_external")
+            .select("*")
+            .order("posted_at", { ascending: false });
+
+        if (internalError) throw internalError;
+        if (externalError) throw externalError;
+
+        // Combine jobs from both tables
+        const allJobsList = [...internalJobs, ...externalJobs];
+
+        // Extract unique employer IDs for both employer tables
+        const employerIdsInternal = [...new Set(internalJobs.map(job => job.employer_id).filter(id => id))];
+        const employerIdsExternal = [...new Set(externalJobs.map(job => job.employer_id).filter(id => id))];
+
+        // Fetch employer details from both employer tables
+        const employersInternal = await getEmployerDetails(employerIdsInternal, "employers");
+        const employersExternal = await getEmployerDetails(employerIdsExternal, "employer_external");
+
+        // Merge employer details into one list
+        const allEmployers = [...employersInternal, ...employersExternal];
+
+        // Attach employer details to jobs
+        const jobsWithCompany = allJobsList.map(job => {
+            const employer = allEmployers.find(emp => emp.employer_id === job.employer_id);
+            return {
+                ...job,
+                company_display_name: employer ? employer.company_display_name : null,
+                company_logo: employer ? employer.company_logo : null
+            };
+        });
+
+        return jobsWithCompany;
+    } catch (error) {
+        console.error("Error fetching jobs:", error.message);
+        return [];
+    }
+};
+
 export const employer_Jobs = async(employer_id) => {
     try {
         // Find all jobs posted by the employer using employer_id
@@ -31,36 +133,6 @@ export const employer_Jobs = async(employer_id) => {
         return jobs;
     } catch (error) {
         throw new Error(`Error fetching jobs: ${error.message}`);
-    }
-};
-export const alljobs = async() => {
-    try {
-        // Step 1: Fetch all jobs sorted by 'posted_at' in descending order
-        const { data, error } = await supabase
-            .from("jobs")
-            .select("*")
-            .order("posted_at", { ascending: false }); // Sorting using Supabase
-
-        if (error) throw error;
-
-        // Step 2: Get employer IDs and their details
-        const employerIds = data.map(job => job.employer_id).filter(id => id);
-        const employers = await getEmployerDetails(employerIds);
-
-        // Step 3: Combine job details with employer info
-        const jobsWithCompany = data.map(job => {
-            const employer = employers.find(emp => emp.employer_id === job.employer_id);
-            return {
-                ...job,
-                company_display_name: employer ? employer.company_display_name : null,
-                company_logo: employer ? employer.company_logo : null
-            };
-        });
-
-        return jobsWithCompany;
-    } catch (error) {
-        console.error("Error fetching jobs:", error.message);
-        return [];
     }
 };
 

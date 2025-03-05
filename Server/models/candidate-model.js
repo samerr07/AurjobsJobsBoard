@@ -47,7 +47,7 @@ export const createCandidate = async(
 
         if (error) throw error;
 
-        console.log("Candidate created successfully:", data);
+        // console.log("Candidate created successfully:", data);
         return data; // Return inserted candidate data
     } catch (error) {
         console.error("Error inserting candidate:", error.message);

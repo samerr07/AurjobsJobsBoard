@@ -2,11 +2,8 @@ import supabase from "../config/supabase-client.js";
 import { createCandidate, findByCandidateEmail, findByCandidateID, updateCandidate } from "../models/candidate-model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import _ from 'lodash';
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
-// const nodemailer = require("nodemailer");
 class CandidateController {
     //  Candidate Signup
     static async signupCandidate(req, res) {
@@ -78,6 +75,30 @@ class CandidateController {
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
+    static async candidate_login_google(req, res) {
+        try {
+            const token = req.user.token; // Get JWT token from passport
+
+            if (!token) {
+                return res.status(401).json({ error: "Authentication failed" });
+            }
+
+            res.cookie("authToken", token, { httpOnly: true, sameSite: "none", secure: true, path: "/" });
+            // console.log("req.user:", req.user);
+            return res.status(200).json({
+                message: "Google Login successful",
+                token,
+                candidate: req.user, // Send candidate details
+                success: true,
+            });
+        } catch (error) {
+            console.error("Google Login Error:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+
+
 
     static async getCandidateProfile(req, res) {
         try {
@@ -122,44 +143,41 @@ class CandidateController {
         }
     }
 
-    static async candidate_reset_password(req, res) {
-        try {
-            const { email } = req.body;
-            console.log("Reset password request for:", email);
+    // static async candidate_reset_password(req, res) {
+    //     try {
+    //         const { email, otp } = req.body;
+    //         console.log("Reset password request for:", email);
 
-            if (!email) {
-                return res.status(400).json({ error: "Email is required" });
-            }
+    //         if (!email) {
+    //             return res.status(400).json({ error: "Email is required" });
+    //         }
 
-            const transporter = nodemailer.createTransport({
-                host: "smtp.zoho.in",
-                port: 465,
-                secure: true,
-                auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.PASSWORD,
-                },
-            });
+    //         const transporter = nodemailer.createTransport({
+    //             host: "smtp.zoho.in",
+    //             port: 465,
+    //             secure: true,
+    //             auth: {
+    //                 user: process.env.EMAIL,
+    //                 pass: process.env.PASSWORD,
+    //             },
+    //         });
 
-            const mailOptions = {
-                from: "abhijeet1312@zohomail.in",
-                to: email,
-                subject: "Password Reset Request",
-                text: "Click the link to reset your password.",
-            };
+    //         const mailOptions = {
+    //             from: "abhijeet1312@zohomail.in",
+    //             to: email,
+    //             subject: "OTP Requested from Aurjobs",
+    //             text: `Here is your OTP: ${otp}`
+    //         };
 
-            const info = await transporter.sendMail(mailOptions);
-            console.log("Email sent:", info);
+    //         const info = await transporter.sendMail(mailOptions);
+    //         console.log("Email sent:", info);
 
-            return res.status(200).json({ message: "Password reset email sent successfully" });
-        } catch (error) {
-            console.error("Error sending email:", error);
-            return res.status(500).json({ error: "Internal server error" });
-        }
-    }
-    static async candidate_login_google(req, res) {
-
-    }
+    //         return res.status(200).json({ message: "Password reset email sent successfully" });
+    //     } catch (error) {
+    //         console.error("Error sending email:", error);
+    //         return res.status(500).json({ error: "Internal server error" });
+    //     }
+    // }
 
 }
 
