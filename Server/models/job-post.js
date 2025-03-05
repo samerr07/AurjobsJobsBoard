@@ -106,7 +106,7 @@ export const alljobs = async() => {
                 company_logo: employer ? employer.company_logo : null
             };
         });
-
+        console.log(jobsWithCompany.length);
         return jobsWithCompany;
     } catch (error) {
         console.error("Error fetching jobs:", error.message);
