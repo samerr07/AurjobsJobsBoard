@@ -29,20 +29,20 @@ const ActiveJobs = memo(() => {
     const employerId = employerProfile?.employer_id;
 
     const fetchJobs = useCallback(async () => {
-        if (!employerId) return; // Prevent API call if employerId is undefined
+       
 
         setLoading(true);
         try {
-            const response = await axios.get(`${BASEURL}/jobs_post/employer_jobs/${employerId}`, {
+            const response = await axios.get(`${BASEURL}/external_jobs/external_job_details/`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
 
-            if (response.status === 200) {
-                const jobsData = response.data;
-                setJobs(jobsData);
+            if (response?.data?.success) {
+                setJobs(response.data.external_jobs);
+                console.log(response)
                 setFilteredJobs(jobsData);
                 
                 // Calculate stats
@@ -100,10 +100,10 @@ const ActiveJobs = memo(() => {
     }, [jobs, searchTerm, filters]);
 
     useEffect(() => {
-        if (employerId) {
+        
             fetchJobs();
-        }
-    }, [employerId, fetchJobs]);
+        
+    }, [ ]);
 
     const handleRefresh = () => {
         fetchJobs();
@@ -137,10 +137,7 @@ const ActiveJobs = memo(() => {
         </div>
     );
 
-    if (!employerId) {
-        return <div className="flex items-center justify-center h-64 text-gray-500">Loading employer data...</div>;
-    }
-
+   
     if (loading && jobs.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center h-64 text-gray-500">

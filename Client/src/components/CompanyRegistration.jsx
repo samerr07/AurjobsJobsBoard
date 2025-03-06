@@ -50,9 +50,9 @@ const CompanyRegistration = ({ navigateToLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (validateForm()) {
-    //   console.log("Form submitted: ", formData);
-    // }
+    if (validateForm()) {
+      console.log("Form submitted: ", formData);
+    }
 
     try {
       setLoading(true)

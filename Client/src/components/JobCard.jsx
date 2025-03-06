@@ -38,16 +38,15 @@ const JobCard = ({ job }) => (
 
                 <div className="flex flex-wrap gap-2">
                     <span className="inline-flex items-center bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-sm font-medium">
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {/* <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {job.job_experience_required}
+                        </svg> */}
+                        <Briefcase className='mr-3'/>
+                        {job.job_experience_required} years
                     </span>
                     <span className="inline-flex items-center bg-green-50 text-green-600 px-3 py-1 rounded-lg text-sm font-medium">
-                        {/* <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                            <path d="M6 5h12M6 9h12M12 9c3 0 3 8-2 8h-4m6 0l-6 4" />
-                        </svg> */}
+                        
                         <span>₹</span>
                         {job.salary_range}
                     </span>
