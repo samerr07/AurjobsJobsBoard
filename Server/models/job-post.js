@@ -139,24 +139,46 @@ export const employer_Jobs = async(employer_id) => {
 //this job details for user
 
 export const getJobDetailsByJobId = async(job_id) => {
-    try { ///*** */
-        const { data, error } = await supabase
+    try {
+        let isExternal = false;
+        let jobData = null;
+        let error = null;
+
+        // Try fetching from "jobs" table first
+        ({ data: jobData, error } = await supabase
             .from("jobs")
             .select("*, employer_id")
             .eq("job_id", job_id)
-            .single();
+            .single());
+
+        // If not found, check "jobs_external" table
+        if (error || !jobData) {
+            ({ data: jobData, error } = await supabase
+                .from("jobs_external")
+                .select("*, employer_id")
+                .eq("job_id", job_id)
+                .single());
+
+            if (!error && jobData) {
+                isExternal = true;
+            }
+        }
 
         if (error) throw error;
-        if (!data) return null;
+        if (!jobData) return null;
 
-        const employers = await getEmployerDetails([data.employer_id]);
-        // console.log(employerIds, "employer id");
+        // Determine employer table based on job source
+        const employerTable = isExternal ? "employer_external" : "employers";
+
+        // Fetch employer details
+        const employers = await getEmployerDetails([jobData.employer_id], employerTable);
         const employerData = employers.length > 0 ? employers[0] : null;
 
+        // Combine job details with employer details
         const jobWithCompany = {
-            ...data,
+            ...jobData,
             company_display_name: employerData ? employerData.company_display_name : null,
-            company_logo: employerData ? employerData.company_logo : null
+            company_logo: employerData ? employerData.company_logo : null,
         };
 
         console.log("Job details with company info for job_id", job_id, jobWithCompany);
@@ -165,7 +187,7 @@ export const getJobDetailsByJobId = async(job_id) => {
         console.error("Error fetching job details with job_id", job_id, error);
         return null;
     }
-}
+};
 
 export const createJobPost = async(
     job_title,
@@ -329,20 +351,56 @@ export const getCandidatesForJob = async(job_id) => {
     }
 };
 
-
 export const delete_Job_FromDB = async(job_id) => {
     try {
-        const { data, error } = await supabase
+        let jobData = null;
+        let error = null;
+        let isExternal = false;
+
+        // Try to find the job in "jobs" table
+        ({ data: jobData, error } = await supabase
             .from("jobs")
+            .select("*")
+            .eq("job_id", job_id)
+            .single());
+
+        // If not found, check "jobs_external" table
+        if (error || !jobData) {
+            ({ data: jobData, error } = await supabase
+                .from("jobs_external")
+                .select("*")
+                .eq("job_id", job_id)
+                .single());
+
+            if (!error && jobData) {
+                isExternal = true;
+            }
+        }
+
+        // If job doesn't exist in both tables
+        if (!jobData) {
+            return { error: "Job not found" };
+        }
+
+        // Delete from the appropriate table
+        const tableName = isExternal ? "jobs_external" : "jobs";
+        const { data: deleteData, error: deleteError } = await supabase
+            .from(tableName)
             .delete()
             .eq("job_id", job_id);
-        return { data, error };
+
+        if (deleteError) {
+            throw deleteError;
+        }
+
+        return { success: true, deletedJob: deleteData };
 
     } catch (error) {
         console.error("Supabase error:", error);
         return { error };
     }
 };
+
 //apply job
 
 

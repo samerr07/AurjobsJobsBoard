@@ -7,6 +7,7 @@ import candidateRoutes from "./routes/candidate-route.js";
 import employerRoutes from "./routes/employer-routes.js";
 import jobRoutes from "./routes/job-route.js";
 import matchRoutes from "./routes/matchRoutes.js";
+import job_external_routes from "./routes/job_external_routes.js"
 import { configurePassport, passport } from "./config/passport.js"; // ✅ Import named exports
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use("/candidates", candidateRoutes);
 app.use("/employers", employerRoutes);
 app.use("/jobs_post", jobRoutes);
 app.use("/match", matchRoutes);
+app.use("/external_jobs", job_external_routes);
 
 // Start server
 app.listen(port, () => {
