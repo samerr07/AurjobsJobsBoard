@@ -3,14 +3,17 @@ import JobPost from './JobPost';
 import { UserCircle, BriefcaseIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 // import EmployerProfile from './section/EmployerProfile';
 import { useLocation } from 'react-router-dom';
+import CompanyRegistrationForm from './CompanyRegistrationForm';
+import RegisteredCompanies from './RegisteredCompanies';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("job_post");
   const [isExpanded, setIsExpanded] = useState(true);
 
   const navItems = [
-    { id: 'profile', icon: UserCircle, label: 'Profile' },
-    { id: 'job_post', icon: BriefcaseIcon, label: 'Job Post' }
+    { id: 'profile', icon: UserCircle, label: 'Company Registraion' },
+    { id: 'job_post', icon: BriefcaseIcon, label: 'Job Post' },
+    { id: 'registered_company', icon: BriefcaseIcon, label: 'Registered Companies' }
   ];
 
   const location = useLocation();  // Hook to access location state
@@ -67,8 +70,9 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <main className={`flex-1 transition-all duration-300 ease-in-out ${isExpanded ? 'ml-64' : 'ml-20'}`}>
-        {activeSection === 'profile' && (<h1>Profile</h1>)}
+        {activeSection === 'profile' && <CompanyRegistrationForm/>}
         {activeSection === 'job_post' && <JobPost />}
+        { activeSection === 'registered_company' && <RegisteredCompanies/>}
       </main>
     </div>
   );

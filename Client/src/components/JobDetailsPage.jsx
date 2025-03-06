@@ -74,6 +74,7 @@ const JobDetailsPage = () => {
 
       if (res?.data?.success) {
         setJobDetails(res?.data?.job);
+        console.log(res?.data?.job);
       }
     } catch (error) {
       console.error('Error fetching job details:', error);
