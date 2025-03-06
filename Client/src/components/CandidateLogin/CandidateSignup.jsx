@@ -119,10 +119,6 @@ const CandidateSignup = ({ navigateToLogin }) => {
         })
     };
 
-
-
-
-
     useEffect(() => {
         // Check password match whenever password or confirmPassword changes
         if (formData.confirmPassword) {
@@ -144,25 +140,38 @@ const CandidateSignup = ({ navigateToLogin }) => {
 
 
 
-        <div className="min-h-screen w-full flex items-center justify-center bg-white py-12 px-4 [&::-webkit-scrollbar]:hidden">
+        <div className=" w-full h-screen flex items-center justify-center bg-white py-12 px-4 [&::-webkit-scrollbar]:hidden">
 
             <div className="flex flex-col md:flex-row w-[85%] max-w-4xl justify-center">
             {/* employer button  */}
                 <Link
                     to="/company_register"
-                    className="absolute top-24 right-4 inline-flex items-center px-4 py-2  text-orange-500 rounded-lg hover:text-blue-500 duration-300 text-medium font-medium "
+                    className="absolute top-24 ml-20 right-4 inline-flex items-center px-4 py-2  text-orange-500 rounded-lg hover:text-blue-500 duration-300 text-medium font-medium "
+                  style={{  
+                    position: 'absolute',
+                    top: '55px', 
+                    right: '4px', 
+
+           
+                    '@media (max-width: 375px)': {
+                      top: '20px',   
+                      right: '2px',  
+                      fontSize: '0.8rem', 
+                    },
+
+                    '@media (min-width: 428px)': {
+                      top: '35px',  
+                      right: '6px',  
+                    },
+                  }}
                 >
                     <ArrowRight className="mr-2 h-4 w-4 md:relative" />
                     For Employers
                 </Link>
-                <div className="space-y-2">
-                    <h2 className="text-3xl font-sans font-bold text-black mb-6 text-center">Create a new Account</h2>
-                    <p className='text-center'>Join us today!</p>
-
-
-
-
-                    <form onSubmit={handleSubmit} className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6">
+                <div className="space-y-1">
+                    <h2 className="text-2xl font-sans font-bold text-black mt-5 text-center">Create a new Account</h2>
+                    <p className='text-center ml-4'>Join us today!</p>
+                    <form onSubmit={handleSubmit} className="w-full max-w-4xl bg-white p-6">
                         <div className="mb-6">
 
                             <div className="flex items-center mt-2">
@@ -262,8 +271,6 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                             />
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
 
@@ -315,20 +322,21 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                     name="password"
                                                     value={formData.password}
                                                     onChange={handleChange}
-                                                    className="w-full px-3 py-2.5 pr-10 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                       "
-                                                    placeholder="Create password"
+                                                    className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                      
+                      transition-all duration-300"
+                                                    placeholder="Enter password"
                                                     required
                                                 />
                                                 <button
                                                     type="button"
+                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-orange-500 focus:outline-none"
                                                     onClick={() => togglePasswordVisibility('password')}
-                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 
-                        text-gray-500 hover:text-blue-500 transition-colors"
                                                 >
-                                                    {passwordVisible.password ? <Eye size={20} /> : <EyeOff size={20} />}
+                                                    {passwordVisible.password ? <EyeOff size={20} /> : <Eye size={20} />}
                                                 </button>
                                             </div>
+                                            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
                                         </div>
                                         <div>
                                             <label className="text-sm font-medium text-gray-700 mb-2 block">
@@ -340,44 +348,39 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                     name="confirmPassword"
                                                     value={formData.confirmPassword}
                                                     onChange={handleChange}
-                                                    className="w-full px-3 py-2.5 pr-10 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                        "
+                                                    className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
+                      
+                      transition-all duration-300"
                                                     placeholder="Confirm password"
                                                     required
                                                 />
                                                 <button
                                                     type="button"
+                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-orange-500 focus:outline-none"
                                                     onClick={() => togglePasswordVisibility('confirmPassword')}
-                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 
-                        text-gray-500 hover:text-blue-500 transition-colors"
                                                 >
-                                                    {passwordVisible.confirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                                                    {passwordVisible.confirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                                 </button>
                                             </div>
+                                            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
 
                         <div className="flex justify-between mt-8">
-                        
                             {currentSection === 2 && (
                                 <button
-                                
                                     type="button"
-                                    
                                     onClick={previousSection}
-                                    
-                                    className="flex items-center px-6 py-2.5 bg-orange-500 font-medium rounded-lg
-                                text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+                                    className="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 duration-300"
                                 >
-                                {/* <ArrowLeft className="ml-2" size={20} /> */}
+                                    <ArrowLeft className="mr-2 h-4 w-4" />
                                     Previous
-                                   
                                 </button>
                             )}
-
                             {currentSection === 1 ? (
                                 <button
                                     type="button"
@@ -387,23 +390,29 @@ const CandidateSignup = ({ navigateToLogin }) => {
         transition-colors duration-300"
                                 >
                                     Next
-                                    <ArrowRight className="ml-2" size={20} />
+                                    <ArrowRight className="ml-2 h-4 w-4" />
                                 </button>
                             ) : (
-                                loading ? (
-                                    <button className="flex items-center ml-auto px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg 
-        hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
-        transition-colors duration-300"><Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </button>
-                                ) : (
-                                    <button
-                                        type="submit"
-                                        className="flex items-center px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg text-sm
-                                    hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors"
-                                    >
-                                        Create Account
-                                    </button>
-
-                                )
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className={`inline-flex items-center px-4 py-2 ${loading
+                                        ? 'bg-gray-400 cursor-not-allowed'
+                                        : 'bg-orange-500 hover:bg-orange-600'
+                                        } text-white rounded-lg duration-300`}
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Creating Account...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <UserPlus className="mr-2 h-4 w-4" />
+                                            Create Account
+                                        </>
+                                    )}
+                                </button>
                             )}
                         </div>
                         <div className="text-center mt-4">
@@ -422,8 +431,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                 </div>
             </div>
         </div>
+    );
+};
 
-    )
-}
-
-export default CandidateSignup
+export default CandidateSignup;
