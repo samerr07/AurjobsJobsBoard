@@ -30,7 +30,7 @@ const JobDetailsPage = () => {
   const candidate_id = candidateProfile?.candidate_id;
   const params = useParams()
 
- 
+
 
   const skills = candidateProfile?.skills?.map((skill) => skill.candidate_skill).join(', ');
   const formatExperience = (experience) => {
@@ -74,6 +74,7 @@ const JobDetailsPage = () => {
 
       if (res?.data?.success) {
         setJobDetails(res?.data?.job);
+        console.log(res?.data?.job);
       }
     } catch (error) {
       console.error('Error fetching job details:', error);
@@ -221,7 +222,7 @@ const JobDetailsPage = () => {
   };
   const handleEligibilityModalClose = () => {
     setShowEligibilityModal(false);
-    
+
     // If they were eligible and application was submitted, show success modal
     if (isSubmitted) {
       setShowModal(true);
@@ -229,54 +230,7 @@ const JobDetailsPage = () => {
   };
 
 
-  // const handleApply = async () => {
-  //   // Authentication check
-  //   if (!isAuthenticated) {
-  //     setShowLoginModal(true);
-  //     return;
-  //   }
 
-  //   // Profile validation check
-  //   const isProfileComplete = validateProfile();
-  //   if (!isProfileComplete) {
-  //     setShowModal(true);
-  //     return;
-  //   }
-
-  //   // Perform AI screening without showing loader first
-  //   const score = await aiScreening();
-
-  //   // If score is sufficient, proceed directly to job application
-  //   if (score >= 60) {
-  //     try {
-  //       const res = await axios.post(`${BASEURL}/jobs_post/apply_job`, {
-  //         job_id: jobDetails.job_id,
-  //         candidate_id
-  //       });
-
-  //       if (res?.data?.success) {
-  //         setHasApplied(true);
-  //         setAppliedDate(new Date().toISOString());
-  //         setIsSubmitted(true);
-  //         setShowModal(true);
-
-  //         toast.success(res?.data?.message);
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //       toast.error(err?.response?.data?.error);
-  //     }
-  //   } else {
-  //     // Only show AI screening loader and eligibility modal if score is insufficient
-  //     setIsAIScreening(true);
-  //     setShowEligibilityModal(true);
-
-  //     // Hide loader after a delay
-  //     setTimeout(() => {
-  //       setIsAIScreening(false);
-  //     }, 5000);
-  //   }
-  // };
 
   const parseJobDescription = (text) => {
     if (!text) return [];
@@ -386,7 +340,7 @@ const JobDetailsPage = () => {
                   </span>
                 </div>
               </div>
-              
+
               {
                 hasApplied ? (
                   <div className="text-right">
@@ -404,12 +358,32 @@ const JobDetailsPage = () => {
                     )}
                   </div>
                 ) : (
-                  <button
+                  // <button
+                  //   onClick={handleApply}
+                  //   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  // >
+                  //   Apply Now
+                  // </button>
+                  
+                    jobDetails?.job_link ? (
+                      <a href={jobDetails?.job_link} target='_blank'>
+                    <button
+                      
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Apply Now
+                    </button>
+                  </a>
+                    ):(
+                      <button
                     onClick={handleApply}
                     className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     Apply Now
                   </button>
+                    )
+                  
+                  
                 )
               }
               <AIMatchingLoader
@@ -455,8 +429,8 @@ const JobDetailsPage = () => {
 
               <Modal isOpen={isProfileCompeleteModal} onClose={() => setIsCompleteProfileModal(false)}>
                 {!isSubmitted && (
-                
-                
+
+
                   <div className="text-center">
                     <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                       <XCircle className="w-12 h-12 text-red-500" />
@@ -495,63 +469,7 @@ const JobDetailsPage = () => {
                 )}
               </Modal>
 
-              {/* <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                {incompleteFields.length === 0 && isSubmitted ? (
-                  <div className="text-center">
-                    <div className="bg-green-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle2 className="w-12 h-12 text-green-500" />
-                    </div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Application Submitted!
-                    </h2>
-                    <p className="text-gray-600 mb-6">
-                      Your application has been successfully submitted. We'll review your profile and get back to you soon.
-                    </p>
-                    <button
-                      onClick={() => setShowModal(false)}
-                      className="w-full bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-2 focus:ring-green-300 focus:ring-offset-2"
-                    >
-                      Close
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <XCircle className="w-12 h-12 text-red-500" />
-                    </div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Complete Your Profile
-                    </h2>
-                    <p className="text-gray-600 mb-4">
-                      Please complete the following information in your profile before applying:
-                    </p>
-                    <div className="bg-red-50 rounded-lg p-4 mb-6">
-                      <ul className="text-left space-y-2">
-                        {incompleteFields.map((field, index) => (
-                          <li key={index} className="text-red-600 flex items-center space-x-2">
-                            <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
-                            <span>{field}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="space-y-3">
-                      <button
-                        onClick={handleCompleteProfile}
-                        className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
-                      >
-                        Complete Profile
-                      </button>
-                      <button
-                        onClick={() => setShowModal(false)}
-                        className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </Modal> */}
+
             </div>
           </div>
 

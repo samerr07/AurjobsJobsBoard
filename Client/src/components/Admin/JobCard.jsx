@@ -102,29 +102,29 @@ const JobCard = ({ job, onRefresh }) => {
     };
 
     // Action menu items
-    const actionMenuItems = [
-        {
-            icon: Edit,
-            text: 'Edit Job',
-            onClick: () => navigate(`/employer_dashboard/edit_job/${job.job_id}`),
-        },
-        {
-            icon: ToggleLeft,
-            text: job.status === 'active' ? 'Deactivate Job' : 'Activate Job',
-            onClick: handleToggleStatus,
-        },
-        {
-            icon: Copy,
-            text: 'Duplicate Job',
-            onClick: handleDuplicateJob,
-        },
-        {
-            icon: Trash2,
-            text: 'Delete Job',
-            onClick: () => setShowConfirmation(true),
-            danger: true
-        },
-    ];
+    // const actionMenuItems = [
+    //     {
+    //         icon: Edit,
+    //         text: 'Edit Job',
+    //         onClick: () => navigate(`/employer_dashboard/edit_job/${job.job_id}`),
+    //     },
+    //     {
+    //         icon: ToggleLeft,
+    //         text: job.status === 'active' ? 'Deactivate Job' : 'Activate Job',
+    //         onClick: handleToggleStatus,
+    //     },
+    //     {
+    //         icon: Copy,
+    //         text: 'Duplicate Job',
+    //         onClick: handleDuplicateJob,
+    //     },
+    //     {
+    //         icon: Trash2,
+    //         text: 'Delete Job',
+    //         onClick: () => setShowConfirmation(true),
+    //         danger: true
+    //     },
+    // ];
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative">
@@ -280,25 +280,25 @@ const JobCard = ({ job, onRefresh }) => {
 
                     {/* Applicant Stats */}
                     <div>
-                        <div className="flex justify-between items-center mb-2">
+                        {/* <div className="flex justify-between items-center mb-2">
                             <h4 className="font-semibold">Applicants</h4>
                             <span className="text-sm text-blue-600">
                                 {job.applicants?.length || 0} total
                             </span>
-                        </div>
+                        </div> */}
                         
                         {/* Applicant progress bar */}
-                        <div className="bg-gray-100 h-2 rounded-full overflow-hidden">
+                        {/* <div className="bg-gray-100 h-2 rounded-full overflow-hidden">
                             <div 
                                 className="bg-blue-500 h-full rounded-full" 
                                 style={{ width: `${Math.min((job.applicants?.length || 0) / (job.target_applicants || 10) * 100, 100)}%` }}
                             ></div>
-                        </div>
+                        </div> */}
                         
-                        <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        {/* <div className="flex justify-between text-xs text-gray-500 mt-1">
                             <span>0</span>
                             <span>Target: {job.target_applicants || 10}</span>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Action Buttons */}
@@ -311,13 +311,13 @@ const JobCard = ({ job, onRefresh }) => {
                             View Details
                         </button>
                         
-                        <button
+                        {/* <button
                             onClick={() => navigate(`/employer_dashboard/jobs/${job.job_id}/applicants`)}
                             className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex-1"
                         >
                             <UserPlus className="w-4 h-4" />
                             View Applicants
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>

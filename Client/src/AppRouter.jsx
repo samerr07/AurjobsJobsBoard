@@ -22,6 +22,7 @@ import PrivacyPolicy from './components/PrivacyPolicy'
 import TermsofService from './components/TermsofService'
 import ApplicantProfile from './components/EmployerDashboard/section/ApplicantProfile'
 import AdminDashboard from './components/Admin/AdminDashboard'
+import CompanyJobsPage from './components/Admin/CompanyJobsPage'
 
 const AppRouter = () => {
 
@@ -59,6 +60,8 @@ const AppRouter = () => {
           <Route path='/terms_and_conditions' element={<TermsofService/>}/>
           <Route path='/applicant_profile/:id' element={<ApplicantProfile/>}/>
           <Route path='/admin_dashboard' element={<AdminDashboard/>} />
+          <Route path='/admin_dashboard/companies/:id/jobs' element={<CompanyJobsPage/>} />
+
         </Routes>
     </>
   )
