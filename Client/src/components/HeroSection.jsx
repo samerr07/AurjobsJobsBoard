@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { ChevronDown, Search } from 'lucide-react';
 import HeroImg from "../assets/HeroImg.png"
+import AmazonLogo from "../assets/companyLogo/amazon.png"
+import connLogo from "../assets/companyLogo/conneqt.png"
+import TeleperformanceLogo from "../assets/companyLogo/Teleperformance.png"
+import Indigo from "../assets/companyLogo/Indigo.png"
+import VishalMart from "../assets/companyLogo/vishal.png"
+import Jiologo from "../assets/companyLogo/jio2.png"
+
 import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
@@ -28,12 +35,12 @@ const HeroSection = () => {
 
     // const [currentIndex, setCurrentIndex] = useState(0);
     const companies = [
-        { name: "Conneqt Business Solutions", logo: "🔷", description: "Leading business process management company." },
-        { name: "Amazon", logo: "🛒", description: "Global e-commerce and technology leader." },
-        { name: "Teleperformance", logo: "💬", description: "Worldwide leader in digital business services." },
-        { name: "IndiGo Airlines", logo: "✈️", description: "India's largest passenger airline." },
-        { name: "Vishal Mega Mart", logo: "🏪", description: "Leading fashion and retail chain." },
-        { name: "Jio Digital Life", logo: "📶", description: "Digital services and telecommunications giant." },
+        { name: "Conneqt Business Solutions", logo: connLogo, description: "Leading business process management company." },
+        { name: "Amazon", logo:AmazonLogo, description: "Global e-commerce and technology leader." },
+        { name: "Teleperformance", logo: TeleperformanceLogo , description: "Worldwide leader in digital business services." },
+        { name: "IndiGo Airlines", logo: Indigo , description: "India's largest passenger airline." },
+        { name: "Vishal Mega Mart", logo: VishalMart, description: "Leading fashion and retail chain." },
+        { name: "Jio Digital Life", logo: Jiologo, description: "Digital services and telecommunications giant." },
       ];
 
       const [currentIndex, setCurrentIndex] = useState(0);
@@ -166,7 +173,7 @@ const HeroSection = () => {
     }}
   >
     {[...companies, ...companies.slice(0, visibleCompanies)].map((company, index) => (
-        <div
+      <div
         key={index}
         className={`flex-none w-[100%] ${
           visibleCompanies === 1 
@@ -176,15 +183,17 @@ const HeroSection = () => {
               : "md:w-[calc(100%/4)]"
         } px-2`}
       >
-        <div className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 rounded-lg flex flex-col items-center">
-          <div className="w-16 h-16 flex items-center justify-center text-4xl mb-2">
-            {company.logo}
+        <div className="bg-transparent shadow-none flex flex-col items-center">
+          <div className="w-35 h-35 flex items-center justify-center text-4xl mb-2">
+            {/* {company.logo}
+             */}
+             <img src={company.logo}/>
           </div>
           <div className="text-center">
             <h3 className="font-semibold text-gray-800 text-base md:text-lg">
               {company.name}
             </h3>
-            <p className="text-sm text-gray-600 min-h-[50px] max-w-xs">
+            <p className="text-md text-gray-600 min-h-[50px] max-w-xs">
               {company.description}
             </p>
           </div>
@@ -193,6 +202,7 @@ const HeroSection = () => {
     ))}
   </div>
 </div>
+
 
 
             </div>
