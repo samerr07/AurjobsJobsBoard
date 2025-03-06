@@ -102,7 +102,7 @@ const CompanyRegistration = ({ navigateToLogin }) => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-white">
-      <div className="flex flex-row md:flex-row w-full justify-center shadow-lg rounded-lg overflow-hidden">
+      <div className="flex flex-row md:flex-row w-full justify-center overflow-hidden">
         {/* Image Section */}
         <div className="w-full md:w-1/2 lg:flex justify-start items-stretch hidden md:block bg-orange-500">
           <img
@@ -118,6 +118,24 @@ const CompanyRegistration = ({ navigateToLogin }) => {
           <Link
               to="/candidate_register"
               className="absolute top-24 right-4 inline-flex items-center px-4 py-2  text-orange-500 rounded-lg hover:text-blue-500 duration-300 text-medium font-medium"
+              style={{ 
+                    position: 'absolute',
+                    top: '50px', 
+                    right: '4px', 
+
+                    
+                    '@media (max-width: 375px)': {
+                      top: '20px',   
+                      right: '2px',  
+                      fontSize: '0.8rem', 
+                    },
+
+                   
+                    '@media (min-width: 428px)': {
+                      top: '35px',   
+                      right: '6px',  
+                    },
+                  }}
             >
               <ArrowRight className="mr-2 h-4 w-4" />
               For Candidate

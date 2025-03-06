@@ -81,7 +81,7 @@ function CompanyLogin() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-white">
-      <div className="flex flex-col md:flex-row w-full h-screen justify-center shadow-lg rounded-lg overflow-hidden">
+      <div className="flex flex-col md:flex-row w-full h-screen justify-center shadow-lg overflow-hidden">
 
         {/* Left: Form */}
         <div className="w-full md:w-1/2 flex justify-center items-center p-8">
@@ -150,7 +150,7 @@ function CompanyLogin() {
         </div>
 
         {/* Right: Image */}
-        <div className=" hidden md:block md:w-1/2 p-6 items-center justify-center bg-orange-500">
+        <div className=" w-full md:w-1/2 lg:flex justify-start items-stretch hidden md:block bg-orange-500">
           <img
             src={LoginImage}
             alt="Login"
