@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import JobDetailsSkeleton from './JobDetailsSkeleton';
 import AIMatchingLoader from './AIMatchingLoader';
+import { Helmet } from 'react-helmet';
 
 const JobDetailsPage = () => {
 
@@ -83,6 +84,62 @@ const JobDetailsPage = () => {
     }
 
   }
+
+
+  const generateJobStructuredData = () => {
+    if (!jobDetails) return null;
+
+    // Parse salary range to get min and max values
+    let salaryValue = jobDetails.salary_range;
+    if (typeof salaryValue === 'string' && salaryValue.includes('-')) {
+      const parts = salaryValue.replace(/[^\d-]/g, '').split('-');
+      salaryValue = parts[0]; // Use the minimum salary for structured data
+    }
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": jobDetails.job_title,
+      "description": jobDetails.job_description,
+      "datePosted": jobDetails.posted_at,
+      "validThrough": "", // Add an expiry date if available
+      "employmentType": jobDetails.employment_type,
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": jobDetails.company_display_name,
+        "logo": jobDetails.company_logo
+      },
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": jobDetails.job_location
+        }
+      },
+      "baseSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "INR",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": salaryValue,
+          "unitText": "YEAR"
+        }
+      },
+      "skills": jobDetails.job_skills_required.join(", "),
+      "experienceRequirements": {
+        "@type": "OccupationalExperienceRequirements",
+        "monthsOfExperience": jobDetails.job_experience_required * 12
+      },
+      "industry": jobDetails.industry,
+      "jobBenefits": "", // Add benefits if available
+      "workHours": "", // Add work hours if available
+      "applicantLocationRequirements": {
+        "@type": "Country",
+        "name": "IN" // Assuming jobs are in India based on currency
+      }
+    };
+  };
+
 
 
 
@@ -304,264 +361,277 @@ const JobDetailsPage = () => {
 
 
   return (
-    loading ? (
-      <JobDetailsSkeleton />
-    ) : (
-      <div className="min-h-screen mt-20 bg-gray-50 py-8 px-4">
-        <div className="max-w-4xl mx-auto">
-          {/* Header Section */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{jobDetails?.job_title}</h1>
-                <div className="flex items-center gap-4 text-gray-600 mb-4">
-                  <div className="flex items-center gap-1">
-                    <Building2 className="w-4 h-4" />
-                    <span>{jobDetails?.company_display_name}</span>
+    <>
+      {/* Add Helmet for SEO structured data */}
+      {jobDetails && (
+        <Helmet>
+          <title>{jobDetails.job_title} | {jobDetails.company_display_name}</title>
+          <meta name="description" content={`${jobDetails.job_title} job opportunity at ${jobDetails.company_display_name}. ${jobDetails.job_experience_required} years experience required. Location: ${jobDetails.job_location}`} />
+          <script type="application/ld+json">
+            {JSON.stringify(generateJobStructuredData())}
+          </script>
+        </Helmet>
+      )}
+      
+      {loading ? (
+        <JobDetailsSkeleton />
+      ) : (
+        <div className="min-h-screen mt-20 bg-gray-50 py-8 px-4">
+          <div className="max-w-4xl mx-auto">
+            {/* Header Section */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{jobDetails?.job_title}</h1>
+                  <div className="flex items-center gap-4 text-gray-600 mb-4">
+                    <div className="flex items-center gap-1">
+                      <Building2 className="w-4 h-4" />
+                      <span>{jobDetails?.company_display_name}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      <span>{jobDetails?.job_location}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <IndianRupee className="w-4 h-4" />
+                      <span>{jobDetails?.salary_range}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
-                    <span>{jobDetails?.job_location}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <IndianRupee className="w-4 h-4" />
-                    <span>{jobDetails?.salary_range}</span>
+                  <div className="flex gap-3">
+                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                      {jobDetails?.employment_type}
+                    </span>
+                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                      {jobDetails?.work_mode}
+                    </span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                      {jobDetails?.industry}
+                    </span>
                   </div>
                 </div>
-                <div className="flex gap-3">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                    {jobDetails?.employment_type}
-                  </span>
-                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                    {jobDetails?.work_mode}
-                  </span>
-                  <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
-                    {jobDetails?.industry}
-                  </span>
-                </div>
-              </div>
 
-              {
-                hasApplied ? (
-                  <div className="text-right">
-                    <button
-                      disabled
-                      className="bg-green-500 text-white px-6 py-2 rounded-lg cursor-not-allowed flex items-center gap-2"
-                    >
-                      <CheckCircle2 className="w-5 h-5" />
-                      Applied
-                    </button>
-                    {appliedDate && (
-                      <p className="text-sm text-gray-500 mt-2">
-                        Applied on {formatDate(appliedDate)}
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  // <button
-                  //   onClick={handleApply}
-                  //   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                  // >
-                  //   Apply Now
-                  // </button>
-                  
+                {
+                  hasApplied ? (
+                    <div className="text-right">
+                      <button
+                        disabled
+                        className="bg-green-500 text-white px-6 py-2 rounded-lg cursor-not-allowed flex items-center gap-2"
+                      >
+                        <CheckCircle2 className="w-5 h-5" />
+                        Applied
+                      </button>
+                      {appliedDate && (
+                        <p className="text-sm text-gray-500 mt-2">
+                          Applied on {formatDate(appliedDate)}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    // <button
+                    //   onClick={handleApply}
+                    //   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    // >
+                    //   Apply Now
+                    // </button>
+
                     jobDetails?.job_link ? (
                       <a href={jobDetails?.job_link} target='_blank'>
-                    <button
-                      
-                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      Apply Now
-                    </button>
-                  </a>
-                    ):(
+                        <button
+
+                          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          Apply Now
+                        </button>
+                      </a>
+                    ) : (
                       <button
-                    onClick={handleApply}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Apply Now
-                  </button>
+                        onClick={handleApply}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        Apply Now
+                      </button>
                     )
-                  
-                  
-                )
-              }
-              <AIMatchingLoader
-                isOpen={showEligibilityModal}
-                onClose={handleEligibilityModalClose}
-                score={candidateScore || 0}
-                isLoading={isAIScreening}
-                isSubmitted={isSubmitted}
-              />
-              <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)}>
-                <div className="text-center">
-                  <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                    <LogIn className="w-12 h-12 text-blue-500" />
-                  </div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                    Login Required
-                  </h2>
-                  <p className="text-gray-600 mb-6">
-                    Please login or create an account to apply for this job.
-                  </p>
-                  <div className="space-y-3">
-                    <button
-                      onClick={handleLogin}
-                      className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
-                    >
-                      Login
-                    </button>
-                    <button
-                      onClick={handleSignup}
-                      className="w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
-                    >
-                      Create Account
-                    </button>
-                    <button
-                      onClick={() => setShowLoginModal(false)}
-                      className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </Modal>
-
-              <Modal isOpen={isProfileCompeleteModal} onClose={() => setIsCompleteProfileModal(false)}>
-                {!isSubmitted && (
 
 
+                  )
+                }
+                <AIMatchingLoader
+                  isOpen={showEligibilityModal}
+                  onClose={handleEligibilityModalClose}
+                  score={candidateScore || 0}
+                  isLoading={isAIScreening}
+                  isSubmitted={isSubmitted}
+                />
+                <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)}>
                   <div className="text-center">
-                    <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <XCircle className="w-12 h-12 text-red-500" />
+                    <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                      <LogIn className="w-12 h-12 text-blue-500" />
                     </div>
                     <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Complete Your Profile
+                      Login Required
                     </h2>
-                    <p className="text-gray-600 mb-4">
-                      Please complete the following information in your profile before applying:
+                    <p className="text-gray-600 mb-6">
+                      Please login or create an account to apply for this job.
                     </p>
-                    <div className="bg-red-50 rounded-lg p-4 mb-6">
-                      <ul className="text-left space-y-2">
-                        {incompleteFields.map((field, index) => (
-                          <li key={index} className="text-red-600 flex items-center space-x-2">
-                            <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
-                            <span>{field}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
                     <div className="space-y-3">
                       <button
-                        onClick={handleCompleteProfile}
+                        onClick={handleLogin}
                         className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
                       >
-                        Complete Profile
+                        Login
                       </button>
                       <button
-                        onClick={() => setIsCompleteProfileModal(false)}
+                        onClick={handleSignup}
+                        className="w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                      >
+                        Create Account
+                      </button>
+                      <button
+                        onClick={() => setShowLoginModal(false)}
                         className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
                       >
                         Cancel
                       </button>
                     </div>
                   </div>
-                )}
-              </Modal>
+                </Modal>
+
+                <Modal isOpen={isProfileCompeleteModal} onClose={() => setIsCompleteProfileModal(false)}>
+                  {!isSubmitted && (
 
 
-            </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="grid grid-cols-3 gap-6">
-            {/* Left Column - Job Details */}
-            <div className="col-span-2 space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Job Description</h2>
-                {/* <p className="text-gray-600 mb-6">{jobDetails?.job_description}</p> */}
-
-                <div className="space-y-8">
-                  {sections.map((section, index) => {
-                    const [title, ...content] = section.split('\n');
-                    return (
-                      <div key={index} className="space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-                        {content.map((paragraph, pIndex) => (
-                          <p key={pIndex} className="text-gray-600 leading-relaxed">
-                            {paragraph.trim()}
-                          </p>
-                        ))}
+                    <div className="text-center">
+                      <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <XCircle className="w-12 h-12 text-red-500" />
                       </div>
-                    );
-                  })}
-                </div>
+                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                        Complete Your Profile
+                      </h2>
+                      <p className="text-gray-600 mb-4">
+                        Please complete the following information in your profile before applying:
+                      </p>
+                      <div className="bg-red-50 rounded-lg p-4 mb-6">
+                        <ul className="text-left space-y-2">
+                          {incompleteFields.map((field, index) => (
+                            <li key={index} className="text-red-600 flex items-center space-x-2">
+                              <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+                              <span>{field}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="space-y-3">
+                        <button
+                          onClick={handleCompleteProfile}
+                          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                        >
+                          Complete Profile
+                        </button>
+                        <button
+                          onClick={() => setIsCompleteProfileModal(false)}
+                          className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </Modal>
 
-
-
-
-                <h3 className="text-lg font-semibold mt-4 mb-3">Required Skills</h3>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {jobDetails?.job_skills_required.map((skill, index) => (
-                    <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
 
               </div>
             </div>
 
-            {/* Right Column - Additional Info */}
-            <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Job Overview</h2>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Posted On</p>
-                      <p className="text-gray-700">{formatDate(jobDetails?.posted_at)}</p>
-                    </div>
+            {/* Main Content */}
+            <div className="grid grid-cols-3 gap-6">
+              {/* Left Column - Job Details */}
+              <div className="col-span-2 space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold mb-4">Job Description</h2>
+                  {/* <p className="text-gray-600 mb-6">{jobDetails?.job_description}</p> */}
+
+                  <div className="space-y-8">
+                    {sections.map((section, index) => {
+                      const [title, ...content] = section.split('\n');
+                      return (
+                        <div key={index} className="space-y-4">
+                          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+                          {content.map((paragraph, pIndex) => (
+                            <p key={pIndex} className="text-gray-600 leading-relaxed">
+                              {paragraph.trim()}
+                            </p>
+                          ))}
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="flex items-center gap-3">
-                    <GraduationCap className="w-5 h-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Experience Required</p>
-                      <p className="text-gray-700">{jobDetails?.job_experience_required} years</p>
-                    </div>
+
+
+
+
+                  <h3 className="text-lg font-semibold mt-4 mb-3">Required Skills</h3>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {jobDetails?.job_skills_required.map((skill, index) => (
+                      <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                        {skill}
+                      </span>
+                    ))}
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Laptop2 className="w-5 h-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Work Mode</p>
-                      <p className="text-gray-700">{jobDetails?.work_mode}</p>
-                    </div>
-                  </div>
+
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Company Info</h2>
-                <img
-                  src={jobDetails?.company_logo}
-                  alt="Company Logo"
-                  className="mb-4 rounded"
-                />
-                <p className="text-gray-600 mb-4">
-                  Stark Industries is a leading technology company specializing in innovative solutions
-                  for the modern world. Join our team of exceptional talents working on cutting-edge
-                  technologies.
-                </p>
-                <button className="text-blue-600 hover:text-blue-700 font-medium">
-                  Learn more about {jobDetails?.company_display_name}
-                </button>
+              {/* Right Column - Additional Info */}
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold mb-4">Job Overview</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-5 h-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Posted On</p>
+                        <p className="text-gray-700">{formatDate(jobDetails?.posted_at)}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <GraduationCap className="w-5 h-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Experience Required</p>
+                        <p className="text-gray-700">{jobDetails?.job_experience_required} years</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Laptop2 className="w-5 h-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Work Mode</p>
+                        <p className="text-gray-700">{jobDetails?.work_mode}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold mb-4">Company Info</h2>
+                  <img
+                    src={jobDetails?.company_logo}
+                    alt="Company Logo"
+                    className="mb-4 rounded"
+                  />
+                  <p className="text-gray-600 mb-4">
+                    Stark Industries is a leading technology company specializing in innovative solutions
+                    for the modern world. Join our team of exceptional talents working on cutting-edge
+                    technologies.
+                  </p>
+                  <button className="text-blue-600 hover:text-blue-700 font-medium">
+                    Learn more about {jobDetails?.company_display_name}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    )
+      )}
+    </>
   );
 };
 
