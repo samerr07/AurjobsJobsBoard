@@ -55,7 +55,7 @@ const getEmployerDetails = async(employerIDs, tableName) => {
 
         const { data: employers, error } = await supabase
             .from(tableName)
-            .select("employer_id, company_display_name, company_logo")
+            .select("employer_id, company_display_name, company_logo,description")
             .in("employer_id", employerIDs);
 
         if (error) throw error;
@@ -92,6 +92,7 @@ export const alljobs = async() => {
 
         // Fetch employer details from both employer tables
         const employersInternal = await getEmployerDetails(employerIdsInternal, "employers");
+
         const employersExternal = await getEmployerDetails(employerIdsExternal, "employer_external");
 
         // Merge employer details into one list
@@ -103,7 +104,8 @@ export const alljobs = async() => {
             return {
                 ...job,
                 company_display_name: employer ? employer.company_display_name : null,
-                company_logo: employer ? employer.company_logo : null
+                company_logo: employer ? employer.company_logo : null,
+                description: employer ? employer.description : null
             };
         });
         console.log(jobsWithCompany.length);
@@ -172,6 +174,7 @@ export const getJobDetailsByJobId = async(job_id) => {
 
         // Fetch employer details
         const employers = await getEmployerDetails([jobData.employer_id], employerTable);
+
         const employerData = employers.length > 0 ? employers[0] : null;
 
         // Combine job details with employer details
@@ -179,9 +182,10 @@ export const getJobDetailsByJobId = async(job_id) => {
             ...jobData,
             company_display_name: employerData ? employerData.company_display_name : null,
             company_logo: employerData ? employerData.company_logo : null,
+            description: employerData ? employerData.description : null
         };
 
-        console.log("Job details with company info for job_id", job_id, jobWithCompany);
+        // console.log("Job details with company info for job_id", job_id, jobWithCompany);
         return jobWithCompany;
     } catch (error) {
         console.error("Error fetching job details with job_id", job_id, error);
