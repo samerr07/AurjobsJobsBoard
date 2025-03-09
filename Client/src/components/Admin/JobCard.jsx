@@ -75,7 +75,7 @@ const JobCard = ({ job, onRefresh }) => {
     const handleDeleteJob = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.delete(`${BASEURL}/jobs_post/${job.job_id}`, {
+            const response = await axios.delete(`${BASEURL}/jobs_post/job_delete/${job.job_id}`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -102,7 +102,7 @@ const JobCard = ({ job, onRefresh }) => {
     };
 
     // Action menu items
-    // const actionMenuItems = [
+    const actionMenuItems = [
     //     {
     //         icon: Edit,
     //         text: 'Edit Job',
@@ -118,13 +118,13 @@ const JobCard = ({ job, onRefresh }) => {
     //         text: 'Duplicate Job',
     //         onClick: handleDuplicateJob,
     //     },
-    //     {
-    //         icon: Trash2,
-    //         text: 'Delete Job',
-    //         onClick: () => setShowConfirmation(true),
-    //         danger: true
-    //     },
-    // ];
+        {
+            icon: Trash2,
+            text: 'Delete Job',
+            onClick: () => setShowConfirmation(true),
+            danger: true
+        },
+    ];
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative">
