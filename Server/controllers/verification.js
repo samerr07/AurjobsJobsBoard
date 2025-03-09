@@ -4,6 +4,7 @@ dotenv.config();
 export const otp_verification = async(req, res) => {
     try {
         const { email, otp } = req.body;
+        console.log(otp)
         console.log("Reset password request for:", email);
 
         if (!email) {
@@ -30,9 +31,9 @@ export const otp_verification = async(req, res) => {
         const info = await transporter.sendMail(mailOptions);
         console.log("Email sent:", info);
 
-        return res.status(200).json({ message: "Password reset email sent successfully" });
+        return res.status(200).json({success:true, message: "Password reset email sent successfully" });
     } catch (error) {
-        console.error("Error sending email:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        console.error(error);
+        return res.status(500).json({success:false, error: "Internal server error" });
     }
 };
