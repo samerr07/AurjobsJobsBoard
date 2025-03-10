@@ -98,7 +98,6 @@ const HeroSection = () => {
                     {/* Search Bar */}
 
                  
-
                     <div className="bg-white rounded-xl shadow-lg px-8 py-5 border border-gray-100">
                         <div className="flex items-center gap-2">
                             <div className="flex-1">
@@ -147,6 +146,7 @@ const HeroSection = () => {
                             </button>
                         </div>
                     </div>
+
                 </div>
 
                 {/* Hero Image */}
