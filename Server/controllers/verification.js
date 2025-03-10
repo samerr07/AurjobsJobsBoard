@@ -12,8 +12,7 @@ export const otp_verification = async(req, res) => {
         }
 
         const transporter = nodemailer.createTransport({
-            service: "gmail",
-            host: "smtp.gmail.com",
+            host: "smtp.zoho.in",
             port: 587,
             secure: false,
             auth: {
