@@ -446,7 +446,7 @@ export default CandidateSignup;
 
 // const CandidateSignup = ({ navigateToLogin }) => {
 //     const [loading, setLoading] = useState(false);
-//     const [verify, setVerify] = useState(true);
+//     const [verify, setVerify] = useState(false);
 //     const [formData, setFormData] = useState({
 //         firstname: '',
 //         lastname: '',
@@ -475,6 +475,9 @@ export default CandidateSignup;
 //     const [otpLoading, setOtpLoading] = useState(false);
 //     const [otpSent, setOtpSent] = useState(false);
 //     const [timer, setTimer] = useState(0);
+//     const [generatedOtp, setGeneratedOtp] = useState('');
+
+    
     
 //     const navigate = useNavigate();
 
@@ -554,6 +557,16 @@ export default CandidateSignup;
 //             e.target.form.elements[index + 1].focus();
 //         }
 //     };
+
+//     const generateOTP = () => {
+//         // Generate a random number between 0 and 999999
+//         const randomNumber = Math.floor(Math.random() * 1000000);
+        
+//         // Format as a 6-digit string with leading zeros if needed
+//         const formattedOTP = randomNumber.toString().padStart(6, '0');
+//         setGeneratedOtp(formattedOTP);
+//         console.log(generatedOtp)
+//       };
     
 //     // Send OTP to user's email
 //     const sendOtp = async () => {
@@ -573,20 +586,24 @@ export default CandidateSignup;
 //         }
         
 //         try {
+            
 //             setOtpLoading(true);
 //             // Replace with your actual API endpoint for sending OTP
             
             
-//             // const res = await axios.post(`${BASEURL}/candidates/send-otp`, {
-//             //     email: formData.email
-//             // }, {
-//             //     headers: {
-//             //         "Content-Type": "application/json"
-//             //     },
-//             //     withCredentials: true
-//             // });
+//             const res = await axios.post(`http://localhost:3000/candidates/otp_verification`, {
+//                 email: formData.email,
+//                 otp: generatedOtp
+//             }, {
+//                 headers: {
+//                     "Content-Type": "application/json"
+//                 },
+//                 withCredentials: true
+//             });
+//             console.log(res)
+//             console.log(generatedOtp)
             
-//             // if (res?.data?.success) {
+//             if (res?.data?.success) {
 //                 setOtpSent(true);
 //                 setTimer(60); // 60 seconds countdown for resend
 //                 toast.success('OTP sent to your email!', {
@@ -604,7 +621,7 @@ export default CandidateSignup;
 //                         secondary: '#4CAF50'
 //                     }
 //                 });
-//             // }
+//             }
 //         } catch (err) {
 //             console.log(err);
 //             toast.error(err.response?.data?.message || 'Failed to send OTP', {
@@ -637,6 +654,7 @@ export default CandidateSignup;
 //         }
         
 //         // Show OTP verification section
+//         generateOTP()
 //         setShowOtpSection(true);
 //         await sendOtp();
 //     };
@@ -664,15 +682,11 @@ export default CandidateSignup;
 //         try {
 //             setLoading(true);
 //             // First verify OTP
-//             const verifyRes = await axios.post(`${BASEURL}/candidates/verify-otp`, {
-//                 email: formData.email,
-//                 otp: otpValue
-//             }, {
-//                 headers: {
-//                     "Content-Type": "application/json"
-//                 },
-//                 withCredentials: true
-//             });
+//             if(otpValue === generatedOtp){
+//                 setVerify(true)
+//             }else{
+//                 setVerify(false)
+//             }
             
 //             // if (verifyRes?.data?.success) {
 //             if (verify) {
