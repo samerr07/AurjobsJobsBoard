@@ -45,6 +45,7 @@ const JobsPage = () => {
         {
             title: "Experience",
             options: [
+                { label: "0 years", checked: false },
                 { label: "0-2 years", checked: false },
                 { label: "3-5 years", checked: false },
                 { label: "6-8 years", checked: false },
@@ -199,11 +200,24 @@ const JobsPage = () => {
 
         const years = parseInt(jobExperience);
         return selectedExperiences.some(exp => {
-            const [min, max] = exp.label.split('-').map(num => parseInt(num));
-            if (exp.label.includes('+')) {
-                return years >= parseInt(exp.label);
+            // const [min, max] = exp.label.split('-').map(num => parseInt(num));
+            // if (exp.label.includes('+')) {
+            //     return years >= parseInt(exp.label);
+            // }
+            // return years >= min && years <= max;
+            if (exp.label === "0 years") {
+                return years === 0;
             }
-            return years >= min && years <= max;
+            // Handle "X+ years" case
+            else if (exp.label.includes('+')) {
+                const minYears = parseInt(exp.label);
+                return years >= minYears;
+            }
+            // Handle "X-Y years" range case
+            else {
+                const [min, max] = exp.label.split('-').map(num => parseInt(num));
+                return years >= min && years <= max;
+            }
         });
     };
 
