@@ -152,7 +152,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                     top: '55px', 
                     right: '4px', 
 
-           
+
                     '@media (max-width: 375px)': {
                       top: '20px',   
                       right: '2px',  
@@ -248,7 +248,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 value={formData.email}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                      
+
                       transition-all duration-300 "
                                                 placeholder="Enter email address"
                                                 required
@@ -265,7 +265,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 value={formData.phone}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                      
+
                       transition-all duration-300 "
                                                 placeholder="Enter phone number"
                                             />
@@ -290,7 +290,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 value={formData.location}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                      
+
                       transition-all duration-300 "
                                                 placeholder="Enter your location"
                                             />
@@ -305,7 +305,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                 value={formData.resumeUrl}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                      
+
                       transition-all duration-300"
                                                 placeholder="Enter resume URL"
                                             />
@@ -323,7 +323,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                     value={formData.password}
                                                     onChange={handleChange}
                                                     className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                      
+
                       transition-all duration-300"
                                                     placeholder="Enter password"
                                                     required
@@ -349,7 +349,7 @@ const CandidateSignup = ({ navigateToLogin }) => {
                                                     value={formData.confirmPassword}
                                                     onChange={handleChange}
                                                     className="w-full px-3 py-2.5 border-2 border-blue-500 rounded-lg text-gray-900 hover:border-orange-500
-                      
+
                       transition-all duration-300"
                                                     placeholder="Confirm password"
                                                     required
@@ -458,7 +458,7 @@ export default CandidateSignup;
 //         confirmPassword: '',
 //         resume_url: ""
 //     });
-    
+
 //     const [currentSection, setCurrentSection] = useState(1);
 //     const [passwordVisible, setPasswordVisible] = useState({
 //         password: false,
@@ -468,7 +468,7 @@ export default CandidateSignup;
 //         password: '',
 //         confirmPassword: ''
 //     });
-    
+
 //     // OTP related states
 //     const [showOtpSection, setShowOtpSection] = useState(false);
 //     const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -477,8 +477,8 @@ export default CandidateSignup;
 //     const [timer, setTimer] = useState(0);
 //     const [generatedOtp, setGeneratedOtp] = useState('');
 
-    
-    
+
+
 //     const navigate = useNavigate();
 
 //     const handleChange = (e) => {
@@ -503,41 +503,41 @@ export default CandidateSignup;
 //     const previousSection = () => {
 //         setCurrentSection(1);
 //     };
-    
+
 //     // Handle OTP input change
 //     const handleOtpChange = (e, index) => {
 //         const value = e.target.value;
-        
+
 //         // Allow only numbers
 //         if (value && !/^\d+$/.test(value)) return;
-        
+
 //         const newOtp = [...otp];
 //         newOtp[index] = value.slice(0, 1); // Ensure only one character is stored
 //         setOtp(newOtp);
-        
+
 //         // Auto-move to next input if value is entered
 //         if (value && index < 5) {
 //             const nextInput = e.target.form.elements[index + 1];
 //             nextInput.focus();
 //         }
 //     };
-    
+
 //     // Handle paste event for OTP
 //     const handleOtpPaste = (e) => {
 //         e.preventDefault();
 //         const pastedData = e.clipboardData.getData('text').trim();
-        
+
 //         // Check if pasted content is numeric and has correct length
 //         if (/^\d+$/.test(pastedData) && pastedData.length <= 6) {
 //             const otpArray = pastedData.split('').slice(0, 6);
 //             const newOtp = [...otp];
-            
+
 //             otpArray.forEach((char, index) => {
 //                 if (index < 6) newOtp[index] = char;
 //             });
-            
+
 //             setOtp(newOtp);
-            
+
 //             // Focus the next empty input or the last one if all filled
 //             const lastFilledIndex = Math.min(otpArray.length, 5);
 //             if (lastFilledIndex < 5) {
@@ -545,7 +545,7 @@ export default CandidateSignup;
 //             }
 //         }
 //     };
-    
+
 //     // Handle key down for OTP input - for backspace and arrow navigation
 //     const handleOtpKeyDown = (e, index) => {
 //         if (e.key === 'Backspace' && !otp[index] && index > 0) {
@@ -560,16 +560,18 @@ export default CandidateSignup;
 
 //     const generateOTP = () => {
 //         // Generate a random number between 0 and 999999
+//         // const randomNumber = Math.floor(Math.random() * 1000000);
+
+//         // // Format as a 6-digit string with leading zeros if needed
+//         // const formattedOTP = randomNumber.toString().padStart(6, '0');
+//         // setGeneratedOtp(formattedOTP);
+//         // console.log(generatedOtp)
 //         const randomNumber = Math.floor(Math.random() * 1000000);
-        
-//         // Format as a 6-digit string with leading zeros if needed
-//         const formattedOTP = randomNumber.toString().padStart(6, '0');
-//         setGeneratedOtp(formattedOTP);
-//         console.log(generatedOtp)
-//       };
-    
+//         return randomNumber.toString().padStart(6, '0');
+//     };
+
 //     // Send OTP to user's email
-//     const sendOtp = async () => {
+//     const sendOtpWithCode = async (otpCode) => {
 //         if (!formData.email) {
 //             toast.error('Email is required to send OTP', {
 //                 duration: 4000,
@@ -584,16 +586,16 @@ export default CandidateSignup;
 //             });
 //             return;
 //         }
-        
+
 //         try {
-            
+
 //             setOtpLoading(true);
 //             // Replace with your actual API endpoint for sending OTP
-            
-            
-//             const res = await axios.post(`http://localhost:3000/candidates/otp_verification`, {
+
+
+//             const res = await axios.post(`${BASEURL}/candidates/otp_verification`, {
 //                 email: formData.email,
-//                 otp: generatedOtp
+//                 otp: otpCode
 //             }, {
 //                 headers: {
 //                     "Content-Type": "application/json"
@@ -601,8 +603,8 @@ export default CandidateSignup;
 //                 withCredentials: true
 //             });
 //             console.log(res)
-//             console.log(generatedOtp)
             
+
 //             if (res?.data?.success) {
 //                 setOtpSent(true);
 //                 setTimer(60); // 60 seconds countdown for resend
@@ -640,10 +642,16 @@ export default CandidateSignup;
 //         }
 //     };
 
+//     const sendOtp = async () => {
+//         const newOtp = generateOTP();
+//         setGeneratedOtp(newOtp);
+//         await sendOtpWithCode(newOtp);
+//     };
+
 //     // Initiate account creation process
 //     const initiateSignup = async (e) => {
 //         e.preventDefault();
-        
+
 //         // Validate password match
 //         if (formData.password !== formData.confirmPassword) {
 //             setErrors(prev => ({
@@ -652,17 +660,22 @@ export default CandidateSignup;
 //             }));
 //             return;
 //         }
-        
+//         // Generate OTP immediately and store the value in a variable
+//         const newOtp = generateOTP();
+
+//         // Set the state for later verification
+//         setGeneratedOtp(newOtp);
 //         // Show OTP verification section
-//         generateOTP()
+//         // generateOTP()
 //         setShowOtpSection(true);
-//         await sendOtp();
+//         // await sendOtp();
+//         await sendOtpWithCode(newOtp)
 //     };
-    
+
 //     // Verify OTP and complete signup
 //     const verifyOtpAndSignup = async (e) => {
 //         e.preventDefault();
-        
+
 //         const otpValue = otp.join('');
 //         if (otpValue.length !== 6) {
 //             toast.error('Please enter the complete 6-digit OTP', {
@@ -678,18 +691,14 @@ export default CandidateSignup;
 //             });
 //             return;
 //         }
-        
+
 //         try {
 //             setLoading(true);
 //             // First verify OTP
-//             if(otpValue === generatedOtp){
-//                 setVerify(true)
-//             }else{
-//                 setVerify(false)
-//             }
             
+
 //             // if (verifyRes?.data?.success) {
-//             if (verify) {
+//             if (otpValue === generatedOtp) {
 
 //                 // If OTP is verified, proceed with signup
 //                 const signupRes = await axios.post(`${BASEURL}/candidates/CandidateSignup`, formData, {
@@ -698,7 +707,7 @@ export default CandidateSignup;
 //                     },
 //                     withCredentials: true
 //                 });
-                
+
 //                 if (signupRes?.data?.success) {
 //                     toast.success(signupRes?.data?.message || 'Account created successfully!', {
 //                         duration: 4000,
@@ -747,7 +756,7 @@ export default CandidateSignup;
 //             setLoading(false);
 //         }
 //     };
-    
+
 //     // Timer countdown for OTP resend
 //     useEffect(() => {
 //         let interval;
@@ -756,7 +765,7 @@ export default CandidateSignup;
 //                 setTimer(prevTimer => prevTimer - 1);
 //             }, 1000);
 //         }
-        
+
 //         return () => clearInterval(interval);
 //     }, [timer]);
 
@@ -792,20 +801,20 @@ export default CandidateSignup;
 //                 <Link
 //                     to="/company_register"
 //                     className="absolute top-24 ml-20 right-4 inline-flex items-center px-4 py-2 text-orange-500 rounded-lg hover:text-blue-500 duration-300 text-medium font-medium"
-//                     style={{  
+//                     style={{
 //                         position: 'absolute',
-//                         top: '55px', 
-//                         right: '4px', 
-               
+//                         top: '55px',
+//                         right: '4px',
+
 //                         '@media (max-width: 375px)': {
-//                           top: '20px',   
-//                           right: '2px',  
-//                           fontSize: '0.8rem', 
+//                             top: '20px',
+//                             right: '2px',
+//                             fontSize: '0.8rem',
 //                         },
-    
+
 //                         '@media (min-width: 428px)': {
-//                           top: '35px',  
-//                           right: '6px',  
+//                             top: '35px',
+//                             right: '6px',
 //                         },
 //                     }}
 //                 >
@@ -815,7 +824,7 @@ export default CandidateSignup;
 //                 <div className="space-y-1">
 //                     <h2 className="text-2xl font-sans font-bold text-black mt-5 text-center">Create a new Account</h2>
 //                     <p className='text-center ml-4'>Join us today!</p>
-                    
+
 //                     {!showOtpSection ? (
 //                         <form onSubmit={initiateSignup} className="w-full max-w-4xl bg-white p-6">
 //                             <div className="mb-6">
@@ -1063,7 +1072,7 @@ export default CandidateSignup;
 //                                     We've sent a 6-digit verification code to <span className="font-medium">{formData.email}</span>
 //                                 </p>
 //                             </div>
-                            
+
 //                             <div className="mb-8">
 //                                 <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
 //                                     Enter the 6-digit code
@@ -1073,7 +1082,7 @@ export default CandidateSignup;
 //                                         <input
 //                                             key={index}
 //                                             type="text"
-//                                             inputMode="numeric" 
+//                                             inputMode="numeric"
 //                                             maxLength={1}
 //                                             value={digit}
 //                                             onChange={(e) => handleOtpChange(e, index)}
@@ -1085,7 +1094,7 @@ export default CandidateSignup;
 //                                     ))}
 //                                 </div>
 //                             </div>
-                            
+
 //                             <div className="text-center mb-6">
 //                                 {timer > 0 ? (
 //                                     <p className="text-sm text-gray-600">
@@ -1102,7 +1111,7 @@ export default CandidateSignup;
 //                                     </button>
 //                                 )}
 //                             </div>
-                            
+
 //                             <div className="flex justify-between mt-8">
 //                                 <button
 //                                     type="button"
@@ -1112,15 +1121,14 @@ export default CandidateSignup;
 //                                     <ArrowLeft className="mr-2 h-4 w-4" />
 //                                     Back
 //                                 </button>
-                                
+
 //                                 <button
 //                                     type="submit"
 //                                     disabled={loading || otp.some(digit => !digit)}
-//                                     className={`inline-flex items-center px-6 py-2.5 ${
-//                                         loading || otp.some(digit => !digit) 
-//                                             ? 'bg-gray-400 cursor-not-allowed' 
+//                                     className={`inline-flex items-center px-6 py-2.5 ${loading || otp.some(digit => !digit)
+//                                             ? 'bg-gray-400 cursor-not-allowed'
 //                                             : 'bg-orange-500 hover:bg-orange-600'
-//                                     } text-white rounded-lg duration-300`}
+//                                         } text-white rounded-lg duration-300`}
 //                                 >
 //                                     {loading ? (
 //                                         <>
