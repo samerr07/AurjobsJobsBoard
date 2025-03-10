@@ -380,7 +380,7 @@ const JobDetailsPage = () => {
           <div className="max-w-4xl mx-auto">
             {/* Header Section */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col sm:flex-row items-start justify-between">
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">{jobDetails?.job_title}</h1>
                   <div className="flex items-center gap-4 text-gray-600 mb-4">
@@ -397,7 +397,7 @@ const JobDetailsPage = () => {
                       <span>{jobDetails?.salary_range}</span>
                     </div>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 mb-4">
                     <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                       {jobDetails?.employment_type}
                     </span>
@@ -408,6 +408,18 @@ const JobDetailsPage = () => {
                       {jobDetails?.industry}
                     </span>
                   </div>
+
+                  {jobDetails?.job_link && (
+                    <div className="block sm:hidden mt-4">
+                      <a href={jobDetails?.job_link} target='_blank'>
+                        <button
+                          className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+                        >
+                          Apply Now
+                        </button>
+                      </a>
+                    </div>
+                  )}
                 </div>
 
                 {
@@ -436,17 +448,21 @@ const JobDetailsPage = () => {
 
                     jobDetails?.job_link ? (
                       <a href={jobDetails?.job_link} target='_blank'>
-                        <button
+                      <div className="hidden sm:block">
+                        <a href={jobDetails?.job_link} target='_blank'>
+                          <button
+                            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+                          >
+                            Apply Now
+                          </button>
+                        </a>
+                      </div>
 
-                          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                        >
-                          Apply Now
-                        </button>
                       </a>
                     ) : (
                       <button
                         onClick={handleApply}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                        className="w-full sm:w-auto max-w-[200px] bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
                       >
                         Apply Now
                       </button>
@@ -542,92 +558,86 @@ const JobDetailsPage = () => {
               </div>
             </div>
 
-            {/* Main Content */}
-            <div className="grid grid-cols-3 gap-6">
-              {/* Left Column - Job Details */}
-              <div className="col-span-2 space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold mb-4">Job Description</h2>
-                  {/* <p className="text-gray-600 mb-6">{jobDetails?.job_description}</p> */}
-
-                  <div className="space-y-8">
-                    {sections.map((section, index) => {
-                      const [title, ...content] = section.split('\n');
-                      return (
-                        <div key={index} className="space-y-4">
-                          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-                          {content.map((paragraph, pIndex) => (
-                            <p key={pIndex} className="text-gray-600 leading-relaxed">
-                              {paragraph.trim()}
-                            </p>
-                          ))}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-
-
-
-                  <h3 className="text-lg font-semibold mt-4 mb-3">Required Skills</h3>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {jobDetails?.job_skills_required.map((skill, index) => (
-                      <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Right Column - Additional Info */}
-              <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold mb-4">Job Overview</h2>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <Clock className="w-5 h-5 text-gray-400" />
-                      <div>
-                        <p className="text-sm text-gray-500">Posted On</p>
-                        <p className="text-gray-700">{formatDate(jobDetails?.posted_at)}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <GraduationCap className="w-5 h-5 text-gray-400" />
-                      <div>
-                        <p className="text-sm text-gray-500">Experience Required</p>
-                        <p className="text-gray-700">{jobDetails?.job_experience_required} years</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Laptop2 className="w-5 h-5 text-gray-400" />
-                      <div>
-                        <p className="text-sm text-gray-500">Work Mode</p>
-                        <p className="text-gray-700">{jobDetails?.work_mode}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold mb-4">Company Info</h2>
-                  <img
-                    src={jobDetails?.company_logo}
-                    alt="Company Logo"
-                    className="mb-4 rounded"
-                  />
-                  <p className="text-gray-600 mb-4">
-                    Stark Industries is a leading technology company specializing in innovative solutions
-                    for the modern world. Join our team of exceptional talents working on cutting-edge
-                    technologies.
-                  </p>
-                  <button className="text-blue-600 hover:text-blue-700 font-medium">
-                    Learn more about {jobDetails?.company_display_name}
-                  </button>
-                </div>
-              </div>
+           {/* Main Content */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {/* Left Column - Job Details */}
+  <div className="col-span-1 sm:col-span-2 space-y-6">
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold mb-4">Job Description</h2>
+      <div className="space-y-8">
+        {sections.map((section, index) => {
+          const [title, ...content] = section.split('\n');
+          return (
+            <div key={index} className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+              {content.map((paragraph, pIndex) => (
+                <p key={pIndex} className="text-gray-600 leading-relaxed">
+                  {paragraph.trim()}
+                </p>
+              ))}
             </div>
+          );
+        })}
+      </div>
+
+      <h3 className="text-lg font-semibold mt-4 mb-3">Required Skills</h3>
+      <div className="flex flex-wrap gap-2 mb-6">
+        {jobDetails?.job_skills_required.map((skill, index) => (
+          <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+            {skill}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* Right Column - Additional Info */}
+  <div className="space-y-6">
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold mb-4">Job Overview</h2>
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <Clock className="w-5 h-5 text-gray-400" />
+          <div>
+            <p className="text-sm text-gray-500">Posted On</p>
+            <p className="text-gray-700">{formatDate(jobDetails?.posted_at)}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <GraduationCap className="w-5 h-5 text-gray-400" />
+          <div>
+            <p className="text-sm text-gray-500">Experience Required</p>
+            <p className="text-gray-700">{jobDetails?.job_experience_required} years</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Laptop2 className="w-5 h-5 text-gray-400" />
+          <div>
+            <p className="text-sm text-gray-500">Work Mode</p>
+            <p className="text-gray-700">{jobDetails?.work_mode}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold mb-4">Company Info</h2>
+      <img
+        src={jobDetails?.company_logo}
+        alt="Company Logo"
+        className="mb-4 rounded"
+      />
+      <p className="text-gray-600 mb-4">
+        Stark Industries is a leading technology company specializing in innovative solutions
+        for the modern world. Join our team of exceptional talents working on cutting-edge
+        technologies.
+      </p>
+      <button className="text-blue-600 hover:text-blue-700 font-medium">
+        Learn more about {jobDetails?.company_display_name}
+      </button>
+    </div>
+  </div>
+</div>
           </div>
         </div>
       )}

@@ -235,7 +235,7 @@ const Navbar = () => {
                 Home
               </Link>
               <Link
-                to="/"
+                to="/jobs"
                 className="block px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -267,14 +267,14 @@ const Navbar = () => {
               {isAuthenticated && (
                 <>
                   <Link
-                    to="/dashboard"
+                    to="/candidate_dashboard"
                     className="block px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Dashboard
                   </Link>
                   <Link
-                    to="/profile"
+                    to="/candidate_dashboard"
                     className="block px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
