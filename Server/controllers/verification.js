@@ -12,9 +12,10 @@ export const otp_verification = async(req, res) => {
         }
 
         const transporter = nodemailer.createTransport({
-            host: "smtp.zoho.in",
-            port: 465,
-            secure: true,
+            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.PASSWORD,
@@ -22,7 +23,7 @@ export const otp_verification = async(req, res) => {
         });
 
         const mailOptions = {
-            from: "abhijeet1312@zohomail.in",
+            from: process.env.EMAIL,
             to: email,
             subject: "OTP Requested from Aurjobs",
             text: `Here is your OTP: ${otp}`
@@ -31,9 +32,9 @@ export const otp_verification = async(req, res) => {
         const info = await transporter.sendMail(mailOptions);
         console.log("Email sent:", info);
 
-        return res.status(200).json({success:true, message: "Password reset email sent successfully" });
+        return res.status(200).json({ success: true, message: "Password reset email sent successfully" });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({success:false, error: "Internal server error" });
+        return res.status(500).json({ success: false, error: "Internal server error" });
     }
 };

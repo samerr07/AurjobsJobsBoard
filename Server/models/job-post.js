@@ -82,9 +82,10 @@ export const alljobs = async() => {
 
         if (internalError) throw internalError;
         if (externalError) throw externalError;
-
-        // Combine jobs from both tables
-        const allJobsList = [...internalJobs, ...externalJobs];
+        // Merge and sort the jobs together
+        const allJobsList = [...externalJobs, ...internalJobs, ].sort(
+            (a, b) => new Date(b.posted_at) - new Date(a.posted_at)
+        );
 
         // Extract unique employer IDs for both employer tables
         const employerIdsInternal = [...new Set(internalJobs.map(job => job.employer_id).filter(id => id))];
