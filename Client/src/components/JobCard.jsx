@@ -27,6 +27,7 @@ const JobCard = ({ job }) => (
                     <p className="text-gray-500 text-sm mt-1">
                         {job.job_location}
                     </p>
+
                 </div>
             </div>
 
@@ -42,14 +43,18 @@ const JobCard = ({ job }) => (
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg> */}
-                        <Briefcase className='mr-3'/>
+                        <Briefcase className='mr-3' />
                         {job.job_experience_required} years
                     </span>
                     <span className="inline-flex items-center bg-green-50 text-green-600 px-3 py-1 rounded-lg text-sm font-medium">
-                        
+
                         <span>₹</span>
                         {job.salary_range}
                     </span>
+                    <div className="flex items-center gap-2 text-blue-600">
+                        <Briefcase className="w-4 h-4" />
+                        <span>{job.employment_type}</span>
+                    </div>
                 </div>
 
                 <div className="pt-4 flex justify-between items-center border-t border-gray-100">

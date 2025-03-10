@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CalendarDays, MapPin, Building2, Briefcase, Clock, DollarSign, GraduationCap, Laptop2, LogIn, IndianRupee } from 'lucide-react';
 import { CheckCircle2, XCircle, X, AlertCircle } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -30,6 +30,9 @@ const JobDetailsPage = () => {
   console.log(candidateProfile)
   const candidate_id = candidateProfile?.candidate_id;
   const params = useParams()
+
+
+
 
 
 
@@ -360,6 +363,12 @@ const JobDetailsPage = () => {
 
 
 
+
+
+
+
+
+
   return (
     <>
       {/* Add Helmet for SEO structured data */}
@@ -367,19 +376,22 @@ const JobDetailsPage = () => {
         <Helmet>
           <title>{jobDetails.job_title} | {jobDetails.company_display_name}</title>
           <meta name="description" content={`${jobDetails.job_title} job opportunity at ${jobDetails.company_display_name}. ${jobDetails.job_experience_required} years experience required. Location: ${jobDetails.job_location}`} />
+          <meta property="og:title" content={`${jobDetails?.job_title} at ${jobDetails?.company_display_name}`} />
+          <meta property="og:description" content={jobDetails?.description} />
+          <meta property="og:url" content={`http://jobs.aurjobs.com/jobs/${params.jobId}`} />
           <script type="application/ld+json">
             {JSON.stringify(generateJobStructuredData())}
           </script>
         </Helmet>
       )}
-      
+
       {loading ? (
         <JobDetailsSkeleton />
       ) : (
         <div className="min-h-screen mt-20 bg-gray-50 py-8 px-4">
           <div className="max-w-4xl mx-auto">
             {/* Header Section */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            {/* <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <div className="flex flex-col sm:flex-row items-start justify-between">
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">{jobDetails?.job_title}</h1>
@@ -448,15 +460,15 @@ const JobDetailsPage = () => {
 
                     jobDetails?.job_link ? (
                       <a href={jobDetails?.job_link} target='_blank'>
-                      <div className="hidden sm:block">
-                        <a href={jobDetails?.job_link} target='_blank'>
-                          <button
-                            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
-                          >
-                            Apply Now
-                          </button>
-                        </a>
-                      </div>
+                        <div className="hidden sm:block">
+                          <a href={jobDetails?.job_link} target='_blank'>
+                            <button
+                              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+                            >
+                              Apply Now
+                            </button>
+                          </a>
+                        </div>
 
                       </a>
                     ) : (
@@ -556,88 +568,276 @@ const JobDetailsPage = () => {
 
 
               </div>
+            </div> */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="flex flex-col sm:flex-row items-start justify-between">
+                <div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+                    {/* Company Logo */}
+                    <div className="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden shrink-0 mb-2 sm:mb-0">
+                      {jobDetails?.company_logo ? (
+                        <img
+                          src={jobDetails?.company_logo}
+                          alt={`${jobDetails?.company_display_name} logo`}
+                          className="h-full w-full object-contain"
+                        />
+                      ) : (
+                        <Building2 className="w-6 h-6 text-gray-400" />
+                      )}
+                    </div>
+
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{jobDetails?.job_title}</h1>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-600 mb-4">
+                    <div className="flex items-center gap-1">
+                      <Building2 className="w-4 h-4" />
+                      <span>{jobDetails?.company_display_name}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      <span>{jobDetails?.job_location}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <IndianRupee className="w-4 h-4" />
+                      <span>{jobDetails?.salary_range}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                      {/* Employment Type Icon */}
+                      <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                        <rect x="8" y="8" width="8" height="8" rx="1" fill="currentColor" />
+                      </svg>
+                      <span>{jobDetails?.employment_type}</span>
+                    </div>
+                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                      {jobDetails?.work_mode}
+                    </span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                      {jobDetails?.industry}
+                    </span>
+                  </div>
+
+                  {jobDetails?.job_link && (
+                    <div className="block sm:hidden mt-4">
+                      <a href={jobDetails?.job_link} target='_blank'>
+                        <button
+                          className="w-full cursor-pointer bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+                        >
+                          Apply Now
+                        </button>
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 sm:mt-0">
+                  {
+                    hasApplied ? (
+                      <div className="text-right">
+                        <button
+                          disabled
+                          className="bg-green-500 text-white px-6 py-2 rounded-lg cursor-not-allowed flex items-center gap-2"
+                        >
+                          <CheckCircle2 className="w-5 h-5" />
+                          Applied
+                        </button>
+                        {appliedDate && (
+                          <p className="text-sm text-gray-500 mt-2">
+                            Applied on {formatDate(appliedDate)}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      jobDetails?.job_link ? (
+                        <div className="hidden sm:block">
+                          <a href={jobDetails?.job_link} target='_blank'>
+                            <button
+                              className="bg-blue-600 cursor-pointer text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+                            >
+                              Apply Now
+                            </button>
+                          </a>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={handleApply}
+                          className="w-full sm:w-auto cursor-pointer max-w-[200px] bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+                        >
+                          Apply Now
+                        </button>
+                      )
+                    )
+                  }
+                </div>
+
+                <AIMatchingLoader
+                  isOpen={showEligibilityModal}
+                  onClose={handleEligibilityModalClose}
+                  score={candidateScore || 0}
+                  isLoading={isAIScreening}
+                  isSubmitted={isSubmitted}
+                />
+                <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)}>
+                  <div className="text-center">
+                    <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                      <LogIn className="w-12 h-12 text-blue-500" />
+                    </div>
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                      Login Required
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      Please login or create an account to apply for this job.
+                    </p>
+                    <div className="space-y-3">
+                      <button
+                        onClick={handleLogin}
+                        className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                      >
+                        Login
+                      </button>
+                      <button
+                        onClick={handleSignup}
+                        className="w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                      >
+                        Create Account
+                      </button>
+                      <button
+                        onClick={() => setShowLoginModal(false)}
+                        className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </Modal>
+
+                <Modal isOpen={isProfileCompeleteModal} onClose={() => setIsCompleteProfileModal(false)}>
+                  {!isSubmitted && (
+                    <div className="text-center">
+                      <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <XCircle className="w-12 h-12 text-red-500" />
+                      </div>
+                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                        Complete Your Profile
+                      </h2>
+                      <p className="text-gray-600 mb-4">
+                        Please complete the following information in your profile before applying:
+                      </p>
+                      <div className="bg-red-50 rounded-lg p-4 mb-6">
+                        <ul className="text-left space-y-2">
+                          {incompleteFields.map((field, index) => (
+                            <li key={index} className="text-red-600 flex items-center space-x-2">
+                              <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+                              <span>{field}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="space-y-3">
+                        <button
+                          onClick={handleCompleteProfile}
+                          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                        >
+                          Complete Profile
+                        </button>
+                        <button
+                          onClick={() => setIsCompleteProfileModal(false)}
+                          className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </Modal>
+              </div>
             </div>
 
-           {/* Main Content */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-  {/* Left Column - Job Details */}
-  <div className="col-span-1 sm:col-span-2 space-y-6">
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4">Job Description</h2>
-      <div className="space-y-8">
-        {sections.map((section, index) => {
-          const [title, ...content] = section.split('\n');
-          return (
-            <div key={index} className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-              {content.map((paragraph, pIndex) => (
-                <p key={pIndex} className="text-gray-600 leading-relaxed">
-                  {paragraph.trim()}
-                </p>
-              ))}
+
+            {/* Main Content */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+              {/* Left Column - Job Details */}
+              <div className="col-span-1 sm:col-span-2 space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold mb-4">Job Description</h2>
+                  <div className="space-y-8">
+                    {sections.map((section, index) => {
+                      const [title, ...content] = section.split('\n');
+                      return (
+                        <div key={index} className="space-y-4">
+                          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+                          {content.map((paragraph, pIndex) => (
+                            <p key={pIndex} className="text-gray-600 leading-relaxed">
+                              {paragraph.trim()}
+                            </p>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <h3 className="text-lg font-semibold mt-4 mb-3">Required Skills</h3>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {jobDetails?.job_skills_required.map((skill, index) => (
+                      <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column - Additional Info */}
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold mb-4">Job Overview</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-5 h-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Posted On</p>
+                        <p className="text-gray-700">{formatDate(jobDetails?.posted_at)}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <GraduationCap className="w-5 h-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Experience Required</p>
+                        <p className="text-gray-700">{jobDetails?.job_experience_required} years</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Laptop2 className="w-5 h-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Work Mode</p>
+                        <p className="text-gray-700">{jobDetails?.work_mode}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold mb-4">Company Info</h2>
+                  <img
+                    src={jobDetails?.company_logo}
+                    alt="Company Logo"
+                    className="mb-4 rounded"
+                  />
+                  <p className="text-gray-600 mb-4">
+                    {jobDetails?.description}
+                  </p>
+                  <button className="text-blue-600 hover:text-blue-700 font-medium">
+                    Learn more about {jobDetails?.company_display_name}
+                  </button>
+                </div>
+              </div>
+
             </div>
-          );
-        })}
-      </div>
-
-      <h3 className="text-lg font-semibold mt-4 mb-3">Required Skills</h3>
-      <div className="flex flex-wrap gap-2 mb-6">
-        {jobDetails?.job_skills_required.map((skill, index) => (
-          <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-            {skill}
-          </span>
-        ))}
-      </div>
-    </div>
-  </div>
-
-  {/* Right Column - Additional Info */}
-  <div className="space-y-6">
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4">Job Overview</h2>
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Clock className="w-5 h-5 text-gray-400" />
-          <div>
-            <p className="text-sm text-gray-500">Posted On</p>
-            <p className="text-gray-700">{formatDate(jobDetails?.posted_at)}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <GraduationCap className="w-5 h-5 text-gray-400" />
-          <div>
-            <p className="text-sm text-gray-500">Experience Required</p>
-            <p className="text-gray-700">{jobDetails?.job_experience_required} years</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Laptop2 className="w-5 h-5 text-gray-400" />
-          <div>
-            <p className="text-sm text-gray-500">Work Mode</p>
-            <p className="text-gray-700">{jobDetails?.work_mode}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4">Company Info</h2>
-      <img
-        src={jobDetails?.company_logo}
-        alt="Company Logo"
-        className="mb-4 rounded"
-      />
-      <p className="text-gray-600 mb-4">
-        Stark Industries is a leading technology company specializing in innovative solutions
-        for the modern world. Join our team of exceptional talents working on cutting-edge
-        technologies.
-      </p>
-      <button className="text-blue-600 hover:text-blue-700 font-medium">
-        Learn more about {jobDetails?.company_display_name}
-      </button>
-    </div>
-  </div>
-</div>
           </div>
         </div>
       )}
