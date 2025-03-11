@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import JobDetailsSkeleton from './JobDetailsSkeleton';
 import AIMatchingLoader from './AIMatchingLoader';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const JobDetailsPage = () => {
 
