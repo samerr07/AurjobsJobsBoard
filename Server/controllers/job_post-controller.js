@@ -2,15 +2,52 @@ import supabase from "../config/supabase-client.js";
 import { alljobs, createJobPost, employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application, getCandidatesForJob, getJobDetailsByJobId, delete_Job_FromDB } from "../models/job-post.js";
 
 console.log("in controllers job post");
+// export const employer_jobs = async(req, res) => {
+//     try {
+//         const { id } = req.params; // Employer ID passed as a URL parameter
+//         const jobs = await employer_Jobs(id); // Fetch jobs using employer_Jobs function
+//         return res.status(200).json(jobs); // Return jobs in response
+//     } catch (error) {
+//         return res.status(500).json({ error: `Failed to fetch Employer Jobs: ${error.message}` });
+//     }
+// };
+
+
 export const employer_jobs = async(req, res) => {
     try {
         const { id } = req.params; // Employer ID passed as a URL parameter
+
+        // Validate if employer ID is provided
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                error: "Employer ID is required"
+            });
+        }
+
         const jobs = await employer_Jobs(id); // Fetch jobs using employer_Jobs function
-        return res.status(200).json(jobs); // Return jobs in response
+
+        return res.status(200).json({
+            success: true,
+            data: jobs
+        });
+
     } catch (error) {
-        return res.status(500).json({ error: `Failed to fetch Employer Jobs: ${error.message}` });
+        console.error("Error fetching employer jobs:", error); // Log the error for debugging
+
+        if (error.message.includes("No jobs found")) {
+            return res.status(404).json({
+                success: false,
+                error: "No jobs found for this employer"
+            });
+        }
+
+        return res.status(500).json({
+            success: false,
+            error: `Internal Server Error: ${error.message}`
+        });
     }
-};
+}
 
 export const job_application = async(req, res) => {
     try {
