@@ -374,11 +374,14 @@ const JobDetailsPage = () => {
       {/* Add Helmet for SEO structured data */}
       {jobDetails && (
         <Helmet>
-          <title>{jobDetails.job_title} | {jobDetails.company_display_name}</title>
-          <meta name="description" content={`${jobDetails.job_title} job opportunity at ${jobDetails.company_display_name}. ${jobDetails.job_experience_required} years experience required. Location: ${jobDetails.job_location}`} />
-          <meta property="og:title" content={`${jobDetails?.job_title} at ${jobDetails?.company_display_name}`} />
+          <title>{jobDetails?.job_title} | {jobDetails?.company_display_name}</title>
+          <meta  name="description" content={`${jobDetails?.job_title} job opportunity at ${jobDetails?.company_display_name}. ${jobDetails?.job_experience_required} years experience required. Location: ${jobDetails?.job_location}`} />
+          <meta  property="og:title" content={`${jobDetails?.job_title} at ${jobDetails?.company_display_name}`} />
           <meta property="og:description" content={jobDetails?.description} />
           <meta property="og:url" content={`http://jobs.aurjobs.com/jobs/${params.jobId}`} />
+          <meta name="application-name" content="Aurjobs Job Portal" />
+
+          <meta property="og:site_name" content="Aurjobs Job Portal" />
           <script type="application/ld+json">
             {JSON.stringify(generateJobStructuredData())}
           </script>
