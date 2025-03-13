@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import JobDetailsSkeleton from './JobDetailsSkeleton';
 import AIMatchingLoader from './AIMatchingLoader';
 import { Helmet } from 'react-helmet-async';
+// import GoogleAd from './GoogleAd';
 
 const JobDetailsPage = () => {
 
@@ -30,6 +31,8 @@ const JobDetailsPage = () => {
   console.log(candidateProfile)
   const candidate_id = candidateProfile?.candidate_id;
   const params = useParams()
+  // const adRef = useRef(null);
+  // const [adsLoaded, setAdsLoaded] = useState(false);
 
 
 
@@ -87,6 +90,8 @@ const JobDetailsPage = () => {
     }
 
   }
+
+  // const shouldShowAds = jobDetails?.job_link ? true : false;
 
 
   const generateJobStructuredData = () => {
@@ -366,17 +371,14 @@ const JobDetailsPage = () => {
 
 
 
-
-
-
   return (
     <>
       {/* Add Helmet for SEO structured data */}
       {jobDetails && (
         <Helmet>
           <title>{jobDetails?.job_title} | {jobDetails?.company_display_name}</title>
-          <meta  name="description" content={`${jobDetails?.job_title} job opportunity at ${jobDetails?.company_display_name}. ${jobDetails?.job_experience_required} years experience required. Location: ${jobDetails?.job_location}`} />
-          <meta  property="og:title" content={`${jobDetails?.job_title} at ${jobDetails?.company_display_name}`} />
+          <meta name="description" content={`${jobDetails?.job_title} job opportunity at ${jobDetails?.company_display_name}. ${jobDetails?.job_experience_required} years experience required. Location: ${jobDetails?.job_location}`} />
+          <meta property="og:title" content={`${jobDetails?.job_title} at ${jobDetails?.company_display_name}`} />
           <meta property="og:description" content={jobDetails?.description} />
           <meta property="og:url" content={`http://jobs.aurjobs.com/jobs/${params.jobId}`} />
           <meta name="application-name" content="Aurjobs Job Portal" />
@@ -759,6 +761,10 @@ const JobDetailsPage = () => {
                 </Modal>
               </div>
             </div>
+
+            {/* <GoogleAd slot="8506441329" /> */}
+           
+
 
 
             {/* Main Content */}
