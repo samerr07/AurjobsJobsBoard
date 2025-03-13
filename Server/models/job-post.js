@@ -116,28 +116,39 @@ export const alljobs = async() => {
         return [];
     }
 };
-
 export const employer_Jobs = async(employer_id) => {
     try {
-        // Find all jobs posted by the employer using employer_id
-        const { data: jobs, error } = await supabase
+        // Check if the employer exists in jobs table
+        const { data: jobs, error: jobsError } = await supabase
             .from("jobs")
             .select("*")
-            .eq("employer_id", employer_id); // Filtering by employer_id
+            .eq("employer_id", employer_id);
 
-        if (error) {
-            throw new Error(error.message);
+        if (jobsError) {
+            throw new Error(jobsError.message);
         }
 
-        if (!jobs || jobs.length === 0) {
-            throw new Error("No jobs found for this employer");
+        if (jobs && jobs.length > 0) return jobs;
+
+        // Checking if the employer exists in jobs_external table
+        const { data: externalJobs, error: externalError } = await supabase
+            .from("jobs_external")
+            .select("*")
+            .eq("employer_id", employer_id);
+
+        if (externalError) {
+            throw new Error(externalError.message);
         }
 
-        return jobs;
+        if (externalJobs && externalJobs.length > 0) return externalJobs;
+
+        // If no jobs are found in either table
+        throw new Error("No jobs found for this employer in any table");
     } catch (error) {
         throw new Error(`Error fetching jobs: ${error.message}`);
     }
 };
+
 
 //this job details for user
 
