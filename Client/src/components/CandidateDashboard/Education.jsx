@@ -1,9 +1,9 @@
 import React from 'react'
 
 const Education = ({ addEducationArrayItem, isEditing, removeEducationArrayItem, handleEducationArrayItemChange, candidateData, handleInputChange, errors, removeArrayItem, addArrayItem, handleArrayItemChange }) => {
-  
- 
-  
+
+
+
   return (
     // <section id='education' className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mt-12">
     //   <div className="flex items-center justify-between mb-6">
@@ -162,7 +162,7 @@ const Education = ({ addEducationArrayItem, isEditing, removeEducationArrayItem,
                   />
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700">Education Level</label>
                   <input
                     type="text"
@@ -173,6 +173,24 @@ const Education = ({ addEducationArrayItem, isEditing, removeEducationArrayItem,
                     placeholder="Enter education level"
                     required
                   />
+                </div> */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Education Level</label>
+                  <select
+                    value={edu.candidate_education_level}
+                    onChange={(e) => handleEducationArrayItemChange('education', edu.education_id, 'candidate_education_level', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-blue-500
+     focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+                    required
+                  >
+                    <option value="">Select education level</option>
+                    <option value="High School">High School</option>
+                    <option value="Bachelor's">Bachelor's</option>
+                    <option value="Master's">Master's</option>
+                    <option value="PhD">PhD</option>
+                    
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 <div className="space-y-2">
@@ -197,7 +215,7 @@ const Education = ({ addEducationArrayItem, isEditing, removeEducationArrayItem,
                     className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 
                     focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
                     placeholder="Enter score"
-                   required
+                    required
                   />
                 </div>
 
@@ -255,7 +273,7 @@ const Education = ({ addEducationArrayItem, isEditing, removeEducationArrayItem,
                 </div>
               </div>
             )}
-            
+
             {isEditing && (
               <button
                 type="button"
@@ -270,7 +288,7 @@ const Education = ({ addEducationArrayItem, isEditing, removeEducationArrayItem,
         ))}
       </div>
     </section>
-    
+
 
   )
 }
