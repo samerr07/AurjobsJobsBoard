@@ -15,6 +15,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import candidateSlice from "./candidateSlice"
 import employerSlice from "./employerSlice"
+import adminSlice from "./adminSlice"
 import {
   persistReducer,
   FLUSH,
@@ -38,6 +39,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
     candidate: candidateSlice,
     employer : employerSlice,
+    admin : adminSlice
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 

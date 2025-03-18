@@ -166,6 +166,14 @@ const Navbar = () => {
           </li>
           <li>
             <Link
+              to="/jobs"
+              className="px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors"
+            >
+              Services
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/company_register"
               className="px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors"
             >
