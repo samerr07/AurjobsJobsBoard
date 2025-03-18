@@ -24,6 +24,8 @@ import ApplicantProfile from './components/EmployerDashboard/section/ApplicantPr
 import AdminDashboard from './components/Admin/AdminDashboard'
 import CompanyJobsPage from './components/Admin/CompanyJobsPage'
 import AdminLogin from './components/Admin/AdminLogin'
+import AIResumeBuilder from './components/AIResumeBuilder'
+import ATSScoreChecker from './components/ATSScoreChecker'
 
 const AppRouter = () => {
 
@@ -63,7 +65,8 @@ const AppRouter = () => {
           <Route path='/admin_login' element={<AdminLogin/>}/>
           <Route path='/admin_dashboard' element={<AdminDashboard/>} />
           <Route path='/admin_dashboard/companies/:id/jobs' element={<CompanyJobsPage/>} />
-
+          <Route path='/ai_resume_builder' element={<AIResumeBuilder/>}/>
+          <Route path='/ats_score_checker' element={<ATSScoreChecker/>}/>
         </Routes>
     </>
   )

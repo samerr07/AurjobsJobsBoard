@@ -166,10 +166,10 @@ const ActiveJobs = memo(() => {
         <div className="space-y-6">
             {/* Stats Dashboard */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatsCard icon={Briefcase} title="Total Jobs" value={stats.totalJobs} className="border-l-4 border-l-blue-500" />
-                <StatsCard icon={Briefcase} title="Active Jobs" value={stats.activeJobs} className="border-l-4 border-l-green-500" />
-                <StatsCard icon={Briefcase} title="Total Views" value={stats.totalViews} className="border-l-4 border-l-purple-500" />
-                <StatsCard icon={Briefcase} title="Total Applicants" value={stats.totalApplicants} className="border-l-4 border-l-yellow-500" />
+                <StatsCard icon={Briefcase} title="Total Jobs" value={jobs.length} className="border-l-4 border-l-blue-500" />
+                {/* <StatsCard icon={Briefcase} title="Active Jobs" value={stats.activeJobs} className="border-l-4 border-l-green-500" /> */}
+                {/* <StatsCard icon={Briefcase} title="Total Views" value={stats.totalViews} className="border-l-4 border-l-purple-500" /> */}
+                {/* <StatsCard icon={Briefcase} title="Total Applicants" value={stats.totalApplicants} className="border-l-4 border-l-yellow-500" /> */}
             </div>
 
             {/* Search and Filters */}
