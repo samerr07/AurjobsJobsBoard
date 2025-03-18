@@ -15,6 +15,8 @@ const JobCard = ({ job, onRefresh }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
+    console.log(job)
+
     // Format date
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -302,14 +304,17 @@ const JobCard = ({ job, onRefresh }) => {
                     </div>
 
                     {/* Action Buttons */}
+                    <a href={job?.job_link} target='_blank'>
                     <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                        
                         <button
-                            onClick={() => navigate(`/employer_dashboard/jobs/${job.job_id}`)}
+                           
                             className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1"
                         >
-                            <Eye className="w-4 h-4" />
+                           
                             View Details
                         </button>
+                     
                         
                         {/* <button
                             onClick={() => navigate(`/employer_dashboard/jobs/${job.job_id}/applicants`)}
@@ -319,6 +324,7 @@ const JobCard = ({ job, onRefresh }) => {
                             View Applicants
                         </button> */}
                     </div>
+                    </a>
                 </div>
             </div>
         </div>
