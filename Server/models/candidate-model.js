@@ -2,9 +2,6 @@
 import supabase from "../config/supabase-client.js";
 
 import crypto from "crypto";
-
-
-
 //find a candidate by candidateemail
 export const findByCandidateEmail = async(email) => {
     try {
@@ -12,17 +9,18 @@ export const findByCandidateEmail = async(email) => {
             .from("candidates")
             .select("*")
             .eq("candidate_email", email)
-            .single(); // Ensures only one row is returned
+            .maybeSingle(); // ✅ Prevents error if no match is found
 
-        if (error) throw error;
+        if (error) throw error; // Throw only if there's a real issue
 
-        console.log("jai mata di ", data); // This will now execute
-        return data;
+        console.log("jai mata di", data); // This will execute even if no match is found
+        return data; // Returns candidate data or null
     } catch (error) {
         console.error("Error fetching candidate:", error.message);
         return null; // Return null in case of error
     }
 };
+
 // create a  new candidate
 export const createCandidate = async(
     email,
@@ -98,8 +96,6 @@ export const findByCandidateID = async(candidateID) => {
         return null;
     }
 };
-// import { supabase } from "../config/supabaseClient"; // Adjust import based on your setup
-
 export const updateCandidate = async(candidateID, candidateData) => {
     try {
         const candidate = candidateData.candidate || candidateData;
@@ -225,17 +221,6 @@ export const updateCandidate = async(candidateID, candidateData) => {
         return { success: false, error: error.message || "Internal Server Error" };
     }
 };
-
-
-
-
-
-
-
-
-
-
-
 // 
 // ✅ Validate UUID Format
 

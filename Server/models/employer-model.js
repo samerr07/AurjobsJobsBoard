@@ -6,7 +6,7 @@ export const findByEmployerEmail = async(company_email) => {
             .from("employers")
             .select("*")
             .eq("employer_email", company_email, )
-            .single(); // Ensures only one row is returned
+            .maybeSingle(); // Ensures only one row is returned
 
         if (error) throw error;
 

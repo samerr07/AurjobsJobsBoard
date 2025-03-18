@@ -2,19 +2,21 @@ import { createEmployer, findByEmployerEmail, employerDetails, updateEmployerDet
 import bcrypt from "bcrypt";
 import e from "cors";
 import jwt from "jsonwebtoken";
+import _ from "lodash";
 
 
 // Employer Sign-up Function
 export const SignUpEmployer = async(req, res) => {
     try {
 
-        const {
+        let {
             company_name,
             company_email,
             company_password
         } = req.body;
-
-        // Check if the employer already exists
+        company_name = _.toLower(_.trim(company_name)) // ✅ Convert company_name to lowercase
+        company_email = _.toLower(_.trim(company_email)) // ✅ Emails should always be lowercase
+            // Check if the employer already exists
         const employer = await findByEmployerEmail(company_email);
         if (employer) {
             return res.status(400).json({ error: "Employer already exists", success: false });
@@ -44,10 +46,12 @@ export const SignUpEmployer = async(req, res) => {
     }
 };
 export const loginEmployer = async(req, res) => {
-    const { company_email, company_password } = req.body;
+    let { company_email, company_password } = req.body;
 
     try {
         // Checking if the employer exists
+        company_email = _.toLower(_.trim(company_email)) // ✅ Emails should always be lowercase
+
         const employer = await findByEmployerEmail(company_email);
         if (!employer) {
             return res.status(401).json({ error: "Invalid email or password", success: false });
