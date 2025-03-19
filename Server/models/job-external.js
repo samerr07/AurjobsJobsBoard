@@ -1,6 +1,6 @@
 import supabase from "../config/supabase-client.js";
+// import { supabase } from "../supabaseClient"; // Ensure Supabase is imported
 
-// Function to  the company in Supabase
 export const Job_Post_external = async(
     job_title,
     job_description,
@@ -12,9 +12,22 @@ export const Job_Post_external = async(
     industry,
     work_mode,
     job_link,
-    employer_id, // Accept employer_id here
+    employer_id
 ) => {
     try {
+        // Check if job_link already exists
+        const { data: jobdata, error: joberror } = await supabase
+            .from("jobs_external")
+            .select("*")
+            .eq("job_link", job_link);
+
+        if (joberror) throw new Error(joberror.message);
+
+        if (jobdata.length > 0) {
+            throw new Error("Job already exists");
+        }
+
+        // Insert the job posting
         const { data, error } = await supabase.from("jobs_external").insert([{
             job_title,
             job_description,
@@ -26,19 +39,20 @@ export const Job_Post_external = async(
             industry,
             work_mode,
             job_link,
-            employer_id, // Now inserting employer_id
+            employer_id,
             status: "active",
         }]).select("*");
 
-        if (error) throw error;
+        if (error) throw new Error(error.message);
 
         console.log("Job created successfully:", data);
         return data;
     } catch (error) {
         console.error("Error inserting job:", error.message);
-        return [];
+        return { error: error.message };
     }
 };
+
 // Function to register the company in Supabase
 export const company_registration = async(company_display_name, company_website, company_logo, industry, description) => {
     try {
