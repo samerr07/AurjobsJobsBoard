@@ -3,39 +3,52 @@ import { createCandidate, findByCandidateEmail, findByCandidateID, updateCandida
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import _ from "lodash";
 dotenv.config();
 class CandidateController {
-    //  Candidate Signup
+    // ✅ Candidate Signup
     static async signupCandidate(req, res) {
-            try {
-                const { email, password, firstname, lastname, phone, location, resume_url } = req.body;
+        try {
+            let { email, password, firstname, lastname, phone, location, resume_url } = req.body;
 
-                // Check if the candidate already exists
-                const candidate = await findByCandidateEmail(email);
-                if (candidate) {
-                    return res.status(400).json({ error: "Candidate already exists", success: false });
-                }
+            // Convert relevant inputs to lowercase using Lodash
+            email = _.toLower(_.trim(email));
+            firstname = _.toLower(_.trim(firstname));
+            lastname = _.toLower(_.trim(lastname));
+            phone = _.toLower(_.trim(phone));
+            location = _.toLower(_.trim(location));
 
-                // Hash the password before storing
-                const hashedPassword = await bcrypt.hash(password, 10);
 
-                // Create a new candidate
-                const newCandidate = await createCandidate(email, hashedPassword, firstname, lastname, phone, location, resume_url);
-
-                if (!newCandidate) {
-                    return res.status(500).json({ error: "Failed to create Candidate", success: false });
-                }
-
-                return res.status(201).json({ success: true, message: "Candidate created successfully" });
-            } catch (error) {
-                console.error("Signup Error:", error);
-                return res.status(500).json({ error: "Internal Server Error" });
+            // Check if the candidate already exists
+            const candidate = await findByCandidateEmail(email);
+            if (candidate) {
+                return res.status(400).json({ error: "Candidate already exists", success: false });
             }
+
+            // Hash the password before storing
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Create a new candidate
+            const newCandidate = await createCandidate(email, hashedPassword, firstname, lastname, phone, location, resume_url);
+
+            if (!newCandidate) {
+                return res.status(500).json({ error: "Failed to create Candidate", success: false });
+            }
+
+            return res.status(201).json({ success: true, message: "Candidate created successfully" });
+        } catch (error) {
+            console.error("Signup Error:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
         }
-        // ✅ Candidate Login
+    }
+
+    // ✅ Candidate Login
     static async loginCandidate(req, res) {
         try {
-            const { email, password } = req.body;
+            let { email, password } = req.body;
+
+            // Convert email to lowercase
+            email = _.toLower(_.trim(email));
 
             // Checking if the candidate exists
             const candidate = await findByCandidateEmail(email);
@@ -55,7 +68,7 @@ class CandidateController {
                 process.env.JWT_SECRET, { expiresIn: "72h" }
             );
 
-            // Setting the token in the cookiei
+            // Setting the token in the cookie
             res.cookie("authToken", token, { httpOnly: true, sameSite: "none", secure: true, path: "/" });
 
             // Fetch all related candidate data using findByCandidateID
@@ -67,7 +80,6 @@ class CandidateController {
                 token,
                 candidate: fullCandidateData, // Returning full candidate details with related data
                 success: true,
-                // samesite:
             });
 
         } catch (error) {
@@ -75,6 +87,8 @@ class CandidateController {
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
+
+
     static async candidate_login_google(req, res) {
         try {
             const token = req.user.token; // Get JWT token from passport
