@@ -63,7 +63,8 @@ export const findByCandidateID = async(candidateID) => {
             languages,
             education,
             certifications,
-            addresses
+            addresses,
+            preferences,
         ] = await Promise.all([
             supabase.from("candidates").select("*").eq("candidate_id", candidateID).single(),
             supabase.from("candidate_experience").select("*").eq("candidate_id", candidateID),
@@ -71,7 +72,8 @@ export const findByCandidateID = async(candidateID) => {
             supabase.from("candidate_languages").select("*").eq("candidate_id", candidateID),
             supabase.from("candidate_education").select("*").eq("candidate_id", candidateID),
             supabase.from("candidate_certifications").select("*").eq("candidate_id", candidateID),
-            supabase.from("candidate_address").select("*").eq("candidate_id", candidateID)
+            supabase.from("candidate_address").select("*").eq("candidate_id", candidateID),
+            supabase.from("candidate_preference").select("*").eq("candidate_id", candidateID)
         ]);
 
         // Check for errors
@@ -88,7 +90,10 @@ export const findByCandidateID = async(candidateID) => {
             languages: languages.data || [],
             education: education.data || [],
             certifications: certifications.data || [],
-            addresses: addresses.data || []
+            addresses: addresses.data || [],
+            preferences: preferences.data || [],
+
+
         };
 
     } catch (error) {
@@ -108,6 +113,7 @@ export const updateCandidate = async(candidateID, candidateData) => {
             education,
             certifications,
             addresses,
+            preferences,
             ...candidateCoreData
         } = candidate;
 
@@ -188,6 +194,20 @@ export const updateCandidate = async(candidateID, candidateData) => {
             created_at: istTimestamp,
             updated_at: istTimestamp,
         }));
+        const candidatePreferencesData = preferences.map(pref => ({
+            candidate_id: candidateID,
+            preference_id: pref.preference_id || crypto.randomUUID(),
+            work_authorization: pref.work_authorization,
+            expected_salary: pref.expected_salary,
+            salary_structure: pref.salary_structure,
+            job_preference: pref.job_preference,
+            preferred_industry: pref.preferred_industry,
+            last_active_date: pref.last_active_date,
+            star_rating: pref.star_rating,
+            // custom_tags: pref.custom_tags,
+            preferred_work_location: pref.preferred_work_location,
+
+        }))
 
         const upsertPromises = [
             supabase.from("candidate_skills").upsert(candidateSkillsData, { onConflict: ["skill_id"] }).select(),
@@ -196,6 +216,7 @@ export const updateCandidate = async(candidateID, candidateData) => {
             supabase.from("candidate_education").upsert(candidateEducationData, { onConflict: ["education_id"] }).select(),
             supabase.from("candidate_address").upsert(candidateAddressData, { onConflict: ["address_id"] }).select(),
             supabase.from("candidate_certifications").upsert(candidateCertificationsData, { onConflict: ["certification_id"] }).select(),
+            supabase.from("candidate_preference").upsert(candidatePreferencesData, { onConflict: ["preference_id"] }).select(),
         ];
 
         const responses = await Promise.allSettled(upsertPromises);
@@ -203,6 +224,7 @@ export const updateCandidate = async(candidateID, candidateData) => {
 
         const updatedResponses = responses.map(response => response.status === "fulfilled" ? response.value.data || [] : []);
         console.log("✅ Updated Certifications Table:", updatedResponses[5]);
+        console.log("✅ Updated Preferences Table:", updatedResponses[6]);
         return {
             success: true,
             message: "Candidate and related data updated successfully",
@@ -214,6 +236,7 @@ export const updateCandidate = async(candidateID, candidateData) => {
                 education: updatedResponses[3],
                 certifications: updatedResponses[5],
                 addresses: updatedResponses[4],
+                preferences: updatedResponses[6],
             },
         };
     } catch (error) {
