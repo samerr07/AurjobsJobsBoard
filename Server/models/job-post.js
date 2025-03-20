@@ -67,6 +67,7 @@ const getEmployerDetails = async(employerIDs, tableName) => {
     }
 };
 
+
 export const alljobs = async() => {
     try {
         // Step 1: Fetch jobs from both tables
@@ -116,6 +117,26 @@ export const alljobs = async() => {
         return [];
     }
 };
+
+export const jobs_Posted_Today = async() => {
+    try {
+        const allJobs = await alljobs();
+
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+
+        // Filter jobs where posted_at matches today's date
+        const jobsToday = allJobs.filter(job =>
+            job.posted_at && job.posted_at.split('T')[0] === today
+        );
+
+        return jobsToday;
+    } catch (error) {
+        console.error("Error fetching today's jobs:", error.message);
+        return [];
+    }
+};
+
 export const employer_Jobs = async(employer_id) => {
     try {
         // Check if the employer exists in jobs table
