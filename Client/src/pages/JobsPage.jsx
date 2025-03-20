@@ -80,7 +80,8 @@ const JobsPage = () => {
         categories: [...filterCategories]
     });
     const [sortBy, setSortBy] = useState('lastUpdated');
-    const [isFilterOpen, setIsFilterOpen] = useState(true);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isFilterOpen, setIsFilterOpen] = useState(!isMobile);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12
     const [salaryRange, setSalaryRange] = useState(0);
@@ -91,6 +92,21 @@ const JobsPage = () => {
             [filterType]: value
         }));
     };
+
+    // for filter option 
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            setIsFilterOpen(!mobile); // Open on desktop, closed on mobile
+        };
+        
+        
+        handleResize();
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleLocationChange = (value) => {
         const newFilters = { ...filters };
@@ -481,13 +497,13 @@ const JobsPage = () => {
                             </div>
                             <ChevronDown
                                 className={`w-5 h-5 text-gray-500 hover:text-indigo-600 transform transition-transform duration-300 
-                                ${isFilterOpen ? '' : '-rotate-180'}`}
+                                ${isFilterOpen ? 'rotate-180' : ''}`}
                             />
                         </div>
 
                         {/* Filter Content */}
                         <div className={`transition-all duration-300 ease-in-out overflow-hidden
-                            ${isFilterOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+    ${isFilterOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                             {filters.categories.map((category, categoryIndex) => (
                                 <div key={categoryIndex} className="mb-6 group">
                                     <h4 className="text-gray-600 mb-4 font-semibold text-sm uppercase tracking-wider">
@@ -601,34 +617,44 @@ const JobsPage = () => {
                 </div>
 
                 {/* Job listings */}
-                <div className="flex-1 max-h-screen overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                    <div className="flex items-center justify-between mb-6 sticky top-0 bg-gray-50 z-10 p-4">
+             {/* Assuming header is 64px tall */}
+                    <div className="flex-1 overflow-y-auto relative">
+        {/* Header - Sticky at top of scrollable area */}
+                        <div className="sticky top-0 bg-gray-50 z-10 p-4 ">
                         <div className="flex items-center gap-2">
-                            <h2 className="text-xl font-semibold">Recommended Jobs</h2>
+                            {/* <h2 className="text-xl font-semibold">Recommended Jobs</h2>
                             <span className="bg-gray-200 px-3 py-0.5 rounded-full text-sm">
                                 {paginatedJobs.totalJobs}
                             </span>
                             <span className="text-sm text-gray-600">
                                 {paginatedJobs.currentRange}
-                            </span>
+                            </span> */}
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <span className="text-gray-500 text-sm hidden sm:inline">Sort by:</span>
-                            <select
-                                className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium 
-                                    hover:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                value={sortBy}
-                                onChange={handleSortChange}
-                            >
-                                {sortOptions.map(option => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center">
+                        <h2 className="text-xl font-semibold">Recommended Jobs</h2>
+                        <span className="ml-3 bg-gray-100 px-2 py-1 rounded-full text-sm"> {paginatedJobs.totalJobs}</span>
+                        <span className="ml-3 text-gray-600 text-sm">{paginatedJobs.currentRange}</span>
                     </div>
+                    
+                    <div className="flex items-center gap-2">
+                        <span className="text-gray-500 text-md hidden sm:inline">Sort by:</span>
+                        <select
+                        className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium 
+                            hover:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        value={sortBy}
+                        onChange={handleSortChange}
+                        >
+                        {sortOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                            {option.label}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
+                    </div>
+                                        </div>
 
                     {jobLoading ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -665,6 +691,7 @@ const JobsPage = () => {
                 onPageChange={setCurrentPage}
             />
         </div>
+    
     );
 };
 
