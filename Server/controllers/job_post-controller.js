@@ -1,5 +1,5 @@
 import supabase from "../config/supabase-client.js";
-import { alljobs, createJobPost, employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application, getCandidatesForJob, getJobDetailsByJobId, delete_Job_FromDB } from "../models/job-post.js";
+import { alljobs, createJobPost, employer_Jobs, createJobApplication, getApplicationsByCandidateId, Job_application, getCandidatesForJob, getJobDetailsByJobId, delete_Job_FromDB, jobs_Posted_Today } from "../models/job-post.js";
 
 console.log("in controllers job post");
 // export const employer_jobs = async(req, res) => {
@@ -123,7 +123,12 @@ export const CreateJobPost = async(req, res) => {
             work_mode,
             employer_id // Now passing employer_id
         );
-
+        if (jobCreated.error) {
+            res.status(500).json({
+                message: "error creating the jobs",
+                success: false
+            })
+        }
         res.status(201).json({
             message: "Job created successfully",
             job: jobCreated,
