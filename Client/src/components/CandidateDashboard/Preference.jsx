@@ -293,6 +293,10 @@ const Preference = ({ candidateData, isEditing, handlePreferenceArrayItemChange,
                                     <p className="text-gray-800">{preference.preferred_work_location || '-'}</p>
                                 </div>
                                 <div className="space-y-1">
+                                    <p className="text-sm font-medium text-gray-500">Employment Type</p>
+                                    <p className="text-gray-800">{preference.employment_type || '-'}</p>
+                                </div>
+                                <div className="space-y-1">
                                     <p className="text-sm font-medium text-gray-500">Veteran Status</p>
                                     <p className="text-gray-800">{preference.veteran_status ? 'Yes' : 'No'}</p>
                                 </div>

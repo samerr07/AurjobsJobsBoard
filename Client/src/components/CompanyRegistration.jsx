@@ -36,10 +36,10 @@ const CompanyRegistration = ({ navigateToLogin }) => {
     ) {
       newErrors.company_email = "Invalid email address.";
     }
-    if (!formData.password.trim()) {
+    if (!formData.password?.trim()) {
       newErrors.password = "Password is required.";
     }
-    if (!formData.confirmPassword.trim()) {
+    if (!formData.confirmPassword?.trim()) {
       newErrors.confirmPassword = "Confirm Password is required.";
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
@@ -50,9 +50,8 @@ const CompanyRegistration = ({ navigateToLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted: ", formData);
-    }
+    
+    console.log(formData)
 
     try {
       setLoading(true)
