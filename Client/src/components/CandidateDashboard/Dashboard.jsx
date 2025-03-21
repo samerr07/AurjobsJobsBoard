@@ -202,6 +202,15 @@ const Dashboard = () => {
         }));
     };
 
+    const handlePreferenceArrayItemChange = (type, id, field, value) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: prev[type]?.map(item =>
+                item.preference_id === id ? { ...item, [field]: value } : item
+            )
+        }));
+    };
+
     const addArrayItem = (type, defaultItem) => {
         setCandidateData(prev => ({
             ...prev,
@@ -248,6 +257,13 @@ const Dashboard = () => {
         setCandidateData(prev => ({
             ...prev,
             [type]: [...prev[type], { ...defaultItem, address_id: uuidv4() }]
+        }));
+    };
+
+    const addPreferenceArrayItem = (type, defaultItem) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: [...prev[type], { ...defaultItem, preference_id: uuidv4() }]
         }));
     };
 
@@ -304,6 +320,12 @@ const Dashboard = () => {
         setCandidateData(prev => ({
             ...prev,
             [type]: prev[type].filter(item => item.address_id !== id)
+        }));
+    };
+    const removePreferenceArrayItem = (type, id) => {
+        setCandidateData(prev => ({
+            ...prev,
+            [type]: prev[type].filter(item => item.preference_id !== id)
         }));
     };
 
@@ -541,6 +563,9 @@ const Dashboard = () => {
                                     removeAddressArrayItem={removeAddressArrayItem}
                                     handleAddressArrayItemChange={handleAddressArrayItemChange}
                                     addAddressArrayItem={addAddressArrayItem}
+                                    removePreferenceArrayItem={removePreferenceArrayItem}
+                                    addPreferenceArrayItem={addPreferenceArrayItem}
+                                    handlePreferenceArrayItemChange={handlePreferenceArrayItemChange}
                                 />
 
 
