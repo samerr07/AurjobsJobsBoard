@@ -170,6 +170,7 @@ export const updateCandidate = async(candidateID, candidateData) => {
             candidate_start_year: edu.candidate_start_year,
             candidate_end_year: edu.candidate_end_year,
             candidate_score: edu.candidate_score,
+            candidate_degree_specialization: edu.candidate_degree_specialization,
             updated_at: istTimestamp,
         }));
 
@@ -204,6 +205,10 @@ export const updateCandidate = async(candidateID, candidateData) => {
             preferred_industry: pref.preferred_industry,
             last_active_date: pref.last_active_date,
             star_rating: pref.star_rating,
+            company_size: pref.company_size,
+            veteran_status: pref.veteran_status,
+            pwd: pref.pwd,
+            employment_type: pref.employment_type,
             // custom_tags: pref.custom_tags,
             preferred_work_location: pref.preferred_work_location,
 
