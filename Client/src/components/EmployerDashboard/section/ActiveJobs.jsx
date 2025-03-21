@@ -27,7 +27,7 @@ const ActiveJobs = memo(() => {
             });
 
             if (response.status === 200) {
-                setJobs(response.data);
+                setJobs(response.data?.data);
             } else {
                 throw new Error(response.data.error || 'Failed to fetch jobs');
             }
