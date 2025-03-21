@@ -10,8 +10,9 @@ import Resume from './Resume'
 import Experience from './Experience'
 import AdditionalInformation from './AdditionalInformation'
 import Address from './Address'
+import Preference from './Preference'
 
-const Profile = ({handleExperienceArrayItemChange,handleAddressArrayItemChange, addAddressArrayItem, removeAddressArrayItem, addExperienceArrayItem, removeExperienceArrayItem, addEducationArrayItem,addCertificationArrayItem,addLangugeArrayItem,addSkillArrayItem,removeEducationArrayItem,handleEducationArrayItemChange,isEditing,removeCertificateArrayItem,removeSkillArrayItem,handleCertificationArrayItemChange,handleSkillsArrayItemChange, candidateData, handleInputChange, errors, removeArrayItem, addArrayItem, handleArrayItemChange ,removeLanguageArrayItem,handleLanguageArrayItemChange}) => {
+const Profile = ({handlePreferenceArrayItemChange, addPreferenceArrayItem, removePreferenceArrayItem, handleExperienceArrayItemChange,handleAddressArrayItemChange, addAddressArrayItem, removeAddressArrayItem, addExperienceArrayItem, removeExperienceArrayItem, addEducationArrayItem,addCertificationArrayItem,addLangugeArrayItem,addSkillArrayItem,removeEducationArrayItem,handleEducationArrayItemChange,isEditing,removeCertificateArrayItem,removeSkillArrayItem,handleCertificationArrayItemChange,handleSkillsArrayItemChange, candidateData, handleInputChange, errors, removeArrayItem, addArrayItem, handleArrayItemChange ,removeLanguageArrayItem,handleLanguageArrayItemChange}) => {
     return (
         <div>
             <PersonalInformation isEditing={isEditing} candidateData={candidateData} handleInputChange={handleInputChange} errors={errors} />
@@ -55,6 +56,12 @@ const Profile = ({handleExperienceArrayItemChange,handleAddressArrayItemChange, 
             <Address isEditing={isEditing} candidateData={candidateData} removeAddressArrayItem={removeAddressArrayItem}
                             handleAddressArrayItemChange={handleAddressArrayItemChange}
                             addAddressArrayItem={addAddressArrayItem} errors={errors}/>
+            <Preference
+            isEditing={isEditing} candidateData={candidateData}
+               removePreferenceArrayItem={removePreferenceArrayItem}
+               addPreferenceArrayItem={addPreferenceArrayItem}
+               handlePreferenceArrayItemChange={handlePreferenceArrayItemChange}
+            />
         </div>
     )
 }
