@@ -54,10 +54,10 @@ app.use("/payments", payment_routes);
 
 // Serve static assets if you have any (for production)
 
-app.use(express.static("build"));
+app.use(express.static("public"));
 
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/build/index.html");
+  res.sendFile(path.resolve(__dirname ,"public", "index.html"));
 });
 
 

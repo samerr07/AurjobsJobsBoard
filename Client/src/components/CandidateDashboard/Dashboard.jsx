@@ -9,13 +9,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { BASEURL } from '../../utility/config';
 import AppliedJobs from './AppliedJobs';
 import { getCandidateProfile } from '../../redux/candidateSlice';
+import ProfileCompletionProgress from './ProfileCompletionProgress';
 
 const Dashboard = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isExpanded, setIsExpanded] = useState(true);
     const [showDashboard, setShowDashboard] = useState(false);
-    const [activeView, setActiveView] = useState('profile'); 
+    const [activeView, setActiveView] = useState('profile');
     const formRef = useRef(null);
 
     const dispatch = useDispatch()
@@ -33,6 +34,8 @@ const Dashboard = () => {
     const [errors, setErrors] = useState({});
     const [activeSection, setActiveSection] = useState('personal');
     const [activeSection1, setActiveSection1] = useState('analytics');
+
+    console.log(candidateData)
 
 
     const candidateData1 = {
@@ -60,7 +63,7 @@ const Dashboard = () => {
         { id: 'settings', name: 'Settings', icon: <Settings className="w-5 h-5" /> },
     ];
 
-  
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCandidateData(prev => ({
@@ -90,7 +93,7 @@ const Dashboard = () => {
     };
 
 
-    
+
 
     const startEditing = () => {
         // setBackupData(candidateData);
@@ -337,7 +340,7 @@ const Dashboard = () => {
         { id: 'jobs', name: 'Applied Jobs', icon: <FaBriefcase /> }
     ];
 
-    
+
 
 
     const [isMobile, setIsMobile] = useState(false);
@@ -503,6 +506,9 @@ const Dashboard = () => {
                 {
                     activeView === 'profile' ? (
                         <div className="max-w-4xl mx-auto">
+
+                            <ProfileCompletionProgress candidateData={candidateData} />
+
                             <div className="flex justify-between items-center mb-8">
                                 <div>
                                     <h1 className="text-3xl font-bold text-gray-900">Candidate Profile</h1>
@@ -588,7 +594,7 @@ const Dashboard = () => {
 
                         </div>
                     ) : activeView === 'appliedJobs' ? (
-                        <AppliedJobs  />
+                        <AppliedJobs />
                     ) : (
                         <div className="max-w-4xl mx-auto">
                             <h1 className="text-3xl font-bold text-gray-900 mb-4">hfh</h1>
