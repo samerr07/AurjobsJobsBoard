@@ -2,6 +2,128 @@ import React, { useState } from 'react'
 
 const Experience = ({ candidateData, isEditing, handleExperienceArrayItemChange, addExperienceArrayItem, removeExperienceArrayItem }) => {
 
+    const industries = [
+        // Technology & IT
+        "Technology",
+        "Information Technology (IT)",
+        "Software Development",
+        "Artificial Intelligence (AI) & Machine Learning",
+        "Cybersecurity",
+        "Cloud Computing",
+        "Blockchain",
+        "Big Data & Analytics",
+        "Telecommunications",
+        "Game Development",
+        "Web Development",
+        "Mobile App Development",
+        "Internet of Things (IoT)",
+        "Augmented Reality (AR) & Virtual Reality (VR)",
+
+        // Finance & Banking
+        "Banking & Financial Services",
+        "FinTech",
+        "Investment Banking",
+        "Insurance",
+        "Accounting & Auditing",
+        "Wealth Management",
+        "Real Estate & Mortgage",
+
+        // Healthcare & Pharmaceuticals
+        "Healthcare",
+        "Pharmaceuticals",
+        "Biotechnology",
+        "Medical Devices",
+        "HealthTech",
+        "Telemedicine",
+        "Public Health & Hospitals",
+        "Medical Research",
+
+        // Education & Research
+        "Education & E-learning",
+        "Higher Education",
+        "EdTech",
+        "Research & Development (R&D)",
+        "Training & Coaching",
+
+        // Manufacturing & Engineering
+        "Manufacturing",
+        "Automotive",
+        "Aerospace & Defense",
+        "Electronics & Electricals",
+        "Industrial Automation",
+        "Textiles & Apparel",
+        "Chemical Industry",
+        "Metallurgy & Mining",
+
+        // Energy & Utilities
+        "Energy",
+        "Oil & Gas",
+        "Renewable Energy",
+        "Electricity & Utilities",
+        "Nuclear Energy",
+
+        // Retail & E-commerce
+        "Retail",
+        "E-commerce",
+        "Consumer Goods",
+        "Luxury & Fashion",
+        "Wholesale Distribution",
+        "Supply Chain & Logistics",
+
+        // Media & Entertainment
+        "Media & Entertainment",
+        "Film & Television",
+        "Music Industry",
+        "Advertising & Marketing",
+        "Publishing",
+        "Digital Media",
+        "Gaming Industry",
+
+        // Travel & Hospitality
+        "Tourism & Hospitality",
+        "Hotels & Resorts",
+        "Airlines & Aviation",
+        "Cruise & Maritime",
+        "Travel Agencies",
+        "Event Management",
+
+        // Government & Nonprofit
+        "Government & Public Administration",
+        "Nonprofit & NGOs",
+        "Legal Services",
+        "Law Enforcement & Security",
+        "International Relations",
+        "Social Work",
+
+        // Construction & Infrastructure
+        "Construction",
+        "Real Estate",
+        "Urban Planning",
+        "Architecture & Design",
+        "Civil Engineering",
+
+        // Agriculture & Food Industry
+        "Agriculture",
+        "Food & Beverage",
+        "Dairy & Poultry",
+        "Fisheries & Aquaculture",
+        "AgriTech",
+
+        // Transportation & Logistics
+        "Transportation",
+        "Logistics & Supply Chain",
+        "Shipping & Freight",
+        "Railways",
+        "Maritime & Ports",
+
+        // Environmental & Sustainability
+        "Environmental Services",
+        "Sustainable Energy",
+        "Recycling & Waste Management",
+        "Climate Change & Conservation"
+    ];
+
+
 
 
     return (
@@ -83,14 +205,31 @@ const Experience = ({ candidateData, isEditing, handleExperienceArrayItemChange,
 
                                 <div className="space-y-2">
                                     <label className="block text-sm font-semibold text-gray-700">Industry</label>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         value={exp.candidate_industry}
                                         onChange={(e) => handleExperienceArrayItemChange('experiences', exp.experience_id, 'candidate_industry', e.target.value)}
                                         className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 
                     focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
                                         placeholder="Enter industry"
-                                    />
+                                    /> */}
+                                    <select
+                                       value={exp.candidate_industry}
+                                       onChange={(e) => handleExperienceArrayItemChange('experiences', exp.experience_id, 'candidate_industry', e.target.value)}
+                                        className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-blue-500
+     focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+                                        required
+                                    >
+                                        <option value="">Select Industry</option>
+                                        {
+                                            industries.map((indutsry) => (
+                                                <option value={indutsry}>{indutsry}</option>
+                                            ))
+                                        }
+
+
+
+                                    </select>
                                 </div>
 
                                 <div className="space-y-2">
