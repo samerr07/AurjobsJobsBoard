@@ -63,7 +63,7 @@ const CandidateLogin = ({ navigateToRegister }) => {
         dispatch(getCandidateProfile(res?.data?.candidate))
         dispatch(setAuthentication(true))
 
-      }
+      } 
     } catch (err) {
       console.log(err);
       toast.error(err.response?.data?.message || 'Something went wrong', {

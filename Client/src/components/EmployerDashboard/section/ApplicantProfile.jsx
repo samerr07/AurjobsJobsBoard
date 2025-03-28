@@ -34,6 +34,7 @@ const ApplicantProfile = () => {
   };
   const params = useParams();
   const candidateId = params.id;
+  console.log(candidateId)
 
   const [candidate, setCandidate] = useState(null);
 

@@ -201,18 +201,20 @@ const JobDetailsPage = () => {
   const screeningData = {
     candidate: {
       skills: skills || '',
-      experience: experience || '0'
+      experience: experience || '0',
+      candidateProfile:candidateProfile
     },
     job: {
       requiredSkills: jobDetails?.job_skills_required?.join(', ') || '',
-      experienceRequired: jobDetails?.job_experience_required?.toString() || '0'
+      experienceRequired: jobDetails?.job_experience_required?.toString() || '0',
+      jobDescription: jobDetails?.job_description || '',
     }
   };
 
 
   const aiScreening = async () => {
     try {
-      const res = await axios.post(`${BASEURL}/match/getJobMatch`,
+      const res = await axios.post(`http://localhost:3000/match/getJobMatch`,
         screeningData,
         {
           headers: { "Content-Type": "application/json" },

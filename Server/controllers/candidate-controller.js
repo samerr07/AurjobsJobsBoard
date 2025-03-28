@@ -172,7 +172,7 @@ class CandidateController {
 
     static async getCandidateProfile(req, res) {
         try {
-            const candidate_id = req.candidateId; // Ensure candidateId is set from authentication middleware
+            const candidate_id = req.params.id; // Ensure candidateId is set from authentication middleware
             console.log(candidate_id)
             if (!candidate_id) {
                 return res.status(400).json({ error: "Candidate ID is missing", success: false });
