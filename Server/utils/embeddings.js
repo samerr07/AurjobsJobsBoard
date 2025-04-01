@@ -79,8 +79,12 @@ export async function checkCandidateEligibility(candidate, job) {
     }
 
     // Use correct property names
-    const candidateText = `${candidate.skills} ${candidate.experience} ${candidate.candidateProfile}`;
-    const jobText = `${job.requiredSkills} ${job.experienceRequired} ${job.jobDescription}`;
+    // const candidateText = `${candidate.skills} ${candidate.experience} ${candidate.candidateProfile}`;
+    const candidateText = ` ${candidate.candidateProfile}`;
+
+    const jobText = ` ${job.jobDescription}`;
+    // const jobText = `${job.requiredSkills} ${job.experienceRequired} ${job.jobDescription}`;
+
 
     try {
         // Generate embeddings

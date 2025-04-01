@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CalendarDays, MapPin, Building2, Briefcase, Clock, DollarSign, GraduationCap, Laptop2, LogIn, IndianRupee } from 'lucide-react';
 import { CheckCircle2, XCircle, X, AlertCircle } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { BASEURL } from '../utility/config';
 import { useSelector } from 'react-redux';
@@ -31,6 +31,10 @@ const JobDetailsPage = () => {
   console.log(candidateProfile)
   const candidate_id = candidateProfile?.candidate_id;
   const params = useParams()
+  const location = useLocation();
+  
+  const job_id = location.state?.jobId;
+
   // const adRef = useRef(null);
   // const [adsLoaded, setAdsLoaded] = useState(false);
 
@@ -62,14 +66,252 @@ const JobDetailsPage = () => {
     const experienceDuration = [duration, monthsText].filter(Boolean).join(" ");
 
     // Construct the sentence
-    return `${experience.candidate_job_role} at ${experience.candidate_company} for ${experienceDuration}.`;
+    return `${experienceDuration}.`;
   }
 
   const experience = formatExperience(candidateProfile?.experiences[0]);
+  // const experience = 0
+
+
+
+  console.log(candidateProfile)
 
   const education = candidateProfile?.education?.map((edu) => `${edu.candidate_degree} (${edu.candidate_education_level}) from ${edu.candidate_institute}, Score: ${edu.candidate_score}, ${edu.candidate_start_year}-${edu.candidate_end_year}`).join(', ');
 
+  // const formatCandidateProfile = (candidate) => {
+  //   // Helper function to extract current role and details
+  //   const extractCurrentRole = (experiences) => {
+  //     if (!experiences || experiences.length === 0) {
+  //       return {
+  //         currentRole: "No current role specified",
+  //         currentCompany: "Not specified",
+  //         currentIndustry: "Not specified",
+  //         currentJobType: "Not specified"
+  //       };
+  //     }
 
+  //     // Sort experiences by end date to get the most recent
+  //     const sortedExperiences = experiences.sort((a, b) => 
+  //       new Date(b.candidate_end_date) - new Date(a.candidate_end_date)
+  //     );
+
+  //     const mostRecentExperience = sortedExperiences[0];
+
+  //     return {
+  //       currentRole: mostRecentExperience.candidate_job_role || "No role specified",
+  //       currentCompany: mostRecentExperience.candidate_company || "No company specified",
+  //       currentIndustry: mostRecentExperience.candidate_industry || "Not specified",
+  //       currentJobType: mostRecentExperience.candidate_job_type || "Not specified"
+  //     };
+  //   };
+
+  //   // Helper function to format experience
+  //   const formatExperience = (experience) => {
+  //     if (!experience?.candidate_start_date || !experience?.candidate_end_date) {
+  //       return "Experience details not available.";
+  //     }
+
+  //     // Calculate experience duration
+  //     const start = new Date(experience.candidate_start_date);
+  //     const end = new Date(experience.candidate_end_date);
+
+  //     let years = end.getFullYear() - start.getFullYear();
+  //     let months = end.getMonth() - start.getMonth();
+
+  //     if (months < 0) {
+  //       years--;
+  //       months += 12;
+  //     }
+
+  //     const duration = years > 0 ? `${years} years` : "";
+  //     const monthsText = months > 0 ? `${months} months` : "";
+  //     const experienceDuration = [duration, monthsText].filter(Boolean).join(" ");
+
+  //     // Construct the sentence
+  //     return `${experience.candidate_job_role} at ${experience.candidate_company} for ${experienceDuration}.`;
+  //     // return ` ${experienceDuration}.`;
+
+  //   };
+
+  //   // Calculate age
+  //   const calculateAge = (dob) => {
+  //     const birthDate = new Date(dob);
+  //     const today = new Date();
+  //     let age = today.getFullYear() - birthDate.getFullYear();
+  //     const monthDiff = today.getMonth() - birthDate.getMonth();
+  //     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+  //       age--;
+  //     }
+  //     return age;
+  //   };
+
+  //   // Format skills
+  //   const formatSkills = (skills) => {
+  //     return skills.map(skill => skill.candidate_skill.trim()).join(", ");
+  //   };
+
+  //   // Format languages
+  //   const formatLanguages = (languages) => {
+  //     return languages.map(lang => 
+  //       `${lang.candidate_language} (${lang.candidate_proficiency} proficiency)`
+  //     ).join(", ");
+  //   };
+
+  //   // Format education
+  //   const formatEducation = (education) => {
+  //     if (!education || education.length === 0) return "No education details available.";
+  //     const edu = education[0];
+  //     return `${edu.candidate_degree} from ${edu.candidate_institute}, graduated in ${edu.candidate_end_year} with ${edu.candidate_score} CGPA.`;
+  //   };
+
+  //   // Extract current role and details
+  //   const currentRoleDetails = extractCurrentRole(candidate.experiences);
+
+  //   // Compile the complete profile text
+  //   const profileText = `
+  // Candidate Comprehensive Profile for ${candidate.candidate_first_name} ${candidate.candidate_last_name}:
+
+  // Professional Overview:
+  // - Current Role: ${currentRoleDetails.currentRole}
+  // - Current Company: ${currentRoleDetails.currentCompany}
+  // - Industry: ${currentRoleDetails.currentIndustry}
+  // - Job Type: ${currentRoleDetails.currentJobType}
+
+  // Financial Details:
+  // - Current Salary: ${candidate.candidate_current_salary > 0 
+  //   ? `₹${candidate.candidate_current_salary.toLocaleString()}` 
+  //   : "Not specified"}
+
+  // Career Preferences:
+  // - Work Preference: ${candidate.candidate_work_preference}
+  // - Availability: ${candidate.candidate_availability}
+
+  // Personal Details:
+  // - Age: ${calculateAge(candidate.candidate_date_of_birth)} years old
+  // - Location: ${candidate.candidate_location}
+  // - Gender: ${candidate.candidate_gender}
+
+  // Education:
+  // ${formatEducation(candidate.education)}
+
+  // Professional Experience:
+  // ${candidate.experiences.map(formatExperience).join("\n")}
+
+  // Technical Skills:
+  // ${formatSkills(candidate.skills)}
+
+  // Language Proficiencies:
+  // ${formatLanguages(candidate.languages)}
+
+  // Professional Links:
+  // - GitHub: ${candidate.candidate_github_link}
+  // - LinkedIn: ${candidate.candidate_linkedin_link}
+  // - Resume: ${candidate.candidate_resume_link}
+
+  // Additional Information:
+  // - Profile Status: ${candidate.candidate_profile_status}
+  // - Last Updated: ${new Date(candidate.candidate_updated_at).toLocaleDateString()}
+  //   `.trim();
+
+  //   return profileText;
+  // };
+
+  // function formatCandidateProfile(candidateData) {
+  //   try {
+  //     // Extract basic information
+  //     const basics = `${candidateData.candidate_first_name} ${candidateData.candidate_last_name} (${candidateData.candidate_gender}, DOB: ${candidateData.candidate_date_of_birth}), Email: ${candidateData.candidate_email}, Phone: ${candidateData.candidate_phone}, Location: ${candidateData.candidate_location}, Current Role: ${candidateData.candidate_current_role}, Current Salary: ${candidateData.candidate_current_salary}, Availability: ${candidateData.candidate_availability}, Work Preference: ${candidateData.candidate_work_preference}`;
+
+  //     // Extract skills
+  //     const skills = candidateData.skills.map(skill => skill.candidate_skill).join(", ");
+
+  //     // Extract languages
+  //     const languages = candidateData.languages.map(lang => `${lang.candidate_language} (${lang.candidate_proficiency})`).join(", ");
+
+  //     // Extract experiences
+  //     // const experiences = candidateData.experiences.map(exp => 
+  //     //   `${exp.candidate_job_role} at ${exp.candidate_company} (${exp.candidate_job_type}, ${exp.candidate_start_date} to ${exp.candidate_end_date}, Industry: ${exp.candidate_industry})`
+  //     // ).join(", ");
+  //     const formatExperience = (experience) => {
+  //       if (!experience?.candidate_start_date || !experience?.candidate_end_date) return "Experience details not available.";
+  //       const start = new Date(experience.candidate_start_date);
+  //       const end = new Date(experience.candidate_end_date);
+  //       let years = end.getFullYear() - start.getFullYear();
+  //       let months = end.getMonth() - start.getMonth();
+  //       if (months < 0) { years--; months += 12; }
+  //       const duration = years > 0 ? `${years} years` : "";
+  //       const monthsText = months > 0 ? `${months} months` : "";
+  //       return `${experience.candidate_job_role} at ${experience.candidate_company} for ${[duration, monthsText].filter(Boolean).join(" ")}.`;
+  //   };
+
+  //     // Extract education
+  //     const education = candidateData.education.map(edu => 
+  //       `${edu.candidate_degree} in ${edu.candidate_degree_specialization} from ${edu.candidate_institute} (${edu.candidate_start_year}-${edu.candidate_end_year}, Score: ${edu.candidate_score})`
+  //     ).join(", ");
+
+  //     // Extract certifications
+  //     const certifications = candidateData.certifications.map(cert => 
+  //       `${cert.candidate_certificate_name} from ${cert.certificate_issuing_organization} (Issued: ${cert.certificate_issue_date})`
+  //     ).join(", ");
+
+  //     // Extract address
+  //     const address = candidateData.addresses.map(addr => 
+  //       `${addr.candidate_address_line_1}, ${addr.candidate_address_line_2}, ${addr.candidate_city}, ${addr.candidate_state}, ${addr.candidate_country}, ${addr.candidate_postal_code}`
+  //     ).join(", ");
+
+  //     // Extract preferences
+  //     const pref = candidateData.preferences[0];
+  //     const preferences = `Work Authorization: ${pref.work_authorization}, Expected Salary: ${pref.expected_salary} per ${pref.salary_structure}, Job Preference: ${pref.job_preference}, Preferred Industry: ${pref.preferred_industry}, Company Size: ${pref.company_size}, Employment Type: ${pref.employment_type}, Willing to Relocate: ${pref.willing_to_relocate}, Open to Travel: ${pref.open_to_travel}, Preferred Work Location: ${pref.preferred_work_location}, Veteran Status: ${pref.veteran_status}, PWD: ${pref.pwd}, Star Rating: ${pref.star_rating}`;
+
+  //     // Extract links
+  //     const links = `Resume: ${candidateData.candidate_resume_link}, GitHub: ${candidateData.candidate_github_link}, LinkedIn: ${candidateData.candidate_linkedin_link}, Image: ${candidateData.candidate_image_link}`;
+
+  //     // Combine all sections
+  //     return `${basics} | Skills: ${skills} | Languages: ${languages} | Experience: Experience: ${candidateData.experiences.map(formatExperience).join(" ")} | Education: ${education} | Certifications: ${certifications} | Address: ${address} | Preferences: ${preferences} | Links: ${links}`;
+  //   } catch (error) {
+  //     return `Error processing candidate data: ${error.message}`;
+  //   }
+  // }
+
+  // Example usage:
+  // const candidateProfileOneLine = getCandidateProfileAsOneLine(candidateData);
+  // console.log(candidateProfileOneLine);
+
+  function formatCandidateProfile(candidateData) {
+    try {
+      // Calculate age based on date of birth
+      const dob = new Date(candidateData.candidate_date_of_birth);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff1 = today.getMonth() - dob.getMonth();
+      if (monthDiff1 < 0 || (monthDiff1 === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+
+      // Calculate experience duration
+      const experience = candidateData.experiences[0];
+      const startDate = new Date(experience.candidate_start_date);
+      const endDate = new Date(experience.candidate_end_date);
+      const monthDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+
+      // Skills as a list
+      const skills = candidateData.skills.map(skill => skill.candidate_skill).join(" ");
+
+      // Format education
+      const education = candidateData.education[0];
+
+      // Format languages
+      const languages = candidateData.languages.map(lang =>
+        `${lang.candidate_language} ${lang.candidate_proficiency}`
+      ).join(" ");
+
+      // Create the formatted text
+      return `${candidateData.candidate_first_name} ${candidateData.candidate_last_name} Email Phone LinkedIn GitHub ${experience.candidate_job_role} at ${experience.candidate_company} for ${monthDiff} months skilled in ${skills} developed and optimized backend services using  job matching algorithms improved system performance scalability and security collaborated with cross-functional teams to stability ${education.candidate_degree} from ${education.candidate_institute} graduated in ${education.candidate_end_year} with ${education.candidate_score} CGPA Age ${age} Location ${candidateData.candidate_location} Gender ${candidateData.candidate_gender} Language Proficiencies ${languages} Work Preference ${candidateData.candidate_work_preference} Availability ${candidateData.candidate_availability} Current Salary ${candidateData.candidate_current_salary} GitHub ${candidateData.candidate_github_link} LinkedIn ${candidateData.candidate_linkedin_link} Resume ${candidateData.candidate_resume_link} Profile Status ${candidateData.candidate_profile_status} Last Updated ${candidateData.candidate_updated_at.split('T')[0].replace(/-/g, '')}`;
+    } catch (error) {
+      return `Error formatting candidate data: ${error.message}`;
+    }
+  }
+
+  console.log(formatCandidateProfile(candidateProfile))
 
 
   const [jobDetails, setJobDetails] = useState(null);
@@ -195,26 +437,41 @@ const JobDetailsPage = () => {
   };
 
 
+  function convertJobDescriptionToOneLine(jobDescription) {
+    if (typeof jobDescription !== 'string') {
+      return ''; // Return an empty string if input is not valid
+    }
+    return jobDescription
+      .replace(/\n/g, ' ')         // Replace newlines with space
+      .replace(/[^\w\s]/g, '')     // Remove special characters
+      .replace(/\s+/g, ' ')        // Remove extra spaces
+      .trim();
+  }
 
-
+  // console.log(convertJobDescriptionToOneLine(jobDetails?.job_description));
 
   const screeningData = {
     candidate: {
       skills: skills || '',
       experience: experience || '0',
-      candidateProfile:candidateProfile
+      candidateProfile: formatCandidateProfile(candidateProfile)
+      // candidateProfile:"SIDDHARTH GEERANAVAR Bengaluru siddharthsgeeranavar@gmail.com +91-9380633458 Linkedin Portfolio PROFESSIONAL SUMMARY As a passionate UIUX designer I have cultivated a strong foundation in user experience and interface design I am eager to bring my expertise and creativity to a dynamic team and contribute to impactful digital solution My commitment to continuous learning and attention to detail drives me to stay ahead of design trends and deliver exceptional user experiences SKILLS Tools Figma Adobe Photoshop Design Skills UIUX design App design Website design Responsive design Email template design Poster design Design System Wireframing Prototyping UI Principles Color theory Typography Design Principles Research Skills User Research UX Laws Problem Solving Skills Design Thinking Problem Solving UX Design Principles EXPERIENCE UIUX Designer Freelance May 2024 June 2024 Designed a social media app in which a person can post anything watch videos read news and can send message to others via unique id EDUCATION Master of Computer Application February 2023 October 2024 Dayananda Sagar College of Engineering Bengaluru CGPA 7.910 Bachelor of Computer Application August 2019 September 2022 KLE RLS BCA College Belagavi Percentage 63 PROJECTS Pre-owned car website design January 2024 January 2024 I designed a website in which a person can check out the pre-owned cars book a test drive book a service The person can also checkout the status of the service can compare cars filter out cars check cars based on category Furniture website design February 2024 February 2024 Designed a website design in which a person can check out different kind furniture and buy them The user can book a service for old furniture sell and exchange furniture and will be able to customize furniture Shoes app design March 2024 March 2024 Designed a shoe app in which a person can view and buy shoe brands like Puma Nike Adidas Restaurant menu app design April 2024 April 2024 The restaurant menu is aimed at creating a visually appealing and user-friendly digital menu Mobile app signup flow design July 2024 July 2024 This involves designing a mobile app signup flow aimed at making the account creation process user friendly Email Marketing Template design August 2024 August 2024 The primary purpose of the template is to promote and showcase the luxury and features of Rolex submariner watch CERTIFICATIONS Google via Coursera Foundation of User Experience Design IBM Enterprise of Design Thinking Practioner Infosys UX and UI Designing with Color Theory Great Learning UIUX for Beginners GUVI Learn design thinking and create better UIUX design Lets Upgrade Figma Bootcamp Lets Upgrade Graphic Designing Bootcamp"
+      // candidateProfile:"Abhishek Kuswaha Email Phone LinkedIn GitHub Backend Developer at Aurjobs for 9 months skilled in React JavaScript Express.js Next.js Node.js Firebase REST API PostgreSQL developed and optimized backend services using Node.js Express optimized and managed MongoDB and PostgreSQL databases implemented AI-based job matching algorithms improved system performance scalability and security collaborated with cross-functional teams to design and deploy new features debugged and troubleshot issues ensuring platform stability Bachelor of Technology BTech from Uptu graduated in 2025 with 6 CGPA Age 24 Location Delhi Gender Male Language Proficiencies English Beginner Hindi Beginner Spanish Beginner Work Preference Hybrid Availability Immediately Current Salary 75000 GitHub httpsgithubcomabhishek LinkedIn httpslinkedincominanjali Resume vegooglecomfiled1fdYF5Jl7bUhCEIDjfZw6KzDhmGWcDdFrview Profile Status Complete Last Updated 03302025"
+      // candidateProfile:"Abhishek Kuswaha Email Phone LinkedIn GitHub Experience Backend Developer at Aurjobs for 9 months skilled in developing and optimizing backend services using Nodejs Express and PostgreSQL experienced in frontend development with Reactjs and Nextjs implemented and integrated AI based job matching algorithms optimized and managed MongoDB and PostgreSQL databases improved system performance scalability and security collaborated with cross functional teams to design and deploy new features debugged and troubleshot issues ensuring platform stability Technical Skills Proficient in JavaScript React Nodejs Express familiar with MongoDB PostgreSQL Firebase well versed in REST APIs microservices architecture and Git GitHub basic understanding of AI ML concepts Education Bachelor of Technology BTech from Uptu graduated in 2025 with 6 CGPA Personal Details Age 24 years old Location Delhi Gender Male Language Proficiencies English Beginner Hindi Beginner Spanish Beginner Work Preference Hybrid Availability Immediately Financial Details Current Salary 75000 Professional Links GitHub httpsgithubcomabhishek LinkedIn httpslinkedincominanjali Resume vegooglecomfiled1fdYF5Jl7bUhCEIDjfZw6KzDhmGWcDdFrview Profile Status Complete Last Updated 03282025"
     },
     job: {
       requiredSkills: jobDetails?.job_skills_required?.join(', ') || '',
       experienceRequired: jobDetails?.job_experience_required?.toString() || '0',
-      jobDescription: jobDetails?.job_description || '',
+      // jobDescription: jobDetails?.job_description || '',
+      jobDescription: convertJobDescriptionToOneLine(jobDetails?.job_description) || '',
+
     }
   };
 
 
   const aiScreening = async () => {
     try {
-      const res = await axios.post(`http://localhost:3000/match/getJobMatch`,
+      const res = await axios.post(`${BASEURL}/match/getJobMatch`,
         screeningData,
         {
           headers: { "Content-Type": "application/json" },
@@ -357,16 +614,16 @@ const JobDetailsPage = () => {
   useEffect(() => {
 
     const loadJobAndApplicationStatus = async () => {
-      await fetchJobDetails(params.jobId);
+      await fetchJobDetails(job_id);
 
       if (isAuthenticated && candidate_id) {
-        await checkApplicationStatus(params.jobId, candidate_id);
+        await checkApplicationStatus(job_id, candidate_id);
       }
     };
 
     loadJobAndApplicationStatus();
 
-  }, [params.jobId, candidate_id, isAuthenticated]);
+  }, [job_id, candidate_id, isAuthenticated]);
 
 
 
@@ -382,7 +639,7 @@ const JobDetailsPage = () => {
           <meta name="description" content={`${jobDetails?.job_title} job opportunity at ${jobDetails?.company_display_name}. ${jobDetails?.job_experience_required} years experience required. Location: ${jobDetails?.job_location}`} />
           <meta property="og:title" content={`${jobDetails?.job_title} at ${jobDetails?.company_display_name}`} />
           <meta property="og:description" content={jobDetails?.description} />
-          <meta property="og:url" content={`http://jobs.aurjobs.com/jobs/${params.jobId}`} />
+          <meta property="og:url" content={`http://jobs.aurjobs.com/jobs/${params.jobTitle}`} />
           <meta name="application-name" content="Aurjobs Job Portal" />
 
           <meta property="og:site_name" content="Aurjobs Job Portal" />
@@ -398,184 +655,7 @@ const JobDetailsPage = () => {
         <div className="min-h-screen mt-20 bg-gray-50 py-8 px-4">
           <div className="max-w-4xl mx-auto">
             {/* Header Section */}
-            {/* <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <div className="flex flex-col sm:flex-row items-start justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{jobDetails?.job_title}</h1>
-                  <div className="flex items-center gap-4 text-gray-600 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Building2 className="w-4 h-4" />
-                      <span>{jobDetails?.company_display_name}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span>{jobDetails?.job_location}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <IndianRupee className="w-4 h-4" />
-                      <span>{jobDetails?.salary_range}</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 mb-4">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                      {jobDetails?.employment_type}
-                    </span>
-                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                      {jobDetails?.work_mode}
-                    </span>
-                    <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
-                      {jobDetails?.industry}
-                    </span>
-                  </div>
 
-                  {jobDetails?.job_link && (
-                    <div className="block sm:hidden mt-4">
-                      <a href={jobDetails?.job_link} target='_blank'>
-                        <button
-                          className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
-                        >
-                          Apply Now
-                        </button>
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                {
-                  hasApplied ? (
-                    <div className="text-right">
-                      <button
-                        disabled
-                        className="bg-green-500 text-white px-6 py-2 rounded-lg cursor-not-allowed flex items-center gap-2"
-                      >
-                        <CheckCircle2 className="w-5 h-5" />
-                        Applied
-                      </button>
-                      {appliedDate && (
-                        <p className="text-sm text-gray-500 mt-2">
-                          Applied on {formatDate(appliedDate)}
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    // <button
-                    //   onClick={handleApply}
-                    //   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    // >
-                    //   Apply Now
-                    // </button>
-
-                    jobDetails?.job_link ? (
-                      <a href={jobDetails?.job_link} target='_blank'>
-                        <div className="hidden sm:block">
-                          <a href={jobDetails?.job_link} target='_blank'>
-                            <button
-                              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
-                            >
-                              Apply Now
-                            </button>
-                          </a>
-                        </div>
-
-                      </a>
-                    ) : (
-                      <button
-                        onClick={handleApply}
-                        className="w-full sm:w-auto max-w-[200px] bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
-                      >
-                        Apply Now
-                      </button>
-                    )
-
-
-                  )
-                }
-                <AIMatchingLoader
-                  isOpen={showEligibilityModal}
-                  onClose={handleEligibilityModalClose}
-                  score={candidateScore || 0}
-                  isLoading={isAIScreening}
-                  isSubmitted={isSubmitted}
-                />
-                <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)}>
-                  <div className="text-center">
-                    <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <LogIn className="w-12 h-12 text-blue-500" />
-                    </div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Login Required
-                    </h2>
-                    <p className="text-gray-600 mb-6">
-                      Please login or create an account to apply for this job.
-                    </p>
-                    <div className="space-y-3">
-                      <button
-                        onClick={handleLogin}
-                        className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
-                      >
-                        Login
-                      </button>
-                      <button
-                        onClick={handleSignup}
-                        className="w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
-                      >
-                        Create Account
-                      </button>
-                      <button
-                        onClick={() => setShowLoginModal(false)}
-                        className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </Modal>
-
-                <Modal isOpen={isProfileCompeleteModal} onClose={() => setIsCompleteProfileModal(false)}>
-                  {!isSubmitted && (
-
-
-                    <div className="text-center">
-                      <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                        <XCircle className="w-12 h-12 text-red-500" />
-                      </div>
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                        Complete Your Profile
-                      </h2>
-                      <p className="text-gray-600 mb-4">
-                        Please complete the following information in your profile before applying:
-                      </p>
-                      <div className="bg-red-50 rounded-lg p-4 mb-6">
-                        <ul className="text-left space-y-2">
-                          {incompleteFields.map((field, index) => (
-                            <li key={index} className="text-red-600 flex items-center space-x-2">
-                              <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
-                              <span>{field}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="space-y-3">
-                        <button
-                          onClick={handleCompleteProfile}
-                          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
-                        >
-                          Complete Profile
-                        </button>
-                        <button
-                          onClick={() => setIsCompleteProfileModal(false)}
-                          className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </Modal>
-
-
-              </div>
-            </div> */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <div className="flex flex-col sm:flex-row items-start justify-between">
                 <div>
@@ -628,7 +708,7 @@ const JobDetailsPage = () => {
                     </span>
                   </div>
 
-                  {jobDetails?.job_link && (
+                  {/* {jobDetails?.job_link && (
                     <div className="block sm:hidden mt-4">
                       <a href={jobDetails?.job_link} target='_blank'>
                         <button
@@ -638,7 +718,7 @@ const JobDetailsPage = () => {
                         </button>
                       </a>
                     </div>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="mt-4 sm:mt-0">
@@ -765,7 +845,7 @@ const JobDetailsPage = () => {
             </div>
 
             {/* <GoogleAd slot="8506441329" /> */}
-           
+
 
 
 
@@ -800,8 +880,27 @@ const JobDetailsPage = () => {
                       </span>
                     ))}
                   </div>
+                 
                 </div>
               </div>
+              {!hasApplied && (
+                    <div className="block sm:hidden mt-6">
+                      {jobDetails?.job_link ? (
+                        <a href={jobDetails?.job_link} target='_blank'>
+                          <button className="w-full cursor-pointer bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
+                            Apply Now
+                          </button>
+                        </a>
+                      ) : (
+                        <button
+                          onClick={handleApply}
+                          className="w-full cursor-pointer bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all text-center shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+                        >
+                          Apply Now
+                        </button>
+                      )}
+                    </div>
+                  )}
 
               {/* Right Column - Additional Info */}
               <div className="space-y-6">

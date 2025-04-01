@@ -55,7 +55,7 @@ const AppRouter = () => {
           <Route path='/company_login' element={<CompanyLogin/>}/>
           <Route path='/company_register' element={<CompanyRegistration/>}/>
           <Route path='/jobs' element={<JobsPage/>}/>
-          <Route path='/jobs/:jobId' element={<JobDetailsPage/>}/>
+          <Route path='/jobs/:jobTitle' element={<JobDetailsPage/>}/>
           <Route path="/employer_dashboard/jobs/:jobId" element={<JobDetails />} />
           <Route path="/Pricing" element={<Pricing />} /> 
           <Route path='/payment_gateway' element={<PaymentGateway/>}/>
